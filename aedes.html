@@ -33,26 +33,25 @@
   </header>
 
   <main class="aedes-page">
-  <section class="aedes-hero">
-    <div class="aedes-hero__content">
-      <p class="section-label">Programa institucional</p>
+    <section class="aedes-hero">
+      <div class="aedes-hero__content">
+        <p class="section-label">Programa institucional</p>
 
-      <h2 class="aedes-project-title">
-        Programa de combate ao Aedes aegypti
-      </h2>
+        <h2 class="aedes-project-title">
+          Programa de combate ao Aedes aegypti
+        </h2>
 
-      <p class="aedes-project-subtitle">
-        Módulo de acompanhamento das vistorias, identificação de focos,
-        remediação e emissão de certificados de conformidade das unidades.
-      </p>
+        <p class="aedes-project-subtitle">
+          Módulo de acompanhamento das vistorias, identificação de focos,
+          remediação e emissão de certificados de conformidade das unidades.
+        </p>
 
-      <p class="aedes-project-description">
-        Este módulo organiza a leitura dos dados operacionais do programa em
-        uma estrutura visual clara, permitindo acompanhar desempenho,
-        identificar pendências e avaliar a aptidão das unidades para
-        certificação.
-      </p>
-    </div>
+        <p class="aedes-project-description">
+          Este módulo organiza a leitura dos dados operacionais do programa em
+          uma estrutura visual clara, permitindo acompanhar desempenho,
+          identificar pendências e avaliar a aptidão das unidades para certificação.
+        </p>
+      </div>
 
       <aside class="aedes-hero__status" aria-label="Status da base local">
         <div class="hero-mini-card">
@@ -88,7 +87,7 @@
       >
         <span class="module-nav-card__label">Análise</span>
         <strong>Indicadores</strong>
-        <p>KPIs, gráficos e leitura do desempenho operacional.</p>
+        <p>KPIs, pizzas e leitura do desempenho operacional.</p>
       </button>
 
       <button
@@ -161,33 +160,6 @@
               </p>
             </article>
           </div>
-
-          <div class="quick-kpis" aria-label="Indicadores rápidos do módulo">
-            <article class="quick-kpi quick-kpi--blue">
-              <span>Total de vistorias</span>
-              <strong id="kpiTotalVistorias">0</strong>
-            </article>
-
-            <article class="quick-kpi quick-kpi--green">
-              <span>Vistorias realizadas</span>
-              <strong id="kpiRealizadas">0</strong>
-            </article>
-
-            <article class="quick-kpi quick-kpi--red">
-              <span>Focos encontrados</span>
-              <strong id="kpiFocos">0</strong>
-            </article>
-
-            <article class="quick-kpi quick-kpi--amber">
-              <span>Focos não remediados</span>
-              <strong id="kpiNaoRemediadas">0</strong>
-            </article>
-
-            <article class="quick-kpi quick-kpi--green-soft">
-              <span>Unidades aptas</span>
-              <strong id="kpiAptas">0</strong>
-            </article>
-          </div>
         </div>
       </section>
 
@@ -200,7 +172,7 @@
       >
         <div class="panel-box">
           <div class="panel-box__header panel-box__header--between">
-            <h3>Indicadores</h3>
+            <h3>Painel de indicadores</h3>
 
             <div class="filters-inline" aria-label="Filtros dos indicadores">
               <div class="filter-group">
@@ -238,35 +210,111 @@
             </div>
           </div>
 
-          <div class="charts-grid">
-            <article class="panel-card">
-              <div class="panel-card__header">
-                <h4>Status das vistorias</h4>
-              </div>
-              <div id="chartStatusVistoria" class="stack-chart" aria-label="Gráfico de status das vistorias"></div>
+          <section class="kpi-dashboard" aria-label="Indicadores principais">
+            <article class="kpi-tile kpi-tile--blue">
+              <span>Semanas de projeto</span>
+              <strong id="kpiSemanasProjeto">0</strong>
             </article>
 
-            <article class="panel-card">
-              <div class="panel-card__header">
-                <h4>Foco encontrado</h4>
-              </div>
-              <div id="chartFocoEncontrado" class="stack-chart" aria-label="Gráfico de focos encontrados"></div>
+            <article class="kpi-tile kpi-tile--blue-soft">
+              <span>Unidades cadastradas</span>
+              <strong id="kpiUnidades">0</strong>
             </article>
 
-            <article class="panel-card panel-card--wide">
-              <div class="panel-card__header">
-                <h4>Top unidades por número de vistorias</h4>
-              </div>
-              <div id="chartTopUnidades" class="bar-list" aria-label="Ranking de unidades por número de vistorias"></div>
+            <article class="kpi-tile kpi-tile--blue-soft">
+              <span>Municípios atendidos</span>
+              <strong id="kpiMunicipios">0</strong>
             </article>
 
-            <article class="panel-card panel-card--wide">
-              <div class="panel-card__header">
-                <h4>Principais motivos de não vistoria</h4>
-              </div>
-              <div id="chartMotivosNaoVistoria" class="bar-list" aria-label="Principais motivos de não vistoria"></div>
+            <article class="kpi-tile kpi-tile--green">
+              <span>Vistorias realizadas</span>
+              <strong id="kpiRealizadas">0</strong>
             </article>
-          </div>
+
+            <article class="kpi-tile kpi-tile--red">
+              <span>Vistorias não realizadas</span>
+              <strong id="kpiNaoRealizadas">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--muted">
+              <span>Vistorias não informadas</span>
+              <strong id="kpiNaoInformadas">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--red-strong">
+              <span>Focos encontrados</span>
+              <strong id="kpiFocos">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--amber">
+              <span>Focos não remediados</span>
+              <strong id="kpiNaoRemediadas">0</strong>
+            </article>
+          </section>
+
+          <section class="dashboard-grid">
+            <div class="dashboard-column dashboard-column--left">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Vistorias realizadas</h4>
+                </div>
+                <div id="gaugeRealizadas" class="gauge-chart"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Vistorias não realizadas</h4>
+                </div>
+                <div id="gaugeNaoRealizadas" class="gauge-chart"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Vistorias não informadas</h4>
+                </div>
+                <div id="gaugeNaoInformadas" class="gauge-chart"></div>
+              </article>
+            </div>
+
+            <div class="dashboard-column dashboard-column--center">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Focos encontrados ou não</h4>
+                </div>
+                <div id="pieFocos" class="pie-chart"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Focos remediados ou não</h4>
+                </div>
+                <div id="pieRemediacao" class="pie-chart"></div>
+              </article>
+            </div>
+
+            <div class="dashboard-column dashboard-column--right">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Motivos para vistoria não realizada</h4>
+                </div>
+                <div id="barMotivosNaoVistoria" class="bar-list"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Motivos para não remediação</h4>
+                </div>
+                <div id="barMotivosNaoRemediacao" class="bar-list"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Locais dos focos encontrados</h4>
+                </div>
+                <div id="barLocaisFoco" class="bar-list"></div>
+              </article>
+            </div>
+          </section>
         </div>
       </section>
 

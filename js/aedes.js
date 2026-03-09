@@ -2,6 +2,10 @@ function formatNumber(value) {
   return new Intl.NumberFormat("pt-BR").format(Number(value || 0));
 }
 
+function formatPercent(value) {
+  return `${Number(value || 0).toFixed(1).replace(".", ",")}%`;
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return "-";
   const [year, month, day] = String(dateStr).split("-");
@@ -60,31 +64,79 @@ function uniqueSorted(values) {
   });
 }
 
-function renderStackChart(container, segments, total) {
+function polarToCartesian(cx, cy, r, angleDeg) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180.0;
+  return {
+    x: cx + r * Math.cos(rad),
+    y: cy + r * Math.sin(rad)
+  };
+}
+
+function describeArc(cx, cy, r, startAngle, endAngle) {
+  const start = polarToCartesian(cx, cy, r, endAngle);
+  const end = polarToCartesian(cx, cy, r, startAngle);
+  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+  return [
+    "M",
+    start.x,
+    start.y,
+    "A",
+    r,
+    r,
+    0,
+    largeArcFlag,
+    0,
+    end.x,
+    end.y
+  ].join(" ");
+}
+
+function renderGaugeChart(container, config) {
   if (!container) return;
 
-  const safeTotal = total > 0 ? total : 1;
+  const {
+    titleValue,
+    titleLabel,
+    percent,
+    color = "#16a34a",
+    trackColor = "#e2e8f0",
+    legend = []
+  } = config;
+
+  const pct = Math.max(0, Math.min(100, Number(percent || 0)));
+  const endAngle = 180 * (pct / 100);
+
+  const trackPath = describeArc(120, 120, 82, 0, 180);
+  const valuePath = pct > 0 ? describeArc(120, 120, 82, 0, endAngle) : "";
 
   container.innerHTML = `
-    <div class="stack-row">
-      <div class="stack-bar">
-        ${segments
-          .map(
-            (segment) => `
-          <div
-            class="stack-segment ${segment.className}"
-            style="width:${(segment.value / safeTotal) * 100}%"
-            title="${escapeHtml(segment.label)}: ${segment.value}"
-          ></div>
-        `
-          )
-          .join("")}
+    <div class="chart-wrap">
+      <svg class="chart-svg" viewBox="0 0 240 150" width="220" height="140" aria-hidden="true">
+        <path d="${trackPath}" fill="none" stroke="${trackColor}" stroke-width="20" stroke-linecap="round"></path>
+        ${
+          valuePath
+            ? `<path d="${valuePath}" fill="none" stroke="${color}" stroke-width="20" stroke-linecap="round"></path>`
+            : ""
+        }
+      </svg>
+
+      <div class="chart-center">
+        <strong>${escapeHtml(titleValue)}</strong>
+        <span>${escapeHtml(titleLabel)}</span>
       </div>
-      <div class="stack-legend">
-        ${segments
+
+      <div class="chart-legend">
+        ${legend
           .map(
-            (segment) => `
-          <span>${escapeHtml(segment.label)}: <strong>${formatNumber(segment.value)}</strong></span>
+            (item) => `
+          <div class="chart-legend__item">
+            <span class="chart-legend__left">
+              <span class="chart-dot ${item.dotClass}"></span>
+              <span>${escapeHtml(item.label)}</span>
+            </span>
+            <strong>${escapeHtml(item.value)}</strong>
+          </div>
         `
           )
           .join("")}
@@ -93,7 +145,82 @@ function renderStackChart(container, segments, total) {
   `;
 }
 
-function renderBarList(container, entries) {
+function renderPieChart(container, config) {
+  if (!container) return;
+
+  const {
+    centerValue,
+    centerLabel,
+    slices = [],
+    legend = []
+  } = config;
+
+  const total = slices.reduce((acc, slice) => acc + Number(slice.value || 0), 0);
+
+  let currentAngle = 0;
+  const arcs = [];
+
+  if (total > 0) {
+    for (const slice of slices) {
+      const value = Number(slice.value || 0);
+      if (value <= 0) continue;
+
+      const angle = (value / total) * 360;
+      const start = currentAngle;
+      const end = currentAngle + angle;
+
+      if (angle >= 360) {
+        arcs.push(`
+          <circle cx="120" cy="120" r="78" fill="none" stroke="${slice.color}" stroke-width="26"></circle>
+        `);
+      } else {
+        arcs.push(`
+          <path
+            d="${describeArc(120, 120, 78, start, end)}"
+            fill="none"
+            stroke="${slice.color}"
+            stroke-width="26"
+            stroke-linecap="round"
+          ></path>
+        `);
+      }
+
+      currentAngle = end;
+    }
+  }
+
+  container.innerHTML = `
+    <div class="chart-wrap">
+      <svg class="chart-svg" viewBox="0 0 240 240" width="220" height="220" aria-hidden="true">
+        <circle cx="120" cy="120" r="78" fill="none" stroke="#e2e8f0" stroke-width="26"></circle>
+        ${arcs.join("")}
+      </svg>
+
+      <div class="chart-center">
+        <strong>${escapeHtml(centerValue)}</strong>
+        <span>${escapeHtml(centerLabel)}</span>
+      </div>
+
+      <div class="chart-legend">
+        ${legend
+          .map(
+            (item) => `
+          <div class="chart-legend__item">
+            <span class="chart-legend__left">
+              <span class="chart-dot ${item.dotClass}"></span>
+              <span>${escapeHtml(item.label)}</span>
+            </span>
+            <strong>${escapeHtml(item.value)}</strong>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderBarList(container, entries, fillClass = "") {
   if (!container) return;
 
   if (!entries.length) {
@@ -106,16 +233,16 @@ function renderBarList(container, entries) {
   container.innerHTML = entries
     .map(
       ([label, value]) => `
-    <div class="bar-item">
-      <div class="bar-item__head">
-        <span class="bar-item__label">${escapeHtml(label)}</span>
-        <span class="bar-item__value">${formatNumber(value)}</span>
-      </div>
-      <div class="bar-item__track">
-        <div class="bar-item__fill" style="width:${(value / max) * 100}%"></div>
-      </div>
-    </div>
-  `
+        <div class="bar-item">
+          <div class="bar-item__head">
+            <span class="bar-item__label">${escapeHtml(label)}</span>
+            <span class="bar-item__value">${formatNumber(value)}</span>
+          </div>
+          <div class="bar-item__track">
+            <div class="bar-item__fill ${fillClass}" style="width:${(value / max) * 100}%"></div>
+          </div>
+        </div>
+      `
     )
     .join("");
 }
@@ -248,36 +375,6 @@ function buildCertificateNotOkHtml({ unidadeNome, ano, mes, total }) {
   `;
 }
 
-function downloadCertificateText({ unidadeNome, ano, mes, total }) {
-  const meses = [
-    "",
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro"
-  ];
-
-  return `
-CERTIFICADO DE CONFORMIDADE
-Programa de combate ao Aedes aegypti
-Portal DMA - Sistema de Gestão Ambiental
-
-Certificamos que a unidade ${unidadeNome}
-registrou ${total} vistorias no mês de ${meses[mes]} de ${ano},
-atendendo ao critério mínimo de 4 vistorias mensais.
-
-Documento gerado pelo módulo Aedes do Portal DMA.
-`.trim();
-}
-
 const state = {
   metadata: null,
   unidades: [],
@@ -294,16 +391,23 @@ const els = {
   clearFiltersBtn: document.getElementById("clearFiltersBtn"),
   reloadSeedBtn: document.getElementById("reloadSeedBtn"),
 
-  kpiTotalVistorias: document.getElementById("kpiTotalVistorias"),
+  kpiSemanasProjeto: document.getElementById("kpiSemanasProjeto"),
+  kpiUnidades: document.getElementById("kpiUnidades"),
+  kpiMunicipios: document.getElementById("kpiMunicipios"),
   kpiRealizadas: document.getElementById("kpiRealizadas"),
+  kpiNaoRealizadas: document.getElementById("kpiNaoRealizadas"),
+  kpiNaoInformadas: document.getElementById("kpiNaoInformadas"),
   kpiFocos: document.getElementById("kpiFocos"),
   kpiNaoRemediadas: document.getElementById("kpiNaoRemediadas"),
-  kpiAptas: document.getElementById("kpiAptas"),
 
-  chartStatusVistoria: document.getElementById("chartStatusVistoria"),
-  chartFocoEncontrado: document.getElementById("chartFocoEncontrado"),
-  chartTopUnidades: document.getElementById("chartTopUnidades"),
-  chartMotivosNaoVistoria: document.getElementById("chartMotivosNaoVistoria"),
+  gaugeRealizadas: document.getElementById("gaugeRealizadas"),
+  gaugeNaoRealizadas: document.getElementById("gaugeNaoRealizadas"),
+  gaugeNaoInformadas: document.getElementById("gaugeNaoInformadas"),
+  pieFocos: document.getElementById("pieFocos"),
+  pieRemediacao: document.getElementById("pieRemediacao"),
+  barMotivosNaoVistoria: document.getElementById("barMotivosNaoVistoria"),
+  barMotivosNaoRemediacao: document.getElementById("barMotivosNaoRemediacao"),
+  barLocaisFoco: document.getElementById("barLocaisFoco"),
 
   historyTableBody: document.getElementById("historyTableBody"),
   historyCount: document.getElementById("historyCount"),
@@ -316,13 +420,14 @@ const els = {
   certificateStatus: document.getElementById("certificateStatus")
 };
 
-// NAVEGAÇÃO POR ABAS
 const tabButtons = Array.from(document.querySelectorAll(".module-nav-card"));
 const tabPanels = Array.from(document.querySelectorAll(".tab-panel"));
 
 function activateTab(tabName) {
   for (const button of tabButtons) {
-    button.classList.toggle("is-active", button.dataset.tab === tabName);
+    const isActive = button.dataset.tab === tabName;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", isActive ? "true" : "false");
   }
 
   for (const panel of tabPanels) {
@@ -379,94 +484,164 @@ function applyFilters() {
   renderDashboard();
 }
 
-function renderKPIs() {
-  const items = state.filteredVistorias;
-
+function getDashboardMetrics(items) {
   const total = items.length;
   const realizadas = items.filter((item) => item.vistoriaRealizada === "sim").length;
-  const focos = items.filter((item) => item.focoEncontrado === "sim").length;
-  const naoRemediadas = items.filter((item) => item.focoRemediado === "nao").length;
-  const aptas = calculateCertificateEligibleUnits(items, state.unidades);
+  const naoRealizadas = items.filter((item) => item.vistoriaRealizada === "nao").length;
+  const naoInformadas = items.filter(
+    (item) => item.vistoriaRealizada === "nao_informado"
+  ).length;
+  const focosEncontrados = items.filter((item) => item.focoEncontrado === "sim").length;
+  const focosNaoEncontrados = items.filter((item) => item.focoEncontrado === "nao").length;
+  const focosSemInfo = items.filter((item) => !item.focoEncontrado).length;
+  const remediados = items.filter((item) => item.focoRemediado === "sim").length;
+  const naoRemediados = items.filter((item) => item.focoRemediado === "nao").length;
+  const remediacaoSemInfo = items.filter(
+    (item) =>
+      item.focoEncontrado === "sim" &&
+      !["sim", "nao"].includes(String(item.focoRemediado || ""))
+  ).length;
 
-  els.kpiTotalVistorias.textContent = formatNumber(total);
-  els.kpiRealizadas.textContent = formatNumber(realizadas);
-  els.kpiFocos.textContent = formatNumber(focos);
-  els.kpiNaoRemediadas.textContent = formatNumber(naoRemediadas);
-  els.kpiAptas.textContent = formatNumber(aptas);
+  const semanasProjeto = uniqueSorted(items.map((item) => item.semanaAcumulada)).length;
+  const unidades = uniqueSorted(items.map((item) => item.unidadeId)).length;
+  const municipios = uniqueSorted(items.map((item) => item.municipio)).length;
+
+  return {
+    total,
+    realizadas,
+    naoRealizadas,
+    naoInformadas,
+    focosEncontrados,
+    focosNaoEncontrados,
+    focosSemInfo,
+    remediados,
+    naoRemediados,
+    remediacaoSemInfo,
+    semanasProjeto,
+    unidades,
+    municipios
+  };
 }
 
-function renderCharts() {
+function renderKPIs() {
+  const metrics = getDashboardMetrics(state.filteredVistorias);
+
+  els.kpiSemanasProjeto.textContent = formatNumber(metrics.semanasProjeto);
+  els.kpiUnidades.textContent = formatNumber(metrics.unidades);
+  els.kpiMunicipios.textContent = formatNumber(metrics.municipios);
+  els.kpiRealizadas.textContent = formatNumber(metrics.realizadas);
+  els.kpiNaoRealizadas.textContent = formatNumber(metrics.naoRealizadas);
+  els.kpiNaoInformadas.textContent = formatNumber(metrics.naoInformadas);
+  els.kpiFocos.textContent = formatNumber(metrics.focosEncontrados);
+  els.kpiNaoRemediadas.textContent = formatNumber(metrics.naoRemediados);
+}
+
+function renderIndicators() {
   const items = state.filteredVistorias;
+  const metrics = getDashboardMetrics(items);
+  const total = metrics.total || 1;
 
-  const statusCounts = {
-    realizadas: items.filter((item) => item.vistoriaRealizada === "sim").length,
-    naoRealizadas: items.filter((item) => item.vistoriaRealizada === "nao").length,
-    naoInformadas: items.filter((item) => item.vistoriaRealizada === "nao_informado").length
-  };
+  renderGaugeChart(els.gaugeRealizadas, {
+    titleValue: formatPercent((metrics.realizadas / total) * 100),
+    titleLabel: `${formatNumber(metrics.realizadas)} de ${formatNumber(metrics.total)}`,
+    percent: (metrics.realizadas / total) * 100,
+    color: "#16a34a",
+    legend: [
+      { label: "Realizadas", value: formatNumber(metrics.realizadas), dotClass: "chart-dot--green" },
+      { label: "Total", value: formatNumber(metrics.total), dotClass: "chart-dot--blue" }
+    ]
+  });
 
-  renderStackChart(
-    els.chartStatusVistoria,
-    [
-      {
-        label: "Realizadas",
-        value: statusCounts.realizadas,
-        className: "stack-segment--success"
-      },
-      {
-        label: "Não realizadas",
-        value: statusCounts.naoRealizadas,
-        className: "stack-segment--danger"
-      },
-      {
-        label: "Não informadas",
-        value: statusCounts.naoInformadas,
-        className: "stack-segment--muted"
-      }
+  renderGaugeChart(els.gaugeNaoRealizadas, {
+    titleValue: formatPercent((metrics.naoRealizadas / total) * 100),
+    titleLabel: `${formatNumber(metrics.naoRealizadas)} de ${formatNumber(metrics.total)}`,
+    percent: (metrics.naoRealizadas / total) * 100,
+    color: "#dc2626",
+    legend: [
+      { label: "Não realizadas", value: formatNumber(metrics.naoRealizadas), dotClass: "chart-dot--red" },
+      { label: "Total", value: formatNumber(metrics.total), dotClass: "chart-dot--blue" }
+    ]
+  });
+
+  renderGaugeChart(els.gaugeNaoInformadas, {
+    titleValue: formatPercent((metrics.naoInformadas / total) * 100),
+    titleLabel: `${formatNumber(metrics.naoInformadas)} de ${formatNumber(metrics.total)}`,
+    percent: (metrics.naoInformadas / total) * 100,
+    color: "#64748b",
+    legend: [
+      { label: "Não informadas", value: formatNumber(metrics.naoInformadas), dotClass: "chart-dot--muted" },
+      { label: "Total", value: formatNumber(metrics.total), dotClass: "chart-dot--blue" }
+    ]
+  });
+
+  renderPieChart(els.pieFocos, {
+    centerValue: formatNumber(metrics.focosEncontrados),
+    centerLabel: "com foco",
+    slices: [
+      { value: metrics.focosEncontrados, color: "#dc2626" },
+      { value: metrics.focosNaoEncontrados, color: "#16a34a" },
+      { value: metrics.focosSemInfo, color: "#64748b" }
     ],
-    items.length
-  );
+    legend: [
+      { label: "Foco encontrado", value: formatNumber(metrics.focosEncontrados), dotClass: "chart-dot--red" },
+      { label: "Sem foco", value: formatNumber(metrics.focosNaoEncontrados), dotClass: "chart-dot--green" },
+      { label: "Sem informação", value: formatNumber(metrics.focosSemInfo), dotClass: "chart-dot--muted" }
+    ]
+  });
 
-  const focoCounts = {
-    sim: items.filter((item) => item.focoEncontrado === "sim").length,
-    nao: items.filter((item) => item.focoEncontrado === "nao").length,
-    naoInformado: items.filter((item) => !item.focoEncontrado).length
-  };
-
-  renderStackChart(
-    els.chartFocoEncontrado,
-    [
-      {
-        label: "Foco encontrado",
-        value: focoCounts.sim,
-        className: "stack-segment--danger"
-      },
-      {
-        label: "Sem foco",
-        value: focoCounts.nao,
-        className: "stack-segment--success"
-      },
-      {
-        label: "Sem informação",
-        value: focoCounts.naoInformado,
-        className: "stack-segment--muted"
-      }
+  renderPieChart(els.pieRemediacao, {
+    centerValue: formatNumber(metrics.remediados),
+    centerLabel: "remediados",
+    slices: [
+      { value: metrics.remediados, color: "#16a34a" },
+      { value: metrics.naoRemediados, color: "#dc2626" },
+      { value: metrics.remediacaoSemInfo, color: "#64748b" }
     ],
-    items.length
-  );
+    legend: [
+      { label: "Remediados", value: formatNumber(metrics.remediados), dotClass: "chart-dot--green" },
+      { label: "Não remediados", value: formatNumber(metrics.naoRemediados), dotClass: "chart-dot--red" },
+      { label: "Sem informação", value: formatNumber(metrics.remediacaoSemInfo), dotClass: "chart-dot--muted" }
+    ]
+  });
 
-  const unidadeMap = countBy(items, (item) => item.unidade || "Sem unidade");
-  renderBarList(els.chartTopUnidades, topEntries(unidadeMap, 8));
+  const motivosNaoVistoriaMap = new Map();
+  const motivosNaoRemediacaoMap = new Map();
+  const locaisFocoMap = new Map();
 
-  const motivosMap = new Map();
   for (const item of items) {
-    const motivos = item.motivosNaoVistoriaResumo || [];
-    for (const motivo of motivos) {
+    for (const motivo of item.motivosNaoVistoriaResumo || []) {
       if (!motivo) continue;
-      motivosMap.set(motivo, (motivosMap.get(motivo) || 0) + 1);
+      motivosNaoVistoriaMap.set(motivo, (motivosNaoVistoriaMap.get(motivo) || 0) + 1);
+    }
+
+    for (const motivo of item.motivosNaoRemediacaoResumo || []) {
+      if (!motivo) continue;
+      motivosNaoRemediacaoMap.set(motivo, (motivosNaoRemediacaoMap.get(motivo) || 0) + 1);
+    }
+
+    for (const local of item.locaisFocoResumo || []) {
+      if (!local) continue;
+      locaisFocoMap.set(local, (locaisFocoMap.get(local) || 0) + 1);
     }
   }
 
-  renderBarList(els.chartMotivosNaoVistoria, topEntries(motivosMap, 8));
+  renderBarList(
+    els.barMotivosNaoVistoria,
+    topEntries(motivosNaoVistoriaMap, 8),
+    "bar-item__fill--red"
+  );
+
+  renderBarList(
+    els.barMotivosNaoRemediacao,
+    topEntries(motivosNaoRemediacaoMap, 8),
+    "bar-item__fill--amber"
+  );
+
+  renderBarList(
+    els.barLocaisFoco,
+    topEntries(locaisFocoMap, 8),
+    "bar-item__fill--green"
+  );
 }
 
 function renderHistory() {
@@ -516,7 +691,7 @@ function renderHistory() {
 
 function renderDashboard() {
   renderKPIs();
-  renderCharts();
+  renderIndicators();
   renderHistory();
 }
 
@@ -675,14 +850,8 @@ function bindEvents() {
     }
   });
 
-  els.checkCertificateBtn?.addEventListener(
-    "click",
-    checkCertificateEligibility
-  );
-  els.downloadCertificateBtn?.addEventListener(
-    "click",
-    downloadCertificate
-  );
+  els.checkCertificateBtn?.addEventListener("click", checkCertificateEligibility);
+  els.downloadCertificateBtn?.addEventListener("click", downloadCertificate);
 }
 
 bindEvents();

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal DMA</title>
+  <meta
+    name="description"
+    content="Sistema de Gestão Ambiental - Portal DMA"
+  />
+  <meta name="theme-color" content="#0b3d91" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./css/global.css" />
+  <link rel="stylesheet" href="./css/home.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__left">
+      <img
+        src="./assets/icon.png"
+        class="logo-dma"
+        alt="Logo do Portal DMA"
+      />
+
+      <div>
+        <p class="eyebrow">Sistema de Gestão Ambiental</p>
+        <h1 class="brand-title">Portal DMA</h1>
+      </div>
+    </div>
+
+    <div class="topbar__right">
+      <button id="installBtn" class="btn btn--ghost" hidden>
+        Instalar aplicativo
+      </button>
+    </div>
+  </header>
+
+  <main class="home-page">
+    <section class="hero">
+      <div class="hero__content">
+        <p class="section-label">Departamento de Meio Ambiente</p>
+
+        <h2 class="hero__title">
+          Plataforma institucional para gestão, análise e acompanhamento das
+          atividades ambientais
+        </h2>
+
+        <p class="hero__text">
+          O Portal DMA centraliza programas, indicadores, registros e produtos
+          institucionais em uma estrutura única, preparada para crescimento,
+          padronização e apoio à decisão.
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#modulos">Abrir programas</a>
+          <button class="btn btn--secondary" id="aboutBtn" type="button">
+            Sobre o portal
+          </button>
+        </div>
+      </div>
+
+      <aside class="hero__panel" aria-label="Visão resumida do portal">
+        <article class="hero-card hero-card--green">
+          <span class="hero-card__tag">Conformidade</span>
+          <h3>Leitura clara do desempenho</h3>
+          <p>
+            Estrutura pensada para destacar o que está conforme, o que exige
+            atenção e o que demanda ação imediata.
+          </p>
+        </article>
+
+        <article class="hero-card hero-card--amber">
+          <span class="hero-card__tag">Evolução</span>
+          <h3>Construção por módulos</h3>
+          <p>
+            Aedes, Recicla CEDAE, Supervisão Ambiental, Cabenga e Imunana
+            compõem a trilha prioritária de desenvolvimento do sistema.
+          </p>
+        </article>
+
+        <article class="hero-card hero-card--red">
+          <span class="hero-card__tag">Operação</span>
+          <h3>Foco em decisão</h3>
+          <p>
+            O portal foi pensado para apoiar a rotina técnica e tornar os
+            programas ambientais mais visíveis, rastreáveis e acionáveis.
+          </p>
+        </article>
+      </aside>
+    </section>
+
+    <section class="summary-strip" aria-label="Resumo institucional do portal">
+      <article class="summary-box">
+        <span class="summary-box__label">Propósito</span>
+        <strong>Centralização e governança</strong>
+      </article>
+
+      <article class="summary-box">
+        <span class="summary-box__label">Estrutura</span>
+        <strong>Portal + módulos operacionais</strong>
+      </article>
+
+      <article class="summary-box">
+        <span class="summary-box__label">Tecnologia</span>
+        <strong>PWA + IndexedDB</strong>
+      </article>
+
+      <article class="summary-box">
+        <span class="summary-box__label">Evolução futura</span>
+        <strong>Node.js + PostgreSQL</strong>
+      </article>
+    </section>
+
+    <section class="modules-section" id="modulos">
+      <div class="section-head">
+        <div>
+          <p class="section-label">Programas do sistema</p>
+          <h2>
+            Selecione um programa para acompanhar resultados, indicadores e
+            produtos
+          </h2>
+        </div>
+
+        <p class="section-note">
+          Os programas abaixo funcionam como entradas principais do Portal DMA.
+          O módulo Aedes é a prioridade atual de desenvolvimento.
+        </p>
+      </div>
+
+      <div class="modules-grid">
+        <a
+          class="module-card module-card--active module-card--red"
+          href="./aedes.html"
+          aria-label="Abrir módulo Aedes"
+        >
+          <div class="module-card__header">
+            <span class="status-dot status-dot--live status-dot--red"></span>
+            <span class="module-card__status">Prioridade atual</span>
+          </div>
+
+          <h3>Aedes</h3>
+          <span class="module-card__subtitle">
+            Controle, vistoria, foco, remediação e certificado
+          </span>
+          <span class="module-card__link">Abrir módulo</span>
+        </a>
+
+        <article class="module-card module-card--green" aria-disabled="true">
+          <div class="module-card__header">
+            <span class="status-dot status-dot--green"></span>
+            <span class="module-card__status">Planejado</span>
+          </div>
+
+          <h3>Recicla CEDAE</h3>
+          <span class="module-card__subtitle">
+            Métricas, acompanhamento e comunicação institucional
+          </span>
+          <span class="module-card__link module-card__link--muted">
+            Em planejamento
+          </span>
+        </article>
+
+        <article class="module-card module-card--amber" aria-disabled="true">
+          <div class="module-card__header">
+            <span class="status-dot status-dot--amber"></span>
+            <span class="module-card__status">Planejado</span>
+          </div>
+
+          <h3>Supervisão Ambiental</h3>
+          <span class="module-card__subtitle">
+            Registros, fotos, histórico operacional e acompanhamento
+          </span>
+          <span class="module-card__link module-card__link--muted">
+            Em Desenvolvimento
+          </span>
+        </article>
+
+        <article class="module-card module-card--blue" aria-disabled="true">
+          <div class="module-card__header">
+            <span class="status-dot"></span>
+            <span class="module-card__status">Planejado</span>
+          </div>
+
+          <h3>Cabenga</h3>
+          <span class="module-card__subtitle">
+            Monitoramento hídrico, análises e indicadores ambientais
+          </span>
+          <span class="module-card__link module-card__link--muted">
+            Em planejamento
+          </span>
+        </article>
+
+        <article class="module-card module-card--blue-soft" aria-disabled="true">
+          <div class="module-card__header">
+            <span class="status-dot"></span>
+            <span class="module-card__status">Planejado</span>
+          </div>
+
+          <h3>Imunana</h3>
+          <span class="module-card__subtitle">
+            Visualização padronizada do monitoramento de rios
+          </span>
+          <span class="module-card__link module-card__link--muted">
+            Em planejamento
+          </span>
+        </article>
+      </div>
+    </section>
+
+    <section class="diagram-section">
+      <div class="diagram-card">
+        <div class="diagram-head">
+          <p class="section-label">Fluxo do portal</p>
+          <h2>Como a plataforma organiza o trabalho do departamento</h2>
+        </div>
+
+        <div class="portal-diagram" aria-label="Fluxo de funcionamento do portal">
+          <div class="diagram-node diagram-node--core">
+            <small>Portal</small>
+            <strong>DMA</strong>
+          </div>
+
+          <div class="diagram-arrow" aria-hidden="true">→</div>
+
+          <div class="diagram-node diagram-node--module">
+            <small>Módulos</small>
+            <strong>Programas ambientais</strong>
+          </div>
+
+          <div class="diagram-arrow" aria-hidden="true">→</div>
+
+          <div class="diagram-node diagram-node--product">
+            <small>Produtos</small>
+            <strong>Indicadores, histórico, relatórios e certificados</strong>
+          </div>
+        </div>
+
+        <div class="diagram-support">
+          <article class="diagram-support__item">
+            <span class="diagram-support__dot diagram-support__dot--blue"></span>
+            <p>
+              O portal centraliza a navegação e a identidade institucional do
+              sistema.
+            </p>
+          </article>
+
+          <article class="diagram-support__item">
+            <span class="diagram-support__dot diagram-support__dot--green"></span>
+            <p>
+              Cada programa funciona como um módulo próprio dentro da mesma
+              estrutura.
+            </p>
+          </article>
+
+          <article class="diagram-support__item">
+            <span class="diagram-support__dot diagram-support__dot--red"></span>
+            <p>
+              Os produtos gerados apoiam decisão, acompanhamento e governança.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="mission-section">
+      <div class="mission-card">
+        <p class="section-label">Missão da ferramenta</p>
+        <h2>Fazer o sistema se integrar à rotina do departamento</h2>
+        <p>
+          O Portal DMA foi pensado para apoiar o trabalho técnico diário,
+          reduzir dispersão de informações, facilitar o acompanhamento
+          institucional e criar uma base sólida para expansão futura sem
+          dependência excessiva de processos manuais.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="aboutModal" hidden>
+    <div class="modal__backdrop" id="modalBackdrop"></div>
+
+    <div
+      class="modal__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="aboutModalTitle"
+    >
+      <div class="modal__header">
+        <h3 id="aboutModalTitle">Sobre o Portal DMA</h3>
+        <button
+          class="modal__close"
+          id="closeModalBtn"
+          type="button"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <p>
+          O Portal DMA é a interface do Sistema de Gestão Ambiental do
+          Departamento de Meio Ambiente. Seu objetivo é reunir módulos,
+          indicadores, registros e produtos institucionais em uma plataforma
+          única, preparada para crescimento e operação contínua.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo Aedes | Portal DMA</title>
+  <meta name="description" content="Módulo Aedes - Portal DMA" />
+  <meta name="theme-color" content="#0b3d91" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./css/global.css" />
+  <link rel="stylesheet" href="./css/aedes.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__left">
+      <img src="./assets/icon.png" class="logo-dma" alt="Logo Portal DMA" />
+      <div>
+        <p class="eyebrow">Sistema de Gestão Ambiental</p>
+        <h1 class="brand-title">Portal DMA · Módulo Aedes</h1>
+      </div>
+    </div>
+
+    <div class="topbar__right">
+      <a href="./index.html" class="btn btn--ghost">Voltar ao portal</a>
+    </div>
+  </header>
+
+  <main class="aedes-page">
+    <section class="aedes-hero">
+      <div class="aedes-hero__content">
+        <p class="section-label">Programa de combate ao Aedes aegypti</p>
+        <h2>Módulo de acompanhamento das vistorias e da conformidade das unidades</h2>
+        <p>
+          Este módulo organiza a leitura dos dados de vistoria, focos encontrados,
+          remediação e emissão de certificados em uma estrutura visual mais clara e modular.
+        </p>
+      </div>
+
+      <div class="aedes-hero__status">
+        <div class="hero-mini-card">
+          <span class="hero-mini-card__label">Base local</span>
+          <strong id="dbStatus">Inicializando banco local...</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-nav-cards">
+      <button class="module-nav-card module-nav-card--blue is-active" data-tab="visao-geral">
+        <span class="module-nav-card__label">Entrada</span>
+        <strong>Visão geral</strong>
+        <p>Apresentação do módulo e leitura rápida da base.</p>
+      </button>
+
+      <button class="module-nav-card module-nav-card--green" data-tab="indicadores">
+        <span class="module-nav-card__label">Análise</span>
+        <strong>Indicadores</strong>
+        <p>KPIs, gráficos e leitura do desempenho operacional.</p>
+      </button>
+
+      <button class="module-nav-card module-nav-card--amber" data-tab="historico">
+        <span class="module-nav-card__label">Consulta</span>
+        <strong>Histórico</strong>
+        <p>Vistorias registradas, status e motivos associados.</p>
+      </button>
+
+      <button class="module-nav-card module-nav-card--red" data-tab="certificados">
+        <span class="module-nav-card__label">Emissão</span>
+        <strong>Certificados</strong>
+        <p>Verificação de elegibilidade e geração do documento.</p>
+      </button>
+    </section>
+
+    <section class="tab-panels">
+
+      <!-- VISÃO GERAL -->
+      <section class="tab-panel is-active" id="tab-visao-geral">
+        <div class="panel-box">
+          <div class="panel-box__header">
+            <h3>Visão geral do módulo</h3>
+          </div>
+
+          <div class="overview-grid">
+            <article class="overview-card">
+              <span class="overview-card__label">Objetivo</span>
+              <strong>Acompanhar vistorias e conformidade</strong>
+              <p>
+                O módulo reúne os principais registros operacionais do programa,
+                permitindo visualizar desempenho, pendências e aptidão para certificação.
+              </p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-card__label">Regra principal</span>
+              <strong>4 vistorias no mês</strong>
+              <p>
+                Unidades com pelo menos quatro vistorias no mês podem emitir certificado
+                de conformidade no período selecionado.
+              </p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-card__label">Base carregada</span>
+              <strong id="overviewBaseText">Lendo dados...</strong>
+              <p>
+                A base local é alimentada a partir do arquivo <code>aedes-seed.json</code>,
+                importado para o IndexedDB do Portal DMA.
+              </p>
+            </article>
+          </div>
+
+          <div class="quick-kpis">
+            <article class="quick-kpi quick-kpi--blue">
+              <span>Total de vistorias</span>
+              <strong id="kpiTotalVistorias">0</strong>
+            </article>
+
+            <article class="quick-kpi quick-kpi--green">
+              <span>Vistorias realizadas</span>
+              <strong id="kpiRealizadas">0</strong>
+            </article>
+
+            <article class="quick-kpi quick-kpi--red">
+              <span>Focos encontrados</span>
+              <strong id="kpiFocos">0</strong>
+            </article>
+
+            <article class="quick-kpi quick-kpi--amber">
+              <span>Focos não remediados</span>
+              <strong id="kpiNaoRemediadas">0</strong>
+            </article>
+
+            <article class="quick-kpi quick-kpi--green-soft">
+              <span>Unidades aptas</span>
+              <strong id="kpiAptas">0</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- INDICADORES -->
+      <section class="tab-panel" id="tab-indicadores">
+        <div class="panel-box">
+          <div class="panel-box__header panel-box__header--between">
+            <h3>Indicadores</h3>
+            <div class="filters-inline">
+              <div class="filter-group">
+                <label for="filterUnidade">Unidade</label>
+                <select id="filterUnidade">
+                  <option value="">Todas</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filterAno">Ano</label>
+                <select id="filterAno">
+                  <option value="">Todos</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filterStatus">Status da vistoria</label>
+                <select id="filterStatus">
+                  <option value="">Todos</option>
+                  <option value="sim">Realizada</option>
+                  <option value="nao">Não realizada</option>
+                  <option value="nao_informado">Não informado</option>
+                </select>
+              </div>
+
+              <div class="filter-group filter-group--actions">
+                <button class="btn btn--secondary" id="clearFiltersBtn">Limpar filtros</button>
+                <button class="btn btn--primary" id="reloadSeedBtn">Recarregar seed</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+            <article class="panel-card">
+              <div class="panel-card__header">
+                <h4>Status das vistorias</h4>
+              </div>
+              <div id="chartStatusVistoria" class="stack-chart"></div>
+            </article>
+
+            <article class="panel-card">
+              <div class="panel-card__header">
+                <h4>Foco encontrado</h4>
+              </div>
+              <div id="chartFocoEncontrado" class="stack-chart"></div>
+            </article>
+
+            <article class="panel-card panel-card--wide">
+              <div class="panel-card__header">
+                <h4>Top unidades por número de vistorias</h4>
+              </div>
+              <div id="chartTopUnidades" class="bar-list"></div>
+            </article>
+
+            <article class="panel-card panel-card--wide">
+              <div class="panel-card__header">
+                <h4>Principais motivos de não vistoria</h4>
+              </div>
+              <div id="chartMotivosNaoVistoria" class="bar-list"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTÓRICO -->
+      <section class="tab-panel" id="tab-historico">
+        <div class="panel-box">
+          <div class="panel-box__header panel-box__header--between">
+            <h3>Histórico de vistorias</h3>
+            <span id="historyCount" class="table-count">0 registros</span>
+          </div>
+
+          <div class="table-wrap">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Unidade</th>
+                  <th>Vistoria</th>
+                  <th>Foco</th>
+                  <th>Remediação</th>
+                  <th>Motivos</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- CERTIFICADOS -->
+      <section class="tab-panel" id="tab-certificados">
+        <div class="panel-box">
+          <div class="panel-box__header">
+            <h3>Certificados</h3>
+          </div>
+
+          <div class="certificate-grid">
+            <div class="certificate-form">
+              <div class="filter-group">
+                <label for="certUnidade">Unidade</label>
+                <select id="certUnidade">
+                  <option value="">Selecione</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="certMes">Mês</label>
+                <select id="certMes">
+                  <option value="">Selecione</option>
+                  <option value="1">Janeiro</option>
+                  <option value="2">Fevereiro</option>
+                  <option value="3">Março</option>
+                  <option value="4">Abril</option>
+                  <option value="5">Maio</option>
+                  <option value="6">Junho</option>
+                  <option value="7">Julho</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Setembro</option>
+                  <option value="10">Outubro</option>
+                  <option value="11">Novembro</option>
+                  <option value="12">Dezembro</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="certAno">Ano</label>
+                <select id="certAno">
+                  <option value="">Selecione</option>
+                </select>
+              </div>
+
+              <div class="certificate-actions">
+                <button class="btn btn--secondary" id="checkCertificateBtn">Verificar elegibilidade</button>
+                <button class="btn btn--primary" id="downloadCertificateBtn" disabled>Gerar certificado</button>
+              </div>
+            </div>
+
+            <div class="certificate-result">
+              <p class="certificate-result__label">Resultado</p>
+              <div id="certificateStatus" class="certificate-status">
+                Selecione unidade, mês e ano para verificar a conformidade.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./js/db.js"></script>
+  <script src="./js/seed.js"></script>
+  <script src="./js/certs.js"></script>
+  <script src="./js/aedes.js"></script>
+</body>
+</html>

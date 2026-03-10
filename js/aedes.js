@@ -130,14 +130,14 @@ function renderGaugeChart(container, config) {
         ${legend
           .map(
             (item) => `
-          <div class="chart-legend__item">
-            <span class="chart-legend__left">
-              <span class="chart-dot ${item.dotClass}"></span>
-              <span>${escapeHtml(item.label)}</span>
-            </span>
-            <strong>${escapeHtml(item.value)}</strong>
-          </div>
-        `
+              <div class="chart-legend__item">
+                <span class="chart-legend__left">
+                  <span class="chart-dot ${item.dotClass}"></span>
+                  <span>${escapeHtml(item.label)}</span>
+                </span>
+                <strong>${escapeHtml(item.value)}</strong>
+              </div>
+            `
           )
           .join("")}
       </div>
@@ -156,7 +156,6 @@ function renderPieChart(container, config) {
   } = config;
 
   const total = slices.reduce((acc, slice) => acc + Number(slice.value || 0), 0);
-
   let currentAngle = 0;
   const arcs = [];
 
@@ -205,14 +204,14 @@ function renderPieChart(container, config) {
         ${legend
           .map(
             (item) => `
-          <div class="chart-legend__item">
-            <span class="chart-legend__left">
-              <span class="chart-dot ${item.dotClass}"></span>
-              <span>${escapeHtml(item.label)}</span>
-            </span>
-            <strong>${escapeHtml(item.value)}</strong>
-          </div>
-        `
+              <div class="chart-legend__item">
+                <span class="chart-legend__left">
+                  <span class="chart-dot ${item.dotClass}"></span>
+                  <span>${escapeHtml(item.label)}</span>
+                </span>
+                <strong>${escapeHtml(item.value)}</strong>
+              </div>
+            `
           )
           .join("")}
       </div>
@@ -391,6 +390,15 @@ const els = {
   clearFiltersBtn: document.getElementById("clearFiltersBtn"),
   reloadSeedBtn: document.getElementById("reloadSeedBtn"),
 
+  overviewBaseText: document.getElementById("overviewBaseText"),
+
+  publicKpiTotalVistorias: document.getElementById("publicKpiTotalVistorias"),
+  publicKpiRealizadas: document.getElementById("publicKpiRealizadas"),
+  publicKpiFocos: document.getElementById("publicKpiFocos"),
+  publicKpiNaoRemediadas: document.getElementById("publicKpiNaoRemediadas"),
+  publicKpiUnidades: document.getElementById("publicKpiUnidades"),
+  publicKpiAptas: document.getElementById("publicKpiAptas"),
+
   kpiSemanasProjeto: document.getElementById("kpiSemanasProjeto"),
   kpiUnidades: document.getElementById("kpiUnidades"),
   kpiMunicipios: document.getElementById("kpiMunicipios"),
@@ -481,7 +489,7 @@ function applyFilters() {
   };
 
   state.filteredVistorias = filterVistorias(state.vistorias, filters);
-  renderDashboard();
+  renderManagementLayer();
 }
 
 function getDashboardMetrics(items) {
@@ -491,9 +499,13 @@ function getDashboardMetrics(items) {
   const naoInformadas = items.filter(
     (item) => item.vistoriaRealizada === "nao_informado"
   ).length;
+
   const focosEncontrados = items.filter((item) => item.focoEncontrado === "sim").length;
   const focosNaoEncontrados = items.filter((item) => item.focoEncontrado === "nao").length;
-  const focosSemInfo = items.filter((item) => !item.focoEncontrado).length;
+  const focosSemInfo = items.filter(
+    (item) => !["sim", "nao"].includes(String(item.focoEncontrado || ""))
+  ).length;
+
   const remediados = items.filter((item) => item.focoRemediado === "sim").length;
   const naoRemediados = items.filter((item) => item.focoRemediado === "nao").length;
   const remediacaoSemInfo = items.filter(
@@ -523,7 +535,19 @@ function getDashboardMetrics(items) {
   };
 }
 
-function renderKPIs() {
+function renderPublicLayer() {
+  const metrics = getDashboardMetrics(state.vistorias);
+  const aptas = calculateCertificateEligibleUnits(state.vistorias, state.unidades);
+
+  els.publicKpiTotalVistorias.textContent = formatNumber(metrics.total);
+  els.publicKpiRealizadas.textContent = formatNumber(metrics.realizadas);
+  els.publicKpiFocos.textContent = formatNumber(metrics.focosEncontrados);
+  els.publicKpiNaoRemediadas.textContent = formatNumber(metrics.naoRemediados);
+  els.publicKpiUnidades.textContent = formatNumber(state.unidades.length);
+  els.publicKpiAptas.textContent = formatNumber(aptas);
+}
+
+function renderManagementKPIs() {
   const metrics = getDashboardMetrics(state.filteredVistorias);
 
   els.kpiSemanasProjeto.textContent = formatNumber(metrics.semanasProjeto);
@@ -536,7 +560,7 @@ function renderKPIs() {
   els.kpiNaoRemediadas.textContent = formatNumber(metrics.naoRemediados);
 }
 
-function renderIndicators() {
+function renderManagementCharts() {
   const items = state.filteredVistorias;
   const metrics = getDashboardMetrics(items);
   const total = metrics.total || 1;
@@ -689,9 +713,9 @@ function renderHistory() {
     .join("");
 }
 
-function renderDashboard() {
-  renderKPIs();
-  renderIndicators();
+function renderManagementLayer() {
+  renderManagementKPIs();
+  renderManagementCharts();
   renderHistory();
 }
 
@@ -777,13 +801,13 @@ async function loadData() {
   const totalVistorias = state.vistorias.length;
   const totalUnidades = state.unidades.length;
 
-  const overviewBaseText = document.getElementById("overviewBaseText");
-  if (overviewBaseText) {
-    overviewBaseText.textContent = `${formatNumber(totalUnidades)} unidades e ${formatNumber(totalVistorias)} vistorias carregadas`;
+  if (els.overviewBaseText) {
+    els.overviewBaseText.textContent = `${formatNumber(totalUnidades)} unidades e ${formatNumber(totalVistorias)} vistorias carregadas`;
   }
 
   refreshFilters();
-  renderDashboard();
+  renderPublicLayer();
+  renderManagementLayer();
 
   if (els.dbStatus) {
     els.dbStatus.textContent = `Base carregada com ${formatNumber(totalUnidades)} unidades e ${formatNumber(totalVistorias)} vistorias.`;

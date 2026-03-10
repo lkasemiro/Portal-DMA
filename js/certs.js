@@ -335,7 +335,7 @@ const AedesCerts = (() => {
   <div class="certificate-sheet">
     <header class="certificate-topbar">
       <div class="brand-block">
-        <img src="../assets/icon.png" style="width:55px;height:55px;object-fit:contain;" />
+        <img src="../assets/icon-192.png" style="width:55px;height:55px;object-fit:contain;" />
         <div class="brand-text">
           <small>Sistema de Gestão Ambiental</small>
           <strong>Portal DMA</strong>

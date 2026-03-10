@@ -139,6 +139,11 @@
                   <strong id="publicKpiFocos">0</strong>
                 </article>
 
+                <article class="public-kpi public-kpi--green-soft">
+                  <span>Focos remediados</span>
+                  <strong id="publicKpiRemediadas">0</strong>
+                </article>
+
                 <article class="public-kpi public-kpi--amber">
                   <span>Focos não remediados</span>
                   <strong id="publicKpiNaoRemediadas">0</strong>
@@ -155,38 +160,45 @@
                 </article>
               </div>
 
-              <article class="public-education-card">
-                <div class="public-education-card__header">
-                  <p class="section-label">Conscientização</p>
-                  <h4>Como prevenir focos do mosquito</h4>
-                </div>
+              <article class="public-education-card public-education-card--folder">
+  <div class="public-education-card__header">
+    <p class="section-label">Conscientização</p>
+    <h4>Folheto digital de prevenção</h4>
+    <p class="public-education-card__text">
+      Consulte o material educativo com orientações práticas de combate ao mosquito
+      e prevenção de focos nas unidades e residências.
+    </p>
+  </div>
 
-                <div class="education-grid">
-                  <div class="education-item">
-                    <strong>Eliminar água parada</strong>
-                    <p>
-                      Recipientes, vasos, calhas, pneus, caixas e reservatórios devem
-                      permanecer sem acúmulo de água.
-                    </p>
-                  </div>
+  <div class="digital-folder">
+    <button
+      class="digital-folder__preview"
+      id="openFolderModalBtn"
+      type="button"
+      aria-label="Abrir folheto digital em tamanho ampliado"
+    >
+      <img
+        src="./assets/folder-arboviroses.jpg"
+        alt="Folheto digital de combate às arboviroses"
+      />
+    </button>
 
-                  <div class="education-item">
-                    <strong>Inspecionar rotineiramente</strong>
-                    <p>
-                      A vistoria frequente é a principal forma de prevenção e permite
-                      identificar focos antes que se tornem um problema maior.
-                    </p>
-                  </div>
+    <div class="digital-folder__actions">
+      <button class="btn btn--secondary" id="openFolderModalBtn2" type="button">
+        Ampliar folheto
+      </button>
 
-                  <div class="education-item">
-                    <strong>Remediar imediatamente</strong>
-                    <p>
-                      Sempre que um foco for encontrado, a remediação deve ocorrer com
-                      rapidez e rastreabilidade.
-                    </p>
-                  </div>
-                </div>
-              </article>
+      <a
+        class="btn btn--primary"
+        href="./assets/CombateArboviroses_Revista_A4_curvas.pdf"
+        target="_blank"
+        rel="noopener"
+      >
+        Baixar folheto em PDF
+      </a>
+    </div>
+  </div>
+</article>
             </div>
 
             <aside class="public-layer-side">
@@ -317,7 +329,7 @@
               <span class="overview-card__label">Regra principal</span>
               <strong>4 vistorias no mês</strong>
               <p>
-                Unidades com pelo menos quatro vistorias no mês podem emitir
+                Unidades com pelo menos quatro vistorias realizadas no mês podem emitir
                 certificado de conformidade no período selecionado.
               </p>
             </article>

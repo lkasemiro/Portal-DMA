@@ -48,8 +48,8 @@
 
         <p class="aedes-project-description">
           Este módulo organiza a leitura dos dados operacionais do programa em
-          uma estrutura visual clara, permitindo acompanhar desempenho,
-          identificar pendências e avaliar a aptidão das unidades para certificação.
+          uma estrutura visual clara, separando a comunicação pública, a análise
+          gerencial e a futura operação técnica da equipe responsável.
         </p>
       </div>
 
@@ -61,118 +61,211 @@
       </aside>
     </section>
 
-    <nav class="module-nav-cards" aria-label="Navegação interna do módulo Aedes">
+    <nav class="module-nav-cards" aria-label="Navegação por camadas do módulo Aedes">
       <button
         class="module-nav-card module-nav-card--blue is-active"
         type="button"
-        data-tab="visao-geral"
+        data-tab="publico"
         role="tab"
         aria-selected="true"
-        aria-controls="tab-visao-geral"
-        id="tab-button-visao-geral"
+        aria-controls="tab-publico"
+        id="tab-button-publico"
       >
-        <span class="module-nav-card__label">Entrada</span>
-        <strong>Visão geral</strong>
-        <p>Apresentação do módulo e leitura rápida da base.</p>
+        <span class="module-nav-card__label">Comunicação</span>
+        <strong>Camada pública</strong>
+        <p>Indicativos principais, certificados e conscientização.</p>
       </button>
 
       <button
         class="module-nav-card module-nav-card--green"
         type="button"
-        data-tab="indicadores"
+        data-tab="gerencial"
         role="tab"
         aria-selected="false"
-        aria-controls="tab-indicadores"
-        id="tab-button-indicadores"
+        aria-controls="tab-gerencial"
+        id="tab-button-gerencial"
       >
-        <span class="module-nav-card__label">Análise</span>
-        <strong>Indicadores</strong>
-        <p>KPIs, pizzas e leitura do desempenho operacional.</p>
+        <span class="module-nav-card__label">Gestão</span>
+        <strong>Camada gerencial</strong>
+        <p>Painel analítico, gráficos, motivos e histórico completo.</p>
       </button>
 
       <button
         class="module-nav-card module-nav-card--amber"
         type="button"
-        data-tab="historico"
+        data-tab="tecnico"
         role="tab"
         aria-selected="false"
-        aria-controls="tab-historico"
-        id="tab-button-historico"
+        aria-controls="tab-tecnico"
+        id="tab-button-tecnico"
       >
-        <span class="module-nav-card__label">Consulta</span>
-        <strong>Histórico</strong>
-        <p>Vistorias registradas, status e motivos associados.</p>
-      </button>
-
-      <button
-        class="module-nav-card module-nav-card--red"
-        type="button"
-        data-tab="certificados"
-        role="tab"
-        aria-selected="false"
-        aria-controls="tab-certificados"
-        id="tab-button-certificados"
-      >
-        <span class="module-nav-card__label">Emissão</span>
-        <strong>Certificados</strong>
-        <p>Verificação de elegibilidade e geração do documento.</p>
+        <span class="module-nav-card__label">Operação</span>
+        <strong>Camada técnica</strong>
+        <p>Área futura de entrada e manutenção de dados.</p>
       </button>
     </nav>
 
     <section class="tab-panels" aria-live="polite">
-      <!-- VISÃO GERAL -->
+      <!-- CAMADA PÚBLICA -->
       <section
         class="tab-panel is-active"
-        id="tab-visao-geral"
+        id="tab-publico"
         role="tabpanel"
-        aria-labelledby="tab-button-visao-geral"
+        aria-labelledby="tab-button-publico"
       >
         <div class="panel-box">
           <div class="panel-box__header">
-            <h3>Visão geral do módulo</h3>
+            <h3>Camada pública</h3>
+            <p class="panel-box__subtitle">
+              Comunicação clara do programa, leitura resumida dos resultados e emissão de certificados.
+            </p>
           </div>
 
-          <div class="overview-grid">
-            <article class="overview-card">
-              <span class="overview-card__label">Objetivo</span>
-              <strong>Acompanhar vistorias e conformidade</strong>
-              <p>
-                O módulo reúne os principais registros operacionais do programa,
-                permitindo visualizar desempenho, pendências e aptidão para certificação.
-              </p>
-            </article>
+          <section class="public-layer-grid">
+            <div class="public-layer-main">
+              <div class="public-kpis" aria-label="Indicativos públicos do programa">
+                <article class="public-kpi public-kpi--blue">
+                  <span>Total de vistorias</span>
+                  <strong id="publicKpiTotalVistorias">0</strong>
+                </article>
 
-            <article class="overview-card">
-              <span class="overview-card__label">Regra principal</span>
-              <strong>4 vistorias no mês</strong>
-              <p>
-                Unidades com pelo menos quatro vistorias no mês podem emitir
-                certificado de conformidade no período selecionado.
-              </p>
-            </article>
+                <article class="public-kpi public-kpi--green">
+                  <span>Vistorias realizadas</span>
+                  <strong id="publicKpiRealizadas">0</strong>
+                </article>
 
-            <article class="overview-card">
-              <span class="overview-card__label">Base carregada</span>
-              <strong id="overviewBaseText">Lendo dados...</strong>
-              <p>
-                A base local é alimentada a partir do arquivo
-                <code>aedes-seed.json</code>, importado para o IndexedDB do Portal DMA.
-              </p>
-            </article>
-          </div>
+                <article class="public-kpi public-kpi--red">
+                  <span>Focos encontrados</span>
+                  <strong id="publicKpiFocos">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--amber">
+                  <span>Focos não remediados</span>
+                  <strong id="publicKpiNaoRemediadas">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--blue-soft">
+                  <span>Unidades cadastradas</span>
+                  <strong id="publicKpiUnidades">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--green-soft">
+                  <span>Unidades aptas</span>
+                  <strong id="publicKpiAptas">0</strong>
+                </article>
+              </div>
+
+              <article class="public-education-card">
+                <div class="public-education-card__header">
+                  <p class="section-label">Conscientização</p>
+                  <h4>Como prevenir focos do mosquito</h4>
+                </div>
+
+                <div class="education-grid">
+                  <div class="education-item">
+                    <strong>Eliminar água parada</strong>
+                    <p>
+                      Recipientes, vasos, calhas, pneus, caixas e reservatórios devem
+                      permanecer sem acúmulo de água.
+                    </p>
+                  </div>
+
+                  <div class="education-item">
+                    <strong>Inspecionar rotineiramente</strong>
+                    <p>
+                      A vistoria frequente é a principal forma de prevenção e permite
+                      identificar focos antes que se tornem um problema maior.
+                    </p>
+                  </div>
+
+                  <div class="education-item">
+                    <strong>Remediar imediatamente</strong>
+                    <p>
+                      Sempre que um foco for encontrado, a remediação deve ocorrer com
+                      rapidez e rastreabilidade.
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <aside class="public-layer-side">
+              <div class="certificate-panel">
+                <div class="panel-card__header">
+                  <h4>Consulta de certificados</h4>
+                </div>
+
+                <div class="certificate-form">
+                  <div class="filter-group">
+                    <label for="certUnidade">Unidade</label>
+                    <select id="certUnidade">
+                      <option value="">Selecione</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="certMes">Mês</label>
+                    <select id="certMes">
+                      <option value="">Selecione</option>
+                      <option value="1">Janeiro</option>
+                      <option value="2">Fevereiro</option>
+                      <option value="3">Março</option>
+                      <option value="4">Abril</option>
+                      <option value="5">Maio</option>
+                      <option value="6">Junho</option>
+                      <option value="7">Julho</option>
+                      <option value="8">Agosto</option>
+                      <option value="9">Setembro</option>
+                      <option value="10">Outubro</option>
+                      <option value="11">Novembro</option>
+                      <option value="12">Dezembro</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="certAno">Ano</label>
+                    <select id="certAno">
+                      <option value="">Selecione</option>
+                    </select>
+                  </div>
+
+                  <div class="certificate-actions">
+                    <button class="btn btn--secondary" id="checkCertificateBtn" type="button">
+                      Verificar elegibilidade
+                    </button>
+                    <button class="btn btn--primary" id="downloadCertificateBtn" type="button" disabled>
+                      Gerar certificado
+                    </button>
+                  </div>
+                </div>
+
+                <div class="certificate-result">
+                  <p class="certificate-result__label">Resultado</p>
+                  <div id="certificateStatus" class="certificate-status" aria-live="polite">
+                    Selecione unidade, mês e ano para verificar a conformidade.
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </section>
         </div>
       </section>
 
-      <!-- INDICADORES -->
+      <!-- CAMADA GERENCIAL -->
       <section
         class="tab-panel"
-        id="tab-indicadores"
+        id="tab-gerencial"
         role="tabpanel"
-        aria-labelledby="tab-button-indicadores"
+        aria-labelledby="tab-button-gerencial"
       >
         <div class="panel-box">
           <div class="panel-box__header panel-box__header--between">
-            <h3>Painel de indicadores</h3>
+            <div>
+              <h3>Camada gerencial</h3>
+              <p class="panel-box__subtitle">
+                Painel analítico para leitura de desempenho, gargalos, focos, remediação e histórico.
+              </p>
+            </div>
 
             <div class="filters-inline" aria-label="Filtros dos indicadores">
               <div class="filter-group">
@@ -209,6 +302,35 @@
               </div>
             </div>
           </div>
+
+          <section class="overview-grid">
+            <article class="overview-card">
+              <span class="overview-card__label">Objetivo</span>
+              <strong>Acompanhar vistorias e conformidade</strong>
+              <p>
+                O módulo reúne os principais registros operacionais do programa,
+                permitindo visualizar desempenho, pendências e aptidão para certificação.
+              </p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-card__label">Regra principal</span>
+              <strong>4 vistorias no mês</strong>
+              <p>
+                Unidades com pelo menos quatro vistorias no mês podem emitir
+                certificado de conformidade no período selecionado.
+              </p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-card__label">Base carregada</span>
+              <strong id="overviewBaseText">Lendo dados...</strong>
+              <p>
+                A base local é alimentada a partir do arquivo
+                <code>aedes-seed.json</code>, importado para o IndexedDB do Portal DMA.
+              </p>
+            </article>
+          </section>
 
           <section class="kpi-dashboard" aria-label="Indicadores principais">
             <article class="kpi-tile kpi-tile--blue">
@@ -315,105 +437,117 @@
               </article>
             </div>
           </section>
+
+          <section class="history-section">
+            <div class="panel-box__header panel-box__header--between history-section__header">
+              <h3>Histórico de vistorias</h3>
+              <span id="historyCount" class="table-count">0 registros</span>
+            </div>
+
+            <div class="table-wrap">
+              <table class="history-table">
+                <caption class="sr-only">Tabela com histórico de vistorias do módulo Aedes</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Data</th>
+                    <th scope="col">Unidade</th>
+                    <th scope="col">Vistoria</th>
+                    <th scope="col">Foco</th>
+                    <th scope="col">Remediação</th>
+                    <th scope="col">Motivos</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody"></tbody>
+              </table>
+            </div>
+          </section>
         </div>
       </section>
 
-      <!-- HISTÓRICO -->
+      <!-- CAMADA TÉCNICA -->
       <section
         class="tab-panel"
-        id="tab-historico"
+        id="tab-tecnico"
         role="tabpanel"
-        aria-labelledby="tab-button-historico"
-      >
-        <div class="panel-box">
-          <div class="panel-box__header panel-box__header--between">
-            <h3>Histórico de vistorias</h3>
-            <span id="historyCount" class="table-count">0 registros</span>
-          </div>
-
-          <div class="table-wrap">
-            <table class="history-table">
-              <caption class="sr-only">Tabela com histórico de vistorias do módulo Aedes</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Data</th>
-                  <th scope="col">Unidade</th>
-                  <th scope="col">Vistoria</th>
-                  <th scope="col">Foco</th>
-                  <th scope="col">Remediação</th>
-                  <th scope="col">Motivos</th>
-                </tr>
-              </thead>
-              <tbody id="historyTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- CERTIFICADOS -->
-      <section
-        class="tab-panel"
-        id="tab-certificados"
-        role="tabpanel"
-        aria-labelledby="tab-button-certificados"
+        aria-labelledby="tab-button-tecnico"
       >
         <div class="panel-box">
           <div class="panel-box__header">
-            <h3>Certificados</h3>
+            <h3>Camada técnica</h3>
+            <p class="panel-box__subtitle">
+              Espaço reservado para a futura operação técnica de entrada, revisão e manutenção de dados.
+            </p>
           </div>
 
-          <div class="certificate-grid">
-            <div class="certificate-form">
-              <div class="filter-group">
-                <label for="certUnidade">Unidade</label>
-                <select id="certUnidade">
-                  <option value="">Selecione</option>
-                </select>
-              </div>
+          <section class="technical-layer-grid">
+            <article class="technical-card technical-card--planning">
+              <span class="technical-card__tag">Status atual</span>
+              <h4>Em planejamento</h4>
+              <p>
+                A camada técnica será implementada em etapa posterior, com foco
+                na entrada de dados pela equipe técnica e na operação controlada
+                da base do programa.
+              </p>
+            </article>
 
-              <div class="filter-group">
-                <label for="certMes">Mês</label>
-                <select id="certMes">
-                  <option value="">Selecione</option>
-                  <option value="1">Janeiro</option>
-                  <option value="2">Fevereiro</option>
-                  <option value="3">Março</option>
-                  <option value="4">Abril</option>
-                  <option value="5">Maio</option>
-                  <option value="6">Junho</option>
-                  <option value="7">Julho</option>
-                  <option value="8">Agosto</option>
-                  <option value="9">Setembro</option>
-                  <option value="10">Outubro</option>
-                  <option value="11">Novembro</option>
-                  <option value="12">Dezembro</option>
-                </select>
-              </div>
+            <article class="technical-card">
+              <span class="technical-card__tag">Escopo futuro</span>
+              <h4>Entrada de novos registros</h4>
+              <p>
+                Inclusão de vistorias, focos, remediação, motivos de não vistoria,
+                motivos de não remediação e demais registros operacionais.
+              </p>
+            </article>
 
-              <div class="filter-group">
-                <label for="certAno">Ano</label>
-                <select id="certAno">
-                  <option value="">Selecione</option>
-                </select>
-              </div>
+            <article class="technical-card">
+              <span class="technical-card__tag">Governança</span>
+              <h4>Rastreabilidade e manutenção</h4>
+              <p>
+                Controle de alterações, histórico técnico, validação de dados,
+                manutenção da base e futura integração com autenticação institucional.
+              </p>
+            </article>
+          </section>
 
-              <div class="certificate-actions">
-                <button class="btn btn--secondary" id="checkCertificateBtn" type="button">
-                  Verificar elegibilidade
-                </button>
-                <button class="btn btn--primary" id="downloadCertificateBtn" type="button" disabled>
-                  Gerar certificado
-                </button>
-              </div>
+          <section class="technical-roadmap">
+            <div class="technical-roadmap__header">
+              <h4>Roadmap previsto</h4>
             </div>
 
-            <div class="certificate-result">
-              <p class="certificate-result__label">Resultado</p>
-              <div id="certificateStatus" class="certificate-status" aria-live="polite">
-                Selecione unidade, mês e ano para verificar a conformidade.
+            <div class="technical-roadmap__items">
+              <div class="roadmap-step">
+                <span class="roadmap-step__index">1</span>
+                <div>
+                  <strong>Entrada manual de dados</strong>
+                  <p>Formulários operacionais para inclusão de novas vistorias e atualizações.</p>
+                </div>
+              </div>
+
+              <div class="roadmap-step">
+                <span class="roadmap-step__index">2</span>
+                <div>
+                  <strong>Validação técnica</strong>
+                  <p>Regras de consistência, revisão de dados e prevenção de registros incompletos.</p>
+                </div>
+              </div>
+
+              <div class="roadmap-step">
+                <span class="roadmap-step__index">3</span>
+                <div>
+                  <strong>Rastreabilidade</strong>
+                  <p>Registro de alterações, auditoria e identificação dos responsáveis pelas inserções.</p>
+                </div>
+              </div>
+
+              <div class="roadmap-step">
+                <span class="roadmap-step__index">4</span>
+                <div>
+                  <strong>Integração futura</strong>
+                  <p>Conexão com banco central e evolução para ambiente institucional com maior governança.</p>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </section>
     </section>

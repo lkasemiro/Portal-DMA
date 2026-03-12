@@ -6,7 +6,11 @@ const APP_ASSETS = [
   "./css/global.css",
   "./css/home.css",
   "./js/home.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./recicla.html",
+  "./css/recicla.css",
+  "./js/recicla.js",
+  "./data/recicla-pagina.json"
 ];
 
 self.addEventListener("install", (event) => {

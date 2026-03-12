@@ -2,6 +2,8 @@ const BR_NUMBER = new Intl.NumberFormat("pt-BR", {
   maximumFractionDigits: 2
 });
 
+const RECICLA_TECH_STORAGE_KEY = "dma_recicla_tecnico_lancamentos_v1";
+
 function formatNumber(value) {
   return BR_NUMBER.format(Number(value || 0));
 }
@@ -26,9 +28,12 @@ function uniqueSorted(values) {
     .sort((a, b) => String(a).localeCompare(String(b), "pt-BR"));
 }
 
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function getFaixaSomatorio(value) {
   const n = Number(value || 0);
-
   if (n >= 100) return "100+";
   if (n >= 50) return "50-99";
   return "Abaixo de 50";
@@ -66,7 +71,6 @@ function renderPieChart(container, config) {
   if (!container) return;
 
   const { centerValue, centerLabel, slices = [], legend = [] } = config;
-
   const total = slices.reduce((acc, slice) => acc + Number(slice.value || 0), 0);
   let currentAngle = 0;
   const arcs = [];
@@ -200,27 +204,60 @@ function normalizeRankingItem(item) {
 }
 
 function extractSeedRecords(json) {
-  if (Array.isArray(json)) {
-    return json;
-  }
-
-  if (Array.isArray(json.registros)) {
-    return json.registros;
-  }
-
-  if (Array.isArray(json.ranking_geral)) {
-    return json.ranking_geral;
-  }
-
-  if (Array.isArray(json.top_20)) {
-    return json.top_20;
-  }
-
+  if (Array.isArray(json)) return json;
+  if (Array.isArray(json.registros)) return json.registros;
+  if (Array.isArray(json.ranking_geral)) return json.ranking_geral;
+  if (Array.isArray(json.top_20)) return json.top_20;
   return [];
 }
 
-function buildDerivedData(rows) {
-  const ranking = [...rows]
+function loadTechnicalLaunches() {
+  try {
+    const raw = localStorage.getItem(RECICLA_TECH_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_error) {
+    return [];
+  }
+}
+
+function persistTechnicalLaunches(launches) {
+  localStorage.setItem(RECICLA_TECH_STORAGE_KEY, JSON.stringify(launches));
+}
+
+function buildDerivedData(baseRows, launches) {
+  const launchById = new Map();
+
+  for (const launch of launches) {
+    const id = String(launch.n_id);
+    launchById.set(id, (launchById.get(id) || 0) + Number(launch.peso || 0));
+  }
+
+  const ranking = [...baseRows]
+    .map((item) => {
+      const extraPeso = launchById.get(String(item.n_id)) || 0;
+      const novoSomatorio = Number(item.somatorio || 0) + extraPeso;
+
+      let statusBroche = item.status_broche || "Nao informado";
+      let statusMochila = item.status_mochila || "Nao informado";
+
+      if (String(statusBroche).toLowerCase() !== "entregue" && novoSomatorio >= 50) {
+        statusBroche = "Pendente";
+      }
+
+      if (String(statusMochila).toLowerCase() !== "entregue" && novoSomatorio >= 100) {
+        statusMochila = "Pendente";
+      }
+
+      return {
+        ...item,
+        somatorio: novoSomatorio,
+        status_broche: statusBroche,
+        status_mochila: statusMochila,
+        faixa_somatorio: getFaixaSomatorio(novoSomatorio)
+      };
+    })
     .sort((a, b) => Number(b.somatorio || 0) - Number(a.somatorio || 0))
     .map((item, index) => ({
       ...item,
@@ -340,6 +377,8 @@ function buildDerivedData(rows) {
 }
 
 const state = {
+  baseRecords: [],
+  launches: [],
   data: null,
   ranking: [],
   diretorias: [],
@@ -347,6 +386,8 @@ const state = {
   filteredRanking: [],
   filteredDiretorias: []
 };
+
+let technicalGrid = null;
 
 const els = {
   reciclaDbStatus: document.getElementById("reciclaDbStatus"),
@@ -394,7 +435,27 @@ const els = {
   filterDiretoria: document.getElementById("filterDiretoria"),
   filterFaixa: document.getElementById("filterFaixa"),
   clearFiltersBtn: document.getElementById("clearFiltersBtn"),
-  reloadDataBtn: document.getElementById("reloadDataBtn")
+  reloadDataBtn: document.getElementById("reloadDataBtn"),
+
+  reciclaTecnicoForm: document.getElementById("reciclaTecnicoForm"),
+  inputParticipanteId: document.getElementById("inputParticipanteId"),
+  inputPeso: document.getElementById("inputPeso"),
+  inputData: document.getElementById("inputData"),
+  participanteIdList: document.getElementById("participanteIdList"),
+  participantLookupMessage: document.getElementById("participantLookupMessage"),
+  previewId: document.getElementById("previewId"),
+  previewNome: document.getElementById("previewNome"),
+  previewDiretoria: document.getElementById("previewDiretoria"),
+  previewSomatorioAtual: document.getElementById("previewSomatorioAtual"),
+  previewSomatorioNovo: document.getElementById("previewSomatorioNovo"),
+  previewFaixa: document.getElementById("previewFaixa"),
+  clearTechnicalFormBtn: document.getElementById("clearTechnicalFormBtn"),
+  exportTechnicalBtn: document.getElementById("exportTechnicalBtn"),
+  clearTechnicalDataBtn: document.getElementById("clearTechnicalDataBtn"),
+  technicalBaseSummary: document.getElementById("technicalBaseSummary"),
+  technicalLaunchCount: document.getElementById("technicalLaunchCount"),
+  technicalHistoryCount: document.getElementById("technicalHistoryCount"),
+  technicalLaunchesGrid: document.getElementById("technicalLaunchesGrid")
 };
 
 const tabButtons = Array.from(document.querySelectorAll(".module-nav-card"));
@@ -410,6 +471,12 @@ function activateTab(tabName) {
   for (const panel of tabPanels) {
     panel.classList.toggle("is-active", panel.id === `tab-${tabName}`);
   }
+}
+
+function getCurrentParticipantById(id) {
+  const normalizedId = String(id || "").trim();
+  if (!normalizedId) return null;
+  return state.ranking.find((item) => String(item.n_id) === normalizedId) || null;
 }
 
 function populateDiretoriaFilter() {
@@ -428,6 +495,60 @@ function populateDiretoriaFilter() {
   if ([...els.filterDiretoria.options].some((option) => option.value === currentValue)) {
     els.filterDiretoria.value = currentValue;
   }
+}
+
+function populateTechnicalIdList() {
+  if (!els.participanteIdList) return;
+
+  els.participanteIdList.innerHTML = state.ranking
+    .map(
+      (item) => `
+        <option value="${escapeHtml(item.n_id)}">
+          ${escapeHtml(`ID ${item.n_id} · ${item.nome} · ${item.diretoria}`)}
+        </option>
+      `
+    )
+    .join("");
+}
+
+function updateTechnicalPreview() {
+  const id = els.inputParticipanteId?.value || "";
+  const peso = Number(els.inputPeso?.value || 0);
+  const participant = getCurrentParticipantById(id);
+
+  if (!participant) {
+    if (els.participantLookupMessage) {
+      els.participantLookupMessage.className = "technical-inline-message technical-inline-message--warning";
+      els.participantLookupMessage.textContent =
+        id.trim()
+          ? "ID não encontrado na base de referência do Recicla."
+          : "Informe um ID válido para carregar automaticamente nome e diretoria.";
+    }
+
+    if (els.previewId) els.previewId.textContent = "-";
+    if (els.previewNome) els.previewNome.textContent = "-";
+    if (els.previewDiretoria) els.previewDiretoria.textContent = "-";
+    if (els.previewSomatorioAtual) els.previewSomatorioAtual.textContent = "0";
+    if (els.previewSomatorioNovo) els.previewSomatorioNovo.textContent = "0";
+    if (els.previewFaixa) els.previewFaixa.textContent = "-";
+    return;
+  }
+
+  const somatorioAtual = Number(participant.somatorio || 0);
+  const novoSomatorio = somatorioAtual + (peso > 0 ? peso : 0);
+
+  if (els.participantLookupMessage) {
+    els.participantLookupMessage.className = "technical-inline-message";
+    els.participantLookupMessage.textContent =
+      `ID reconhecido. ${participant.nome} · ${participant.diretoria}.`;
+  }
+
+  if (els.previewId) els.previewId.textContent = `ID ${participant.n_id}`;
+  if (els.previewNome) els.previewNome.textContent = participant.nome || "-";
+  if (els.previewDiretoria) els.previewDiretoria.textContent = participant.diretoria || "-";
+  if (els.previewSomatorioAtual) els.previewSomatorioAtual.textContent = formatNumber(somatorioAtual);
+  if (els.previewSomatorioNovo) els.previewSomatorioNovo.textContent = formatNumber(novoSomatorio);
+  if (els.previewFaixa) els.previewFaixa.textContent = getFaixaSomatorio(novoSomatorio);
 }
 
 function applyFilters() {
@@ -754,6 +875,112 @@ function renderDiretoriasTable() {
     .join("");
 }
 
+function renderTechnicalLayer() {
+  if (els.inputData && !els.inputData.value) {
+    els.inputData.value = todayIso();
+  }
+
+  if (els.technicalBaseSummary) {
+    els.technicalBaseSummary.textContent =
+      `${formatInteger(state.baseRecords.length)} participantes na base de referência.`;
+  }
+
+  if (els.technicalLaunchCount) {
+    els.technicalLaunchCount.textContent = formatInteger(state.launches.length);
+  }
+
+  if (els.technicalHistoryCount) {
+    els.technicalHistoryCount.textContent = `${formatInteger(state.launches.length)} lançamentos`;
+  }
+
+  const gridRows = [...state.launches]
+    .sort((a, b) => String(b.data || "").localeCompare(String(a.data || "")))
+    .map((launch) => ({
+      id: launch.id,
+      data: launch.data,
+      n_id: launch.n_id,
+      nome: launch.nome,
+      diretoria: launch.diretoria,
+      peso: launch.peso,
+      somatorioAnterior: launch.somatorioAnterior,
+      somatorioAtualizado: launch.somatorioAtualizado
+    }));
+
+  if (window.Tabulator && els.technicalLaunchesGrid) {
+    if (!technicalGrid) {
+      technicalGrid = new Tabulator(els.technicalLaunchesGrid, {
+        data: gridRows,
+        layout: "fitColumns",
+        responsiveLayout: "collapse",
+        placeholder: "Nenhum lançamento técnico registrado até o momento.",
+        columns: [
+          { title: "Data", field: "data", width: 120 },
+          { title: "ID", field: "n_id", width: 110 },
+          { title: "Nome", field: "nome", minWidth: 220 },
+          { title: "Diretoria", field: "diretoria", width: 110 },
+          { title: "Peso", field: "peso", width: 110, formatter: (cell) => formatNumber(cell.getValue()) },
+          { title: "Anterior", field: "somatorioAnterior", width: 120, formatter: (cell) => formatNumber(cell.getValue()) },
+          { title: "Atualizado", field: "somatorioAtualizado", width: 130, formatter: (cell) => formatNumber(cell.getValue()) },
+          {
+            title: "",
+            field: "id",
+            width: 120,
+            hozAlign: "center",
+            formatter: () => `<button class="technical-delete-btn" type="button">Remover</button>`,
+            cellClick: (_e, cell) => {
+              removeTechnicalLaunch(cell.getRow().getData().id);
+            }
+          }
+        ]
+      });
+    } else {
+      technicalGrid.replaceData(gridRows);
+    }
+  } else if (els.technicalLaunchesGrid) {
+    els.technicalLaunchesGrid.innerHTML = `
+      <div class="table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Diretoria</th>
+              <th>Peso</th>
+              <th>Anterior</th>
+              <th>Atualizado</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              gridRows.length
+                ? gridRows
+                    .map(
+                      (row) => `
+                        <tr>
+                          <td>${escapeHtml(row.data)}</td>
+                          <td>${escapeHtml(row.n_id)}</td>
+                          <td>${escapeHtml(row.nome)}</td>
+                          <td>${escapeHtml(row.diretoria)}</td>
+                          <td>${formatNumber(row.peso)}</td>
+                          <td>${formatNumber(row.somatorioAnterior)}</td>
+                          <td>${formatNumber(row.somatorioAtualizado)}</td>
+                        </tr>
+                      `
+                    )
+                    .join("")
+                : `<tr><td colspan="7">Nenhum lançamento técnico registrado até o momento.</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  populateTechnicalIdList();
+  updateTechnicalPreview();
+}
+
 function renderManagementLayer() {
   renderManagementKPIs();
   renderManagementCharts();
@@ -761,12 +988,132 @@ function renderManagementLayer() {
   renderDiretoriasTable();
 }
 
+function refreshDerivedAndRender() {
+  const derived = buildDerivedData(state.baseRecords, state.launches);
+
+  state.data = derived;
+  state.ranking = derived.ranking;
+  state.diretorias = derived.por_diretoria;
+  state.topRetiradas = derived.top_retiradas;
+
+  const currentDiretoria = els.filterDiretoria?.value || "";
+  const currentFaixa = els.filterFaixa?.value || "";
+
+  populateDiretoriaFilter();
+
+  if (els.filterDiretoria && currentDiretoria) {
+    const hasOption = [...els.filterDiretoria.options].some((opt) => opt.value === currentDiretoria);
+    els.filterDiretoria.value = hasOption ? currentDiretoria : "";
+  }
+
+  if (els.filterFaixa) {
+    els.filterFaixa.value = currentFaixa;
+  }
+
+  applyFilters();
+  renderPublicLayer();
+  renderTechnicalLayer();
+}
+
+function removeTechnicalLaunch(id) {
+  state.launches = state.launches.filter((item) => item.id !== id);
+  persistTechnicalLaunches(state.launches);
+  refreshDerivedAndRender();
+}
+
+function handleTechnicalSubmit(event) {
+  event.preventDefault();
+
+  const id = String(els.inputParticipanteId?.value || "").trim();
+  const peso = Number(els.inputPeso?.value || 0);
+  const data = els.inputData?.value || todayIso();
+  const participant = getCurrentParticipantById(id);
+
+  if (!participant) {
+    if (els.participantLookupMessage) {
+      els.participantLookupMessage.className = "technical-inline-message technical-inline-message--danger";
+      els.participantLookupMessage.textContent = "Não foi possível registrar: ID não encontrado na base.";
+    }
+    return;
+  }
+
+  if (!(peso > 0)) {
+    if (els.participantLookupMessage) {
+      els.participantLookupMessage.className = "technical-inline-message technical-inline-message--danger";
+      els.participantLookupMessage.textContent = "Informe um peso válido maior que zero.";
+    }
+    return;
+  }
+
+  const somatorioAnterior = Number(participant.somatorio || 0);
+  const somatorioAtualizado = somatorioAnterior + peso;
+
+  const launch = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    data,
+    n_id: participant.n_id,
+    nome: participant.nome,
+    diretoria: participant.diretoria,
+    peso,
+    somatorioAnterior,
+    somatorioAtualizado
+  };
+
+  state.launches.push(launch);
+  persistTechnicalLaunches(state.launches);
+
+  if (els.inputPeso) els.inputPeso.value = "";
+  if (els.inputParticipanteId) els.inputParticipanteId.value = "";
+  if (els.inputData) els.inputData.value = todayIso();
+
+  if (els.participantLookupMessage) {
+    els.participantLookupMessage.className = "technical-inline-message";
+    els.participantLookupMessage.textContent = "Lançamento registrado com sucesso na base local do módulo.";
+  }
+
+  refreshDerivedAndRender();
+}
+
+function clearTechnicalForm() {
+  if (els.inputParticipanteId) els.inputParticipanteId.value = "";
+  if (els.inputPeso) els.inputPeso.value = "";
+  if (els.inputData) els.inputData.value = todayIso();
+  updateTechnicalPreview();
+}
+
+function exportTechnicalLaunches() {
+  const blob = new Blob([JSON.stringify(state.launches, null, 2)], {
+    type: "application/json;charset=utf-8"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `recicla-lancamentos-locais-${todayIso()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function clearTechnicalLaunches() {
+  if (!window.confirm("Deseja apagar todos os lançamentos locais da camada técnica do Recicla?")) {
+    return;
+  }
+
+  state.launches = [];
+  persistTechnicalLaunches(state.launches);
+  refreshDerivedAndRender();
+}
+
 async function loadData() {
   if (els.reciclaDbStatus) {
     els.reciclaDbStatus.textContent = "Lendo arquivo de dados do Recicla CEDAE...";
   }
 
-  const response = await fetch("./data/recicla-premiacao-seed.json", { cache: "no-store" });
+  const response = await fetch("./data/recicla-premiacao-seed.json", {
+    cache: "no-store"
+  });
 
   if (!response.ok) {
     throw new Error("Não foi possível carregar data/recicla-premiacao-seed.json");
@@ -775,18 +1122,11 @@ async function loadData() {
   const json = await response.json();
   const rawRecords = extractSeedRecords(json);
   const normalizedRecords = rawRecords.map(normalizeRankingItem);
-  const derived = buildDerivedData(normalizedRecords);
 
-  state.data = derived;
-  state.ranking = derived.ranking;
-  state.diretorias = derived.por_diretoria;
-  state.topRetiradas = derived.top_retiradas;
-  state.filteredRanking = [...state.ranking];
-  state.filteredDiretorias = [...state.diretorias];
+  state.baseRecords = normalizedRecords;
+  state.launches = loadTechnicalLaunches();
 
-  populateDiretoriaFilter();
-  renderPublicLayer();
-  renderManagementLayer();
+  refreshDerivedAndRender();
 
   if (els.reciclaDbStatus) {
     els.reciclaDbStatus.textContent =
@@ -833,12 +1173,23 @@ function bindEvents() {
   });
 
   els.reloadDataBtn?.addEventListener("click", reloadData);
+
+  els.inputParticipanteId?.addEventListener("input", updateTechnicalPreview);
+  els.inputPeso?.addEventListener("input", updateTechnicalPreview);
+  els.reciclaTecnicoForm?.addEventListener("submit", handleTechnicalSubmit);
+  els.clearTechnicalFormBtn?.addEventListener("click", clearTechnicalForm);
+  els.exportTechnicalBtn?.addEventListener("click", exportTechnicalLaunches);
+  els.clearTechnicalDataBtn?.addEventListener("click", clearTechnicalLaunches);
 }
 
 async function bootstrap() {
   try {
     bindEvents();
     await loadData();
+
+    if (els.inputData && !els.inputData.value) {
+      els.inputData.value = todayIso();
+    }
   } catch (error) {
     console.error(error);
 

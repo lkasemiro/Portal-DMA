@@ -1,0 +1,316 @@
+{
+  "kpis": {
+    "total_participantes": 160,
+    "total_diretorias": 6,
+    "somatorio_total": 16915.59,
+    "somatorio_medio": 105.72,
+    "maior_somatorio": 4248,
+    "broches_entregues": 38,
+    "broches_pendentes": 7,
+    "mochilas_entregues": 19,
+    "mochilas_pendentes": 1,
+    "composto_retirado_total": 86,
+    "participantes_com_retirada": 21,
+    "estoque_composto_disponivel_max": 10
+  },
+  "top_20": [
+    {
+      "posicao": 1,
+      "n_id": 53,
+      "nome": "Heitor Diogo Da Silva",
+      "diretoria": "DFI",
+      "somatorio": 4248,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 10
+    },
+    {
+      "posicao": 2,
+      "n_id": 61,
+      "nome": "Lilian Da Silva Braga",
+      "diretoria": "DPR",
+      "somatorio": 3692.56,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 7
+    },
+    {
+      "posicao": 3,
+      "n_id": 116,
+      "nome": "Paulo Cesar Sant Anna Rosa",
+      "diretoria": "DTP",
+      "somatorio": 1909.8,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 5
+    },
+    {
+      "posicao": 4,
+      "n_id": 55,
+      "nome": "Ione De Souza Rodrigues",
+      "diretoria": "DFI",
+      "somatorio": 490.3,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 10
+    },
+    {
+      "posicao": 5,
+      "n_id": 100,
+      "nome": "Alexander Joaquim Lourenço",
+      "diretoria": "DSG",
+      "somatorio": 435.1,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 3
+    },
+    {
+      "posicao": 6,
+      "n_id": 112,
+      "nome": "Raquel Martins Cantidiano Dos Santos",
+      "diretoria": "DFI",
+      "somatorio": 314.91,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 5
+    },
+    {
+      "posicao": 7,
+      "n_id": 38,
+      "nome": "Elisangela Felix",
+      "diretoria": "DFI",
+      "somatorio": 311.111,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 5
+    },
+    {
+      "posicao": 8,
+      "n_id": 137,
+      "nome": "Manoella Siqueira Campos Da Costa Santos",
+      "diretoria": "DJU",
+      "somatorio": 268.2,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 2
+    },
+    {
+      "posicao": 9,
+      "n_id": 52,
+      "nome": "Gustavo Dos Santos Diniz",
+      "diretoria": "DSG",
+      "somatorio": 247.7,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 10,
+      "n_id": 160,
+      "nome": "Cedae - 7° Andar",
+      "diretoria": "DJU",
+      "somatorio": 237.77,
+      "status_broche": "Pendente",
+      "status_mochila": "Nao informado",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 11,
+      "n_id": 107,
+      "nome": "Lucia Helena F. Prado",
+      "diretoria": "DSG",
+      "somatorio": 225.3,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 12,
+      "n_id": 117,
+      "nome": "Rejane Das Neves Silva",
+      "diretoria": "DSG",
+      "somatorio": 200.5,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 9
+    },
+    {
+      "posicao": 13,
+      "n_id": 35,
+      "nome": "Elayna Crislayne Dos Santos Furtado",
+      "diretoria": "DPR",
+      "somatorio": 193.3,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 2
+    },
+    {
+      "posicao": 14,
+      "n_id": 140,
+      "nome": "Regiane Morato",
+      "diretoria": "DTP",
+      "somatorio": 192.7,
+      "status_broche": "Pendente",
+      "status_mochila": "Nao informado",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 15,
+      "n_id": 122,
+      "nome": "Isabelli Moura Coelho",
+      "diretoria": "DFI",
+      "somatorio": 187.9,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 16,
+      "n_id": 33,
+      "nome": "Deonilha De Souza Coelho",
+      "diretoria": "DSG",
+      "somatorio": 171.9,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 17,
+      "n_id": 81,
+      "nome": "Nivea Pereira",
+      "diretoria": "DPR",
+      "somatorio": 162.37,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 5
+    },
+    {
+      "posicao": 18,
+      "n_id": 88,
+      "nome": "Sérgio Castilho De Oliveira",
+      "diretoria": "DFI",
+      "somatorio": 157.63,
+      "status_broche": "Entregue",
+      "status_mochila": "Nao informado",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 19,
+      "n_id": 133,
+      "nome": "Henrique Belluomini",
+      "diretoria": "DPR",
+      "somatorio": 146.8,
+      "status_broche": "Entregue",
+      "status_mochila": "Entregue",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    },
+    {
+      "posicao": 20,
+      "n_id": 12,
+      "nome": "Ana Tereza Souza Martins",
+      "diretoria": "DSG",
+      "somatorio": 138.6,
+      "status_broche": "Entregue",
+      "status_mochila": "Nao informado",
+      "quantidade_retirada_sacos_de_composto_organico": 0
+    }
+  ],
+  "por_diretoria": [
+    {
+      "diretoria": "DFI",
+      "participantes": 52,
+      "somatorio_total": 6499.13,
+      "somatorio_medio": 124.98,
+      "broches_entregues": 10,
+      "mochilas_entregues": 6,
+      "composto_retirado_total": 37
+    },
+    {
+      "diretoria": "DPR",
+      "participantes": 36,
+      "somatorio_total": 4977.63,
+      "somatorio_medio": 138.27,
+      "broches_entregues": 8,
+      "mochilas_entregues": 4,
+      "composto_retirado_total": 27
+    },
+    {
+      "diretoria": "DTP",
+      "participantes": 20,
+      "somatorio_total": 2535.5,
+      "somatorio_medio": 126.77,
+      "broches_entregues": 3,
+      "mochilas_entregues": 1,
+      "composto_retirado_total": 6
+    },
+    {
+      "diretoria": "DSG",
+      "participantes": 32,
+      "somatorio_total": 2293.36,
+      "somatorio_medio": 71.67,
+      "broches_entregues": 16,
+      "mochilas_entregues": 7,
+      "composto_retirado_total": 14
+    },
+    {
+      "diretoria": "DJU",
+      "participantes": 10,
+      "somatorio_total": 505.97,
+      "somatorio_medio": 50.6,
+      "broches_entregues": 1,
+      "mochilas_entregues": 1,
+      "composto_retirado_total": 2
+    },
+    {
+      "diretoria": "DDC",
+      "participantes": 10,
+      "somatorio_total": 104,
+      "somatorio_medio": 10.4,
+      "broches_entregues": 0,
+      "mochilas_entregues": 0,
+      "composto_retirado_total": 0
+    }
+  ],
+  "dist_broche": [
+    {
+      "status_broche": "Entregue",
+      "quantidade": 38
+    },
+    {
+      "status_broche": "Nao informado",
+      "quantidade": 115
+    },
+    {
+      "status_broche": "Pendente",
+      "quantidade": 7
+    }
+  ],
+  "dist_mochila": [
+    {
+      "status_mochila": "Entregue",
+      "quantidade": 19
+    },
+    {
+      "status_mochila": "Nao informado",
+      "quantidade": 140
+    },
+    {
+      "status_mochila": "Pendente",
+      "quantidade": 1
+    }
+  ],
+  "dist_faixa_somatorio": [
+    {
+      "faixa_somatorio": "Abaixo de 50",
+      "quantidade": 115
+    },
+    {
+      "faixa_somatorio": "100+",
+      "quantidade": 31
+    },
+    {
+      "faixa_somatorio": "50-99",
+      "quantidade": 14
+    }
+  ]
+}

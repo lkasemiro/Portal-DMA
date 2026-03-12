@@ -10,6 +10,7 @@
   <link rel="manifest" href="./manifest.json" />
   <link rel="stylesheet" href="./css/global.css" />
   <link rel="stylesheet" href="./css/recicla.css" />
+  <link rel="stylesheet" href="./vendor/tabulator/tabulator.min.css" />
 </head>
 <body>
   <header class="topbar">
@@ -452,96 +453,177 @@
       </section>
 
       <!-- CAMADA TÉCNICA -->
-      <section
-        class="tab-panel"
-        id="tab-tecnico"
-        role="tabpanel"
-        aria-labelledby="tab-button-tecnico"
-      >
-        <div class="panel-box">
-          <div class="panel-box__header">
-            <h3>Camada técnica</h3>
-            <p class="panel-box__subtitle">
-              Espaço reservado para a futura operação técnica de entrada, revisão
-              e manutenção dos dados do programa.
-            </p>
+<section
+  class="tab-panel"
+  id="tab-tecnico"
+  role="tabpanel"
+  aria-labelledby="tab-button-tecnico"
+>
+  <div class="panel-box">
+    <div class="panel-box__header">
+      <h3>Camada técnica</h3>
+      <p class="panel-box__subtitle">
+        Lançamento assistido de novas pesagens do Recicla CEDAE, com validação por ID,
+        preenchimento automático dos dados de referência e atualização local do módulo.
+      </p>
+    </div>
+
+    <section class="technical-entry-grid">
+      <article class="technical-form-card">
+        <div class="panel-card__header">
+          <h4>Novo lançamento</h4>
+        </div>
+
+        <form id="reciclaTecnicoForm" class="technical-form">
+          <div class="technical-form__row">
+            <div class="filter-group">
+              <label for="inputParticipanteId">ID do participante</label>
+              <input
+                id="inputParticipanteId"
+                name="participante_id"
+                class="input-control"
+                type="number"
+                inputmode="numeric"
+                list="participanteIdList"
+                placeholder="Digite o ID"
+                required
+              />
+              <datalist id="participanteIdList"></datalist>
+            </div>
+
+            <div class="filter-group">
+              <label for="inputPeso">Peso medido (kg)</label>
+              <input
+                id="inputPeso"
+                name="peso"
+                class="input-control"
+                type="number"
+                inputmode="decimal"
+                step="0.01"
+                min="0.01"
+                placeholder="Ex.: 3.25"
+                required
+              />
+            </div>
+
+            <div class="filter-group">
+              <label for="inputData">Data do lançamento</label>
+              <input
+                id="inputData"
+                name="data"
+                class="input-control"
+                type="date"
+                required
+              />
+            </div>
           </div>
 
-          <section class="technical-layer-grid">
-            <article class="technical-card technical-card--planning">
-              <span class="technical-card__tag">Status atual</span>
-              <h4>Em planejamento</h4>
-              <p>
-                A camada técnica será implementada em etapa posterior, com foco
-                na entrada dos registros operacionais, tratamento da base e apoio
-                à equipe de resíduos sólidos.
-              </p>
-            </article>
-
-            <article class="technical-card">
-              <span class="technical-card__tag">Escopo futuro</span>
-              <h4>Entrada de entregas e pesagens</h4>
-              <p>
-                Inclusão de registros de recebimento, peso total, materiais
-                recebidos, resíduos indevidos, observações e consolidação do
-                histórico operacional do programa.
-              </p>
-            </article>
-
-            <article class="technical-card">
-              <span class="technical-card__tag">Governança</span>
-              <h4>Rastreabilidade e manutenção</h4>
-              <p>
-                Controle de alterações, validação de dados, revisão da planilha
-                base e futura integração com banco central institucional.
-              </p>
-            </article>
-          </section>
-
-          <section class="technical-roadmap">
-            <div class="technical-roadmap__header">
-              <h4>Roadmap previsto</h4>
+          <div class="technical-form__row technical-form__row--full">
+            <div id="participantLookupMessage" class="technical-inline-message">
+              Informe um ID válido para carregar automaticamente nome e diretoria.
             </div>
+          </div>
 
-            <div class="technical-roadmap__items">
-              <div class="roadmap-step">
-                <span class="roadmap-step__index">1</span>
-                <div>
-                  <strong>Leitura consolidada da base</strong>
-                  <p>Painel institucional e gerencial alimentado por base JSON temporária no portal.</p>
-                </div>
-              </div>
+          <div class="technical-preview-grid">
+            <article class="technical-preview-card">
+              <span>ID</span>
+              <strong id="previewId">-</strong>
+            </article>
 
-              <div class="roadmap-step">
-                <span class="roadmap-step__index">2</span>
-                <div>
-                  <strong>Padronização operacional</strong>
-                  <p>Organização do fluxo entre Excel, banco de dados e apresentação no PWA.</p>
-                </div>
-              </div>
+            <article class="technical-preview-card">
+              <span>Nome</span>
+              <strong id="previewNome">-</strong>
+            </article>
 
-              <div class="roadmap-step">
-                <span class="roadmap-step__index">3</span>
-                <div>
-                  <strong>Entrada técnica de registros</strong>
-                  <p>Criação da futura camada operacional para equipe de resíduos e controle das entregas.</p>
-                </div>
-              </div>
+            <article class="technical-preview-card">
+              <span>Diretoria</span>
+              <strong id="previewDiretoria">-</strong>
+            </article>
 
-              <div class="roadmap-step">
-                <span class="roadmap-step__index">4</span>
-                <div>
-                  <strong>Integração institucional</strong>
-                  <p>Conexão com banco central do sistema DMA e automação progressiva do pipeline.</p>
-                </div>
-              </div>
-            </div>
-          </section>
+            <article class="technical-preview-card">
+              <span>Pontuação atual</span>
+              <strong id="previewSomatorioAtual">0</strong>
+            </article>
+
+            <article class="technical-preview-card">
+              <span>Novo acumulado</span>
+              <strong id="previewSomatorioNovo">0</strong>
+            </article>
+
+            <article class="technical-preview-card">
+              <span>Faixa após lançamento</span>
+              <strong id="previewFaixa">-</strong>
+            </article>
+          </div>
+
+          <div class="technical-actions">
+            <button class="btn btn--primary" type="submit">
+              Registrar lançamento
+            </button>
+
+            <button
+              class="btn btn--secondary"
+              id="clearTechnicalFormBtn"
+              type="button"
+            >
+              Limpar formulário
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <aside class="technical-side-card">
+        <div class="panel-card__header">
+          <h4>Operação local</h4>
         </div>
-      </section>
+
+        <div class="technical-side-stack">
+          <article class="technical-side-item">
+            <span class="technical-side-item__label">Base carregada</span>
+            <strong id="technicalBaseSummary">Lendo seed do Recicla...</strong>
+            <p>
+              A camada técnica usa o arquivo completo
+              <code>recicla-premiacao-seed.json</code> como base de referência.
+            </p>
+          </article>
+
+          <article class="technical-side-item">
+            <span class="technical-side-item__label">Lançamentos locais</span>
+            <strong id="technicalLaunchCount">0</strong>
+            <p>
+              Os novos lançamentos ficam salvos localmente no navegador até a próxima etapa
+              de sincronização institucional.
+            </p>
+          </article>
+
+          <div class="technical-actions technical-actions--stack">
+            <button class="btn btn--secondary" id="exportTechnicalBtn" type="button">
+              Exportar lançamentos
+            </button>
+            <button class="btn btn--ghost" id="clearTechnicalDataBtn" type="button">
+              Limpar lançamentos locais
+            </button>
+          </div>
+        </div>
+      </aside>
     </section>
+
+    <section class="history-section">
+      <div class="panel-box__header panel-box__header--between history-section__header">
+        <h3>Histórico técnico recente</h3>
+        <span id="technicalHistoryCount" class="table-count">0 lançamentos</span>
+      </div>
+
+      <div class="technical-grid-wrap">
+        <div id="technicalLaunchesGrid"></div>
+      </div>
+    </section>
+  </div>
+</section>
   </main>
 
+  <script src="./vendor/tabulator/tabulator.min.js"></script>
+  <script src="./js/recicla.js"></script>
   <script src="./js/recicla.js"></script>
 </body>
 </html>

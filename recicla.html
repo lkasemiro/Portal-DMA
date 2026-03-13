@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo Recicla CEDAE | Portal DMA</title>
+  <meta name="description" content="Módulo Recicla CEDAE - Portal DMA" />
+  <meta name="theme-color" content="#0b3d91" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./css/global.css" />
+  <link rel="stylesheet" href="./css/recicla.css" />
+  <link rel="stylesheet" href="./vendor/tabulator/tabulator.min.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__left">
+      <img
+        src="./assets/icon.png"
+        class="logo-dma"
+        alt="Logo do Portal DMA"
+        width="38"
+        height="38"
+      />
+      <div>
+        <p class="eyebrow">Sistema de Gestão Ambiental</p>
+        <h1 class="brand-title">Portal DMA · Módulo Recicla CEDAE</h1>
+      </div>
+    </div>
+
+    <div class="topbar__right">
+      <a href="./index.html" class="btn btn--ghost">Voltar ao portal</a>
+    </div>
+  </header>
+
+  <main class="recicla-page">
+    <section class="recicla-hero">
+      <div class="recicla-hero__content">
+      <div class="recicla-brand">
+  <img
+    src="./assets/logo-recicla-cedae.jpg"
+    alt="Logo do programa Recicla CEDAE"
+    class="recicla-brand__logo"
+  />
+  <div class="recicla-brand__text">
+    <p class="section-label">Programa institucional</p>
+    <h2 class="recicla-project-title">Recicla CEDAE</h2>
+  </div>
+</div>
+
+<p class="recicla-project-subtitle">
+  Módulo de acompanhamento das premiações, participação por diretoria
+  e distribuição de composto orgânico do programa.
+</p>
+
+<p class="recicla-project-description">
+  Esta página organiza a leitura da base consolidada do programa em uma
+  estrutura visual clara, separando a comunicação institucional, a análise
+  gerencial e a futura operação técnica da equipe de resíduos.
+</p>
+
+      <aside class="recicla-hero__status" aria-label="Status da base local">
+        <div class="hero-mini-card">
+          <span class="hero-mini-card__label">Base local</span>
+          <strong id="reciclaDbStatus">Carregando base do programa...</strong>
+        </div>
+      </aside>
+    </section>
+
+    <nav class="module-nav-cards" aria-label="Navegação por camadas do módulo Recicla CEDAE">
+      <button
+        class="module-nav-card module-nav-card--green is-active"
+        type="button"
+        data-tab="publico"
+        role="tab"
+        aria-selected="true"
+        aria-controls="tab-publico"
+        id="tab-button-publico"
+      >
+        <span class="module-nav-card__label">Comunicação</span>
+        <strong>Camada institucional</strong>
+        <p>Programa, indicadores de destaque, premiações e composto orgânico.</p>
+      </button>
+
+      <button
+        class="module-nav-card module-nav-card--blue"
+        type="button"
+        data-tab="gerencial"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-gerencial"
+        id="tab-button-gerencial"
+      >
+        <span class="module-nav-card__label">Gestão</span>
+        <strong>Camada gerencial</strong>
+        <p>Ranking, desempenho por diretoria e leitura consolidada da base.</p>
+      </button>
+
+      <button
+        class="module-nav-card module-nav-card--amber"
+        type="button"
+        data-tab="tecnico"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-tecnico"
+        id="tab-button-tecnico"
+      >
+        <span class="module-nav-card__label">Operação</span>
+        <strong>Camada técnica</strong>
+        <p>Área futura para entrada, conferência e manutenção dos registros.</p>
+      </button>
+    </nav>
+
+    <section class="tab-panels" aria-live="polite">
+      <!-- CAMADA PÚBLICA -->
+      <section
+        class="tab-panel is-active"
+        id="tab-publico"
+        role="tabpanel"
+        aria-labelledby="tab-button-publico"
+      >
+        <div class="panel-box">
+          <div class="panel-box__header">
+            <h3>Camada institucional</h3>
+            <p class="panel-box__subtitle">
+              Leitura resumida do programa, principais resultados e comunicação
+              clara das premiações e da retirada de composto orgânico.
+            </p>
+          </div>
+
+          <section class="public-layer-grid">
+            <div class="public-layer-main">
+              <div class="public-kpis" aria-label="Indicativos principais do programa">
+                <article class="public-kpi public-kpi--green">
+                  <span>Participantes</span>
+                  <strong id="publicKpiParticipantes">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--blue-soft">
+                  <span>Diretorias participantes</span>
+                  <strong id="publicKpiDiretorias">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--green-soft">
+                  <span>Broches entregues</span>
+                  <strong id="publicKpiBroches">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--amber">
+                  <span>Mochilas entregues</span>
+                  <strong id="publicKpiMochilas">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--green-soft">
+                  <span>Sacos de composto retirados</span>
+                  <strong id="publicKpiComposto">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--blue">
+                  <span>Estoque disponível</span>
+                  <strong id="publicKpiEstoque">0</strong>
+                </article>
+              </div>
+
+              <article class="public-education-card">
+                <div class="public-education-card__header">
+                  <p class="section-label">Premiações</p>
+                  <h4>Marcos do programa</h4>
+                  <p class="public-education-card__text">
+                    A leitura pública do programa destaca os participantes em faixas
+                    de pontuação, o andamento das entregas de premiações e a retirada
+                    do composto orgânico distribuído pela equipe.
+                  </p>
+                </div>
+
+                <div class="award-grid">
+                  <article class="award-card award-card--muted">
+                    <span>Até 49 pontos</span>
+                    <strong id="awardAbaixo50">0</strong>
+                    <p>Participantes ainda abaixo do primeiro marco de premiação.</p>
+                  </article>
+
+                  <article class="award-card award-card--green">
+                    <span>50 a 99 pontos</span>
+                    <strong id="award50a99">0</strong>
+                    <p>Participantes em faixa de reconhecimento intermediário.</p>
+                  </article>
+
+                  <article class="award-card award-card--amber">
+                    <span>100+ pontos</span>
+                    <strong id="award100mais">0</strong>
+                    <p>Participantes em faixa de maior destaque no programa.</p>
+                  </article>
+                </div>
+              </article>
+            </div>
+
+            <aside class="public-layer-side">
+              <div class="highlight-panel">
+                <div class="panel-card__header">
+                  <h4>Destaques do programa</h4>
+                </div>
+
+                <div class="highlight-stack">
+                  <article class="highlight-card">
+                    <span class="highlight-card__label">Liderança por participação</span>
+                    <strong id="highlightDiretoriaLider">-</strong>
+                    <p id="highlightDiretoriaLiderText">
+                      Carregando desempenho por diretoria...
+                    </p>
+                  </article>
+
+                  <article class="highlight-card">
+                    <span class="highlight-card__label">Maior pontuação acumulada</span>
+                    <strong id="highlightMaiorPontuacao">0</strong>
+                    <p id="highlightMaiorPontuacaoText">
+                      Carregando destaque individual...
+                    </p>
+                  </article>
+
+                  <article class="highlight-card">
+                    <span class="highlight-card__label">Retirada de composto</span>
+                    <strong id="highlightRetirada">0</strong>
+                    <p id="highlightRetiradaText">
+                      Carregando dados de composto orgânico...
+                    </p>
+                  </article>
+                </div>
+              </div>
+            </aside>
+          </section>
+        </div>
+      </section>
+
+      <!-- CAMADA GERENCIAL -->
+      <section
+        class="tab-panel"
+        id="tab-gerencial"
+        role="tabpanel"
+        aria-labelledby="tab-button-gerencial"
+      >
+        <div class="panel-box">
+          <div class="panel-box__header panel-box__header--between">
+            <div>
+              <h3>Camada gerencial</h3>
+              <p class="panel-box__subtitle">
+                Painel consolidado para leitura do ranking, premiações, retiradas
+                de composto e desempenho das diretorias participantes.
+              </p>
+            </div>
+
+            <div class="filters-inline" aria-label="Filtros gerenciais do Recicla CEDAE">
+              <div class="filter-group">
+                <label for="filterDiretoria">Diretoria</label>
+                <select id="filterDiretoria">
+                  <option value="">Todas</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filterFaixa">Faixa de pontuação</label>
+                <select id="filterFaixa">
+                  <option value="">Todas</option>
+                  <option value="Abaixo de 50">Abaixo de 50</option>
+                  <option value="50-99">50 a 99</option>
+                  <option value="100+">100+</option>
+                </select>
+              </div>
+
+              <div class="filter-group filter-group--actions">
+                <button class="btn btn--secondary" id="clearFiltersBtn" type="button">
+                  Limpar filtros
+                </button>
+                <button class="btn btn--primary" id="reloadDataBtn" type="button">
+                  Recarregar base
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <section class="overview-grid">
+            <article class="overview-card">
+              <span class="overview-card__label">Objetivo</span>
+              <strong>Fortalecer a leitura institucional do programa</strong>
+              <p>
+                O módulo consolida os resultados da campanha em uma estrutura visual
+                que facilita acompanhamento, comunicação e governança da operação.
+              </p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-card__label">Regra de leitura</span>
+              <strong>Pontuação acumulada e status oficial das premiações</strong>
+              <p>
+                A análise considera a base consolidada por participante, com destaque
+                para a pontuação acumulada, o status do broche, da mochila e da
+                retirada de composto orgânico.
+              </p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-card__label">Base carregada</span>
+              <strong id="overviewBaseText">Lendo base do Recicla...</strong>
+              <p>
+                A página é alimentada pelo arquivo
+                <code>data/recicla-pagina.json</code>, usado como base temporária no PWA.
+              </p>
+            </article>
+          </section>
+
+          <section class="kpi-dashboard" aria-label="Indicadores gerenciais principais">
+            <article class="kpi-tile kpi-tile--green">
+              <span>Participantes</span>
+              <strong id="kpiParticipantes">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--blue-soft">
+              <span>Diretorias</span>
+              <strong id="kpiDiretorias">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--blue">
+              <span>Pontuação total</span>
+              <strong id="kpiSomatorioTotal">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--green-soft">
+              <span>Pontuação média</span>
+              <strong id="kpiSomatorioMedio">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--green">
+              <span>Broches entregues</span>
+              <strong id="kpiBrochesEntregues">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--amber">
+              <span>Mochilas entregues</span>
+              <strong id="kpiMochilasEntregues">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--green-soft">
+              <span>Composto retirado</span>
+              <strong id="kpiCompostoRetirado">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--muted">
+              <span>Participantes com retirada</span>
+              <strong id="kpiParticipantesComRetirada">0</strong>
+            </article>
+          </section>
+
+          <section class="dashboard-grid">
+            <div class="dashboard-column dashboard-column--left">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Status do broche</h4>
+                </div>
+                <div id="chartBroche" class="pie-chart"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Status da mochila</h4>
+                </div>
+                <div id="chartMochila" class="pie-chart"></div>
+              </article>
+            </div>
+
+            <div class="dashboard-column dashboard-column--center">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Faixas de pontuação</h4>
+                </div>
+                <div id="chartFaixas" class="bar-list"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Top 10 por pontuação</h4>
+                </div>
+                <div id="chartTop10" class="bar-list"></div>
+              </article>
+            </div>
+
+            <div class="dashboard-column dashboard-column--right">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Desempenho por diretoria</h4>
+                </div>
+                <div id="chartDiretorias" class="bar-list"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Top retiradas de composto</h4>
+                </div>
+                <div id="chartComposto" class="bar-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="history-section">
+            <div class="panel-box__header panel-box__header--between history-section__header">
+              <h3>Ranking dos participantes</h3>
+              <span id="historyCount" class="table-count">0 registros</span>
+            </div>
+
+            <div class="table-wrap">
+              <table class="history-table">
+                <caption class="sr-only">Tabela com ranking do programa Recicla CEDAE</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Posição</th>
+                    <th scope="col">Participante</th>
+                    <th scope="col">Diretoria</th>
+                    <th scope="col">Pontuação acumulada</th>
+                    <th scope="col">Broche</th>
+                    <th scope="col">Mochila</th>
+                    <th scope="col">Composto retirado</th>
+                  </tr>
+                </thead>
+                <tbody id="rankingTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="history-section">
+            <div class="panel-box__header panel-box__header--between history-section__header">
+              <h3>Resumo por diretoria</h3>
+              <span id="diretoriasCount" class="table-count">0 diretorias</span>
+            </div>
+
+            <div class="table-wrap">
+              <table class="history-table">
+                <caption class="sr-only">Tabela com resumo por diretoria do programa Recicla CEDAE</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Diretoria</th>
+                    <th scope="col">Participantes</th>
+                    <th scope="col">Pontuação total</th>
+                    <th scope="col">Pontuação média</th>
+                    <th scope="col">Broches entregues</th>
+                    <th scope="col">Mochilas entregues</th>
+                    <th scope="col">Composto retirado</th>
+                  </tr>
+                </thead>
+                <tbody id="diretoriasTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- CAMADA TÉCNICA -->
+<section
+  class="tab-panel"
+  id="tab-tecnico"
+  role="tabpanel"
+  aria-labelledby="tab-button-tecnico"
+>
+  <div class="panel-box">
+    <div class="panel-box__header">
+      <h3>Camada técnica</h3>
+      <p class="panel-box__subtitle">
+        Lançamento assistido de novas pesagens do Recicla CEDAE, com validação por ID,
+        preenchimento automático dos dados de referência e atualização local do módulo.
+      </p>
+    </div>
+
+    <section class="technical-entry-grid">
+      <article class="technical-form-card">
+        <div class="panel-card__header">
+          <h4>Novo lançamento</h4>
+        </div>
+
+        <form id="reciclaTecnicoForm" class="technical-form">
+          <div class="technical-form__row">
+            <div class="filter-group">
+              <label for="inputParticipanteId">ID do participante</label>
+              <input
+                id="inputParticipanteId"
+                name="participante_id"
+                class="input-control"
+                type="number"
+                inputmode="numeric"
+                list="participanteIdList"
+                placeholder="Digite o ID"
+                required
+              />
+              <datalist id="participanteIdList"></datalist>
+            </div>
+
+            <div class="filter-group">
+              <label for="inputPeso">Peso medido (kg)</label>
+              <input
+                id="inputPeso"
+                name="peso"
+                class="input-control"
+                type="number"
+                inputmode="decimal"
+                step="0.01"
+                min="0.01"
+                placeholder="Ex.: 3.25"
+                required
+              />
+            </div>
+
+            <div class="filter-group">
+              <label for="inputData">Data do lançamento</label>
+              <input
+                id="inputData"
+                name="data"
+                class="input-control"
+                type="date"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="technical-form__row technical-form__row--full">
+            <div id="participantLookupMessage" class="technical-inline-message">
+              Informe um ID válido para carregar automaticamente nome e diretoria.
+            </div>
+          </div>
+
+          <div class="technical-preview-grid">
+            <article class="technical-preview-card">
+              <span>ID</span>
+              <strong id="previewId">-</strong>
+            </article>
+
+            <article class="technical-preview-card">
+              <span>Nome</span>
+              <strong id="previewNome">-</strong>
+            </article>
+
+            <article class="technical-preview-card">
+              <span>Diretoria</span>
+              <strong id="previewDiretoria">-</strong>
+            </article>
+
+            <article class="technical-preview-card">
+              <span>Pontuação atual</span>
+              <strong id="previewSomatorioAtual">0</strong>
+            </article>
+
+            <article class="technical-preview-card">
+              <span>Novo acumulado</span>
+              <strong id="previewSomatorioNovo">0</strong>
+            </article>
+
+            <article class="technical-preview-card">
+              <span>Faixa após lançamento</span>
+              <strong id="previewFaixa">-</strong>
+            </article>
+          </div>
+
+          <div class="technical-actions">
+            <button class="btn btn--primary" type="submit">
+              Registrar lançamento
+            </button>
+
+            <button
+              class="btn btn--secondary"
+              id="clearTechnicalFormBtn"
+              type="button"
+            >
+              Limpar formulário
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <aside class="technical-side-card">
+        <div class="panel-card__header">
+          <h4>Operação local</h4>
+        </div>
+
+        <div class="technical-side-stack">
+          <article class="technical-side-item">
+            <span class="technical-side-item__label">Base carregada</span>
+            <strong id="technicalBaseSummary">Lendo seed do Recicla...</strong>
+            <p>
+              A camada técnica usa o arquivo completo
+              <code>recicla-premiacao-seed.json</code> como base de referência.
+            </p>
+          </article>
+
+          <article class="technical-side-item">
+            <span class="technical-side-item__label">Lançamentos locais</span>
+            <strong id="technicalLaunchCount">0</strong>
+            <p>
+              Os novos lançamentos ficam salvos localmente no navegador até a próxima etapa
+              de sincronização institucional.
+            </p>
+          </article>
+
+          <div class="technical-actions technical-actions--stack">
+            <button class="btn btn--secondary" id="exportTechnicalBtn" type="button">
+              Exportar lançamentos
+            </button>
+            <button class="btn btn--ghost" id="clearTechnicalDataBtn" type="button">
+              Limpar lançamentos locais
+            </button>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="history-section">
+      <div class="panel-box__header panel-box__header--between history-section__header">
+        <h3>Histórico técnico recente</h3>
+        <span id="technicalHistoryCount" class="table-count">0 lançamentos</span>
+      </div>
+
+      <div class="technical-grid-wrap">
+        <div id="technicalLaunchesGrid"></div>
+      </div>
+    </section>
+  </div>
+</section>
+  </main>
+
+  <script src="./vendor/tabulator/tabulator.min.js"></script>
+  <script src="./js/recicla.js"></script>
+  <script src="./js/recicla.js"></script>
+</body>
+</html>

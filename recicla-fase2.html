@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo Recicla CEDAE · Fase 2 | Portal DMA</title>
+  <meta name="description" content="Recicla CEDAE - Fase 2 - Sistema de pontuação e resgate" />
+  <meta name="theme-color" content="#0b3d91" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./css/global.css" />
+  <link rel="stylesheet" href="./css/recicla-fase2.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__left">
+      <img
+        src="./assets/icon.png"
+        class="logo-dma"
+        alt="Logo do Portal DMA"
+        width="38"
+        height="38"
+      />
+      <div>
+        <p class="eyebrow">Sistema de Gestão Ambiental</p>
+        <h1 class="brand-title">Portal DMA · Recicla CEDAE · Fase 2</h1>
+      </div>
+    </div>
+
+    <div class="topbar__right">
+      <a href="./index.html" class="btn btn--ghost">Voltar ao portal</a>
+    </div>
+  </header>
+
+  <main class="recicla2-page">
+    <section class="recicla2-hero">
+      <div class="recicla2-hero__content">
+        <div class="recicla2-brand">
+          <img
+            src="./assets/logo-recicla-cedae.jpg"
+            alt="Logo do programa Recicla CEDAE"
+            class="recicla2-brand__logo"
+          />
+          <div class="recicla2-brand__text">
+            <p class="section-label">Programa institucional</p>
+            <h2 class="recicla2-project-title">Recicla CEDAE · Fase 2</h2>
+          </div>
+        </div>
+
+        <p class="recicla2-project-subtitle">
+          Sistema de pontuação com saldo disponível para resgate, controle de estoque
+          e operação técnica de pesagens e premiações.
+        </p>
+
+        <p class="recicla2-project-description">
+          Nesta fase, cada pesagem gera pontos para o participante. Os pontos podem
+          ser acumulados, mantidos em saldo e usados no resgate de prêmios conforme
+          a escolha do participante e a confirmação da equipe técnica.
+        </p>
+      </div>
+
+      <aside class="recicla2-hero__status" aria-label="Status da base local">
+        <div class="hero-mini-card">
+          <span class="hero-mini-card__label">Base local</span>
+          <strong id="fase2DbStatus">Carregando base da Fase 2...</strong>
+        </div>
+      </aside>
+    </section>
+
+    <nav class="module-nav-cards" aria-label="Navegação por camadas do módulo Recicla CEDAE Fase 2">
+      <button
+        class="module-nav-card module-nav-card--green is-active"
+        type="button"
+        data-tab="publico"
+        role="tab"
+        aria-selected="true"
+        aria-controls="tab-publico"
+        id="tab-button-publico"
+      >
+        <span class="module-nav-card__label">Comunicação</span>
+        <strong>Camada pública</strong>
+        <p>Cartão de pontos, catálogo de prêmios e leitura clara do programa.</p>
+      </button>
+
+      <button
+        class="module-nav-card module-nav-card--blue"
+        type="button"
+        data-tab="gerencial"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-gerencial"
+        id="tab-button-gerencial"
+      >
+        <span class="module-nav-card__label">Gestão</span>
+        <strong>Camada gerencial</strong>
+        <p>Pontos gerados, resgates, saldos, estoque e leitura analítica.</p>
+      </button>
+
+      <button
+        class="module-nav-card module-nav-card--amber"
+        type="button"
+        data-tab="tecnico"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-tecnico"
+        id="tab-button-tecnico"
+      >
+        <span class="module-nav-card__label">Operação</span>
+        <strong>Camada técnica</strong>
+        <p>Lançamento de pesagens, resgates e histórico técnico de movimentos.</p>
+      </button>
+    </nav>
+
+    <section class="tab-panels" aria-live="polite">
+      <!-- CAMADA PÚBLICA -->
+      <section
+        class="tab-panel is-active"
+        id="tab-publico"
+        role="tabpanel"
+        aria-labelledby="tab-button-publico"
+      >
+        <div class="panel-box">
+          <div class="panel-box__header">
+            <h3>Camada pública</h3>
+            <p class="panel-box__subtitle">
+              Explicação do sistema de pontuação, catálogo de prêmios e principais
+              indicadores do programa na Fase 2.
+            </p>
+          </div>
+
+          <section class="public-layer-grid">
+            <div class="public-layer-main">
+              <div class="public-kpis" aria-label="Indicadores públicos do programa">
+                <article class="public-kpi public-kpi--green">
+                  <span>Participantes</span>
+                  <strong id="publicKpiParticipantes">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--blue">
+                  <span>Pontos gerados</span>
+                  <strong id="publicKpiPontosGerados">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--amber">
+                  <span>Pontos resgatados</span>
+                  <strong id="publicKpiPontosResgatados">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--green-soft">
+                  <span>Saldo disponível</span>
+                  <strong id="publicKpiSaldo">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--blue-soft">
+                  <span>Aptos para 20 pontos</span>
+                  <strong id="publicKpiAptos20">0</strong>
+                </article>
+
+                <article class="public-kpi public-kpi--green-soft">
+                  <span>Aptos para 100 pontos</span>
+                  <strong id="publicKpiAptos100">0</strong>
+                </article>
+              </div>
+
+              <article class="public-education-card">
+                <div class="public-education-card__header">
+                  <p class="section-label">Como funciona</p>
+                  <h4>Cartão de pontos do Recicla CEDAE</h4>
+                  <p class="public-education-card__text">
+                    Cada pesagem gera pontos. O participante pode optar por resgatar
+                    prêmios menores ou acumular saldo para prêmios de maior valor.
+                    O histórico total é mantido mesmo após o resgate.
+                  </p>
+                </div>
+
+                <div class="rules-grid">
+                  <article class="rule-card">
+                    <span>Regra base</span>
+                    <strong>1 kg = 1 ponto</strong>
+                    <p>A pesagem registrada pela equipe técnica é convertida diretamente em pontos.</p>
+                  </article>
+
+                  <article class="rule-card">
+                    <span>Saldo</span>
+                    <strong>Pontos disponíveis</strong>
+                    <p>Os pontos só saem do saldo quando o resgate é confirmado pela equipe técnica.</p>
+                  </article>
+
+                  <article class="rule-card">
+                    <span>Histórico</span>
+                    <strong>Registro permanente</strong>
+                    <p>O total histórico do participante permanece registrado mesmo após a retirada dos prêmios.</p>
+                  </article>
+                </div>
+              </article>
+            </div>
+
+            <aside class="public-layer-side">
+              <div class="highlight-panel">
+                <div class="panel-card__header">
+                  <h4>Catálogo de prêmios</h4>
+                </div>
+
+                <div class="award-catalog" id="awardCatalog"></div>
+              </div>
+            </aside>
+          </section>
+        </div>
+      </section>
+
+      <!-- CAMADA GERENCIAL -->
+      <section
+        class="tab-panel"
+        id="tab-gerencial"
+        role="tabpanel"
+        aria-labelledby="tab-button-gerencial"
+      >
+        <div class="panel-box">
+          <div class="panel-box__header panel-box__header--between">
+            <div>
+              <h3>Camada gerencial</h3>
+              <p class="panel-box__subtitle">
+                Acompanhamento dos pontos gerados, resgates realizados, saldos
+                disponíveis e leitura do desempenho por diretoria.
+              </p>
+            </div>
+
+            <div class="filters-inline" aria-label="Filtros gerenciais da Fase 2">
+              <div class="filter-group">
+                <label for="filterDiretoria">Diretoria</label>
+                <select id="filterDiretoria">
+                  <option value="">Todas</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filterFaixaSaldo">Faixa de saldo</label>
+                <select id="filterFaixaSaldo">
+                  <option value="">Todas</option>
+                  <option value="ate9">Até 9</option>
+                  <option value="10a19">10 a 19</option>
+                  <option value="20a99">20 a 99</option>
+                  <option value="100mais">100+</option>
+                </select>
+              </div>
+
+              <div class="filter-group filter-group--actions">
+                <button class="btn btn--secondary" id="clearFiltersBtn" type="button">
+                  Limpar filtros
+                </button>
+                <button class="btn btn--primary" id="reloadDataBtn" type="button">
+                  Recarregar base
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <section class="kpi-dashboard" aria-label="Indicadores gerenciais da Fase 2">
+            <article class="kpi-tile kpi-tile--green">
+              <span>Pontos gerados</span>
+              <strong id="kpiPontosGerados">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--amber">
+              <span>Pontos resgatados</span>
+              <strong id="kpiPontosResgatados">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--blue">
+              <span>Saldo em circulação</span>
+              <strong id="kpiSaldoCirculacao">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--green-soft">
+              <span>Movimentos registrados</span>
+              <strong id="kpiMovimentos">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--blue-soft">
+              <span>Broches retirados</span>
+              <strong id="kpiBrochesRetirados">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--blue-soft">
+              <span>Copos retirados</span>
+              <strong id="kpiCoposRetirados">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--blue-soft">
+              <span>Mochilas retiradas</span>
+              <strong id="kpiMochilasRetiradas">0</strong>
+            </article>
+
+            <article class="kpi-tile kpi-tile--muted">
+              <span>Estoque total restante</span>
+              <strong id="kpiEstoqueRestante">0</strong>
+            </article>
+          </section>
+
+          <section class="dashboard-grid">
+            <div class="dashboard-column dashboard-column--left">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Resgates por prêmio</h4>
+                </div>
+                <div id="chartResgatesPremio" class="bar-list"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Estoque atual</h4>
+                </div>
+                <div id="chartEstoque" class="bar-list"></div>
+              </article>
+            </div>
+
+            <div class="dashboard-column dashboard-column--center">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Top 10 por pontos totais</h4>
+                </div>
+                <div id="chartTopPontos" class="bar-list"></div>
+              </article>
+
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Top 10 por saldo disponível</h4>
+                </div>
+                <div id="chartTopSaldo" class="bar-list"></div>
+              </article>
+            </div>
+
+            <div class="dashboard-column dashboard-column--right">
+              <article class="panel-card panel-card--chart">
+                <div class="panel-card__header">
+                  <h4>Desempenho por diretoria</h4>
+                </div>
+                <div id="chartDiretorias" class="bar-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="history-section">
+            <div class="panel-box__header panel-box__header--between history-section__header">
+              <h3>Participantes · Fase 2</h3>
+              <span id="participantsCount" class="table-count">0 registros</span>
+            </div>
+
+            <div class="table-wrap">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Diretoria</th>
+                    <th>Pontos totais</th>
+                    <th>Pontos resgatados</th>
+                    <th>Saldo</th>
+                    <th>Broches</th>
+                    <th>Copos</th>
+                    <th>Mochilas</th>
+                  </tr>
+                </thead>
+                <tbody id="participantsTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- CAMADA TÉCNICA -->
+      <section
+        class="tab-panel"
+        id="tab-tecnico"
+        role="tabpanel"
+        aria-labelledby="tab-button-tecnico"
+      >
+        <div class="panel-box">
+          <div class="panel-box__header">
+            <h3>Camada técnica</h3>
+            <p class="panel-box__subtitle">
+              Operação da Fase 2 com lançamento de pesagens, registro de resgates
+              e atualização local dos indicadores do módulo.
+            </p>
+          </div>
+
+          <section class="technical-section-grid">
+            <article class="technical-card">
+              <div class="panel-card__header">
+                <h4>Lançar pesagem</h4>
+              </div>
+
+              <form id="pesagemForm" class="technical-form">
+                <div class="technical-form__row">
+                  <div class="filter-group">
+                    <label for="pesagemId">ID do participante</label>
+                    <input id="pesagemId" class="input-control" type="number" placeholder="Digite o ID" required />
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="pesagemPeso">Peso medido (kg)</label>
+                    <input id="pesagemPeso" class="input-control" type="number" step="0.01" min="0.01" placeholder="Ex.: 3.50" required />
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="pesagemData">Data</label>
+                    <input id="pesagemData" class="input-control" type="date" required />
+                  </div>
+                </div>
+
+                <div class="technical-preview-grid">
+                  <article class="technical-preview-card">
+                    <span>Nome</span>
+                    <strong id="pesagemNome">-</strong>
+                  </article>
+
+                  <article class="technical-preview-card">
+                    <span>Diretoria</span>
+                    <strong id="pesagemDiretoria">-</strong>
+                  </article>
+
+                  <article class="technical-preview-card">
+                    <span>Pontos gerados</span>
+                    <strong id="pesagemPontosGerados">0</strong>
+                  </article>
+                </div>
+
+                <div class="technical-actions">
+                  <button class="btn btn--primary" type="submit">Registrar pesagem</button>
+                  <button class="btn btn--secondary" id="clearPesagemBtn" type="button">Limpar</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="technical-card">
+              <div class="panel-card__header">
+                <h4>Registrar resgate</h4>
+              </div>
+
+              <form id="resgateForm" class="technical-form">
+                <div class="technical-form__row">
+                  <div class="filter-group">
+                    <label for="resgateId">ID do participante</label>
+                    <input id="resgateId" class="input-control" type="number" placeholder="Digite o ID" required />
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="resgatePremio">Prêmio</label>
+                    <select id="resgatePremio" class="input-control" required></select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="resgateQtd">Quantidade</label>
+                    <input id="resgateQtd" class="input-control" type="number" min="1" step="1" value="1" required />
+                  </div>
+                </div>
+
+                <div class="technical-preview-grid">
+                  <article class="technical-preview-card">
+                    <span>Saldo atual</span>
+                    <strong id="resgateSaldoAtual">0</strong>
+                  </article>
+
+                  <article class="technical-preview-card">
+                    <span>Custo do resgate</span>
+                    <strong id="resgateCusto">0</strong>
+                  </article>
+
+                  <article class="technical-preview-card">
+                    <span>Saldo após resgate</span>
+                    <strong id="resgateSaldoFinal">0</strong>
+                  </article>
+                </div>
+
+                <div class="technical-inline-message" id="resgateMessage">
+                  O resgate será validado pelo saldo disponível e pelo estoque do prêmio selecionado.
+                </div>
+
+                <div class="technical-actions">
+                  <button class="btn btn--primary" type="submit">Confirmar resgate</button>
+                  <button class="btn btn--secondary" id="clearResgateBtn" type="button">Limpar</button>
+                </div>
+              </form>
+            </article>
+          </section>
+
+          <section class="history-section">
+            <div class="panel-box__header panel-box__header--between history-section__header">
+              <h3>Histórico técnico de movimentos</h3>
+              <span id="movementsCount" class="table-count">0 movimentos</span>
+            </div>
+
+            <div class="table-wrap">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Origem</th>
+                    <th>Pontos</th>
+                    <th>Prêmio</th>
+                    <th>Obs.</th>
+                  </tr>
+                </thead>
+                <tbody id="movementsTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./js/recicla-fase2.js"></script>
+</body>
+</html>

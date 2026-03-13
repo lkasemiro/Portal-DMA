@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recicla CEDAE · Área Técnica | Portal DMA</title>
+  <meta name="description" content="Recicla CEDAE - Área Técnica" />
+  <meta name="theme-color" content="#0b3d91" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./css/global.css" />
+  <link rel="stylesheet" href="./css/recicla-tecnico.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>Recicla CEDAE</h1>
+      <span>Área técnica</span>
+    </div>
+
+    <div class="topbar-right">
+      <a href="./recicla-fase2.html" class="btn">Ver página pública</a>
+      <button id="logoutBtn" type="button">Sair</button>
+    </div>
+  </header>
+
+  <main class="tech-container">
+    <section class="tech-section">
+      <h2>Status da base</h2>
+      <div id="reciclaDbStatus">Carregando base do programa...</div>
+    </section>
+
+    <section class="tech-section">
+      <h2>Entrada de pesagens</h2>
+
+      <section class="technical-toolbar">
+        <div class="technical-toolbar__left">
+          <button class="btn btn--primary" id="addPesagemRowBtn" type="button">
+            Adicionar linha
+          </button>
+          <button class="btn btn--secondary" id="processPesagensBtn" type="button">
+            Registrar pesagens
+          </button>
+          <button class="btn btn--ghost" id="clearPesagensGridBtn" type="button">
+            Limpar grade
+          </button>
+        </div>
+
+        <div class="technical-toolbar__right">
+          <button class="btn btn--secondary" id="exportPesagensExcelBtn" type="button">
+            Excel de pesagens
+          </button>
+          <button class="btn btn--secondary" id="exportPremiacoesExcelBtn" type="button">
+            Excel de premiações
+          </button>
+          <button class="btn btn--primary" id="exportRelatorioCompletoBtn" type="button">
+            Relatório completo
+          </button>
+        </div>
+      </section>
+
+      <div class="technical-inline-message" id="pesagensBatchMessage">
+        Digite o ID e o peso em cada linha. Nome e diretoria serão preenchidos automaticamente.
+      </div>
+
+      <div class="excel-grid-wrap">
+        <table class="excel-grid-table">
+          <thead>
+            <tr>
+              <th>Linha</th>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Diretoria</th>
+              <th>Peso (kg)</th>
+              <th>Data</th>
+              <th>Pontos</th>
+              <th>Status</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="pesagensGridBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tech-section">
+      <h2>Resgate de prêmios</h2>
+
+      <form id="resgateForm" class="technical-form">
+        <div class="technical-form__row">
+          <div class="filter-group">
+            <label for="resgateId">ID do participante</label>
+            <input id="resgateId" class="input-control" type="number" placeholder="Digite o ID" required />
+          </div>
+
+          <div class="filter-group">
+            <label for="resgatePremio">Prêmio</label>
+            <select id="resgatePremio" class="input-control" required></select>
+          </div>
+
+          <div class="filter-group">
+            <label for="resgateQtd">Quantidade</label>
+            <input id="resgateQtd" class="input-control" type="number" min="1" step="1" value="1" required />
+          </div>
+        </div>
+
+        <div class="technical-preview-grid">
+          <article class="technical-preview-card">
+            <span>Saldo atual</span>
+            <strong id="resgateSaldoAtual">0</strong>
+          </article>
+
+          <article class="technical-preview-card">
+            <span>Custo do resgate</span>
+            <strong id="resgateCusto">0</strong>
+          </article>
+
+          <article class="technical-preview-card">
+            <span>Saldo após resgate</span>
+            <strong id="resgateSaldoFinal">0</strong>
+          </article>
+        </div>
+
+        <div class="technical-inline-message" id="resgateMessage">
+          O resgate será validado pelo saldo disponível e pelo estoque do prêmio selecionado.
+        </div>
+
+        <div class="technical-actions">
+          <button class="btn btn--primary" type="submit">Confirmar resgate</button>
+          <button class="btn btn--secondary" id="clearResgateBtn" type="button">Limpar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="tech-section">
+      <h2>Saída de composto orgânico</h2>
+
+      <form id="compostoForm" class="technical-form">
+        <div class="technical-form__row">
+          <div class="filter-group">
+            <label for="compostoId">ID do participante</label>
+            <input id="compostoId" class="input-control" type="number" placeholder="Digite o ID" required />
+          </div>
+
+          <div class="filter-group">
+            <label for="compostoQtd">Quantidade de pacotes</label>
+            <input id="compostoQtd" class="input-control" type="number" min="1" step="1" value="1" required />
+          </div>
+
+          <div class="filter-group">
+            <label for="compostoData">Data</label>
+            <input id="compostoData" class="input-control" type="date" required />
+          </div>
+        </div>
+
+        <div class="technical-preview-grid">
+          <article class="technical-preview-card">
+            <span>Nome</span>
+            <strong id="compostoNome">-</strong>
+          </article>
+
+          <article class="technical-preview-card">
+            <span>Diretoria</span>
+            <strong id="compostoDiretoria">-</strong>
+          </article>
+
+          <article class="technical-preview-card">
+            <span>Pontos totais</span>
+            <strong id="compostoPontosTotal">0</strong>
+          </article>
+
+          <article class="technical-preview-card">
+            <span>Pacotes conquistados</span>
+            <strong id="compostoConquistado">0</strong>
+          </article>
+
+          <article class="technical-preview-card">
+            <span>Já retirados</span>
+            <strong id="compostoRetirado">0</strong>
+          </article>
+
+          <article class="technical-preview-card">
+            <span>Disponíveis</span>
+            <strong id="compostoDisponivel">0</strong>
+          </article>
+        </div>
+
+        <div class="technical-inline-message" id="compostoMessage">
+          O composto é calculado automaticamente: a cada 10 kg acumulados, 1 pacote, até o máximo de 10 pacotes por participante.
+        </div>
+
+        <div class="technical-actions">
+          <button class="btn btn--primary" type="submit">Registrar saída de composto</button>
+          <button class="btn btn--secondary" id="clearCompostoBtn" type="button">Limpar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="tech-section">
+      <h2>Histórico técnico de movimentos</h2>
+
+      <div class="panel-box__header panel-box__header--between history-section__header">
+        <span id="movementsCount" class="table-count">0 movimentos</span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>ID</th>
+              <th>Tipo</th>
+              <th>Origem</th>
+              <th>Pontos</th>
+              <th>Prêmio</th>
+              <th>Obs.</th>
+            </tr>
+          </thead>
+          <tbody id="movementsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/auth.js"></script>
+  <script src="./lib/exceljs.min.js"></script>
+  <script src="./js/recicla-tecnico.js"></script>
+  <script>
+    requireAuth();
+    document.getElementById("logoutBtn")?.addEventListener("click", logout);
+  </script>
+</body>
+</html>

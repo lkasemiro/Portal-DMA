@@ -30,11 +30,6 @@ function escapeHtml(text) {
     .replaceAll("'", "&#039;");
 }
 
-function uniqueSorted(values) {
-  return [...new Set(values.filter((v) => v !== null && v !== undefined && v !== ""))]
-    .sort((a, b) => String(a).localeCompare(String(b), "pt-BR"));
-}
-
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -62,6 +57,10 @@ function normalizeParticipante(item) {
   };
 }
 
+function getPremioInicialById(premioId) {
+  return PREMIOS.find((item) => item.premio_id === premioId) || null;
+}
+
 function extractSeedRecords(json) {
   if (Array.isArray(json)) return json;
   if (Array.isArray(json.registros)) return json.registros;
@@ -70,88 +69,27 @@ function extractSeedRecords(json) {
   return [];
 }
 
-function getFaixaSaldo(value) {
-  const n = Number(value || 0);
-  if (n >= 100) return "100mais";
-  if (n >= 20) return "20a99";
-  if (n >= 10) return "10a19";
-  return "ate9";
-}
-
-function renderBarList(container, entries, fillClass = "") {
-  if (!container) return;
-
-  if (!entries.length) {
-    container.innerHTML = `<p class="empty-state">Sem dados para exibição.</p>`;
-    return;
-  }
-
-  const max = Math.max(...entries.map(([, value]) => Number(value || 0)), 1);
-
-  container.innerHTML = entries
-    .map(([label, value]) => {
-      const width = Math.max((Number(value || 0) / max) * 100, 2);
-
-      return `
-        <div class="bar-item" title="${escapeHtml(label)} · ${formatNumber(value)}">
-          <div class="bar-item__head">
-            <span class="bar-item__label">${escapeHtml(label)}</span>
-            <span class="bar-item__value">${formatNumber(value)}</span>
-          </div>
-          <div class="bar-item__track">
-            <div class="bar-item__fill ${fillClass}" style="width:${width}%"></div>
-          </div>
-        </div>
-      `;
-    })
-    .join("");
-}
-
 const state = {
   participantesBase: [],
   movimentos: [],
   participantesCalculados: [],
   diretorias: [],
   premios: structuredClone(PREMIOS),
-  filteredParticipantes: [],
-  filteredDiretorias: [],
   pesagensDraft: []
 };
 
 const els = {
-  fase2DbStatus: document.getElementById("fase2DbStatus"),
+  reciclaDbStatus: document.getElementById("reciclaDbStatus"),
 
-  publicKpiParticipantes: document.getElementById("publicKpiParticipantes"),
-  publicKpiPontosGerados: document.getElementById("publicKpiPontosGerados"),
-  publicKpiPontosResgatados: document.getElementById("publicKpiPontosResgatados"),
-  publicKpiSaldo: document.getElementById("publicKpiSaldo"),
-  publicKpiAptos20: document.getElementById("publicKpiAptos20"),
-  publicKpiAptos100: document.getElementById("publicKpiAptos100"),
-
-  awardCatalog: document.getElementById("awardCatalog"),
-
-  filterDiretoria: document.getElementById("filterDiretoria"),
-  filterFaixaSaldo: document.getElementById("filterFaixaSaldo"),
-  clearFiltersBtn: document.getElementById("clearFiltersBtn"),
-  reloadDataBtn: document.getElementById("reloadDataBtn"),
-
-  kpiPontosGerados: document.getElementById("kpiPontosGerados"),
-  kpiPontosResgatados: document.getElementById("kpiPontosResgatados"),
-  kpiSaldoCirculacao: document.getElementById("kpiSaldoCirculacao"),
-  kpiMovimentos: document.getElementById("kpiMovimentos"),
-  kpiBrochesRetirados: document.getElementById("kpiBrochesRetirados"),
-  kpiCoposRetirados: document.getElementById("kpiCoposRetirados"),
-  kpiMochilasRetiradas: document.getElementById("kpiMochilasRetiradas"),
-  kpiEstoqueRestante: document.getElementById("kpiEstoqueRestante"),
-
-  chartResgatesPremio: document.getElementById("chartResgatesPremio"),
-  chartEstoque: document.getElementById("chartEstoque"),
-  chartTopPontos: document.getElementById("chartTopPontos"),
-  chartTopSaldo: document.getElementById("chartTopSaldo"),
-  chartDiretorias: document.getElementById("chartDiretorias"),
-
-  participantsTableBody: document.getElementById("participantsTableBody"),
-  participantsCount: document.getElementById("participantsCount"),
+  resgateForm: document.getElementById("resgateForm"),
+  resgateId: document.getElementById("resgateId"),
+  resgatePremio: document.getElementById("resgatePremio"),
+  resgateQtd: document.getElementById("resgateQtd"),
+  resgateSaldoAtual: document.getElementById("resgateSaldoAtual"),
+  resgateCusto: document.getElementById("resgateCusto"),
+  resgateSaldoFinal: document.getElementById("resgateSaldoFinal"),
+  resgateMessage: document.getElementById("resgateMessage"),
+  clearResgateBtn: document.getElementById("clearResgateBtn"),
 
   compostoForm: document.getElementById("compostoForm"),
   compostoId: document.getElementById("compostoId"),
@@ -166,16 +104,6 @@ const els = {
   compostoMessage: document.getElementById("compostoMessage"),
   clearCompostoBtn: document.getElementById("clearCompostoBtn"),
 
-  resgateForm: document.getElementById("resgateForm"),
-  resgateId: document.getElementById("resgateId"),
-  resgatePremio: document.getElementById("resgatePremio"),
-  resgateQtd: document.getElementById("resgateQtd"),
-  resgateSaldoAtual: document.getElementById("resgateSaldoAtual"),
-  resgateCusto: document.getElementById("resgateCusto"),
-  resgateSaldoFinal: document.getElementById("resgateSaldoFinal"),
-  resgateMessage: document.getElementById("resgateMessage"),
-  clearResgateBtn: document.getElementById("clearResgateBtn"),
-
   movementsTableBody: document.getElementById("movementsTableBody"),
   movementsCount: document.getElementById("movementsCount"),
 
@@ -188,21 +116,6 @@ const els = {
   pesagensBatchMessage: document.getElementById("pesagensBatchMessage"),
   pesagensGridBody: document.getElementById("pesagensGridBody")
 };
-
-const tabButtons = Array.from(document.querySelectorAll(".module-nav-card"));
-const tabPanels = Array.from(document.querySelectorAll(".tab-panel"));
-
-function activateTab(tabName) {
-  for (const button of tabButtons) {
-    const isActive = button.dataset.tab === tabName;
-    button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-selected", isActive ? "true" : "false");
-  }
-
-  for (const panel of tabPanels) {
-    panel.classList.toggle("is-active", panel.id === `tab-${tabName}`);
-  }
-}
 
 function getParticipanteById(id) {
   const normalizedId = String(id || "").trim();
@@ -271,7 +184,10 @@ function recalculateState() {
   for (const participante of participantesMap.values()) {
     const pontos = Number(participante.pontos_total || 0);
 
-    participante.composto_conquistado = Math.min(Math.floor(pontos / 10), 10);
+    participante.composto_conquistado = Math.min(
+      Math.floor(pontos / 10),
+      10
+    );
 
     participante.composto_disponivel = Math.max(
       participante.composto_conquistado - Number(participante.composto_retirado || 0),
@@ -452,19 +368,15 @@ function renderPesagensGrid() {
 
   els.pesagensGridBody.querySelectorAll(".excel-input").forEach((input) => {
     input.addEventListener("input", (event) => {
-      updateDraftRowById(
-        event.target.dataset.rowId,
-        event.target.dataset.field,
-        event.target.value
-      );
+      const rowId = event.target.dataset.rowId;
+      const field = event.target.dataset.field;
+      updateDraftRowById(rowId, field, event.target.value);
     });
 
     input.addEventListener("change", (event) => {
-      updateDraftRowById(
-        event.target.dataset.rowId,
-        event.target.dataset.field,
-        event.target.value
-      );
+      const rowId = event.target.dataset.rowId;
+      const field = event.target.dataset.field;
+      updateDraftRowById(rowId, field, event.target.value);
     });
   });
 
@@ -536,19 +448,6 @@ function processPesagensBatch() {
   }
 }
 
-function populateFilters() {
-  if (!els.filterDiretoria) return;
-
-  const diretorias = uniqueSorted(state.participantesCalculados.map((item) => item.diretoria));
-
-  els.filterDiretoria.innerHTML = `
-    <option value="">Todas</option>
-    ${diretorias
-      .map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`)
-      .join("")}
-  `;
-}
-
 function populatePremiosSelect() {
   if (!els.resgatePremio) return;
 
@@ -562,149 +461,6 @@ function populatePremiosSelect() {
       `
     )
     .join("");
-}
-
-function applyFilters() {
-  const diretoria = els.filterDiretoria?.value || "";
-  const faixaSaldo = els.filterFaixaSaldo?.value || "";
-
-  state.filteredParticipantes = state.participantesCalculados.filter((item) => {
-    const byDiretoria = !diretoria || item.diretoria === diretoria;
-    const byFaixa = !faixaSaldo || getFaixaSaldo(item.saldo_disponivel) === faixaSaldo;
-    return byDiretoria && byFaixa;
-  });
-
-  state.filteredDiretorias = !diretoria
-    ? [...state.diretorias]
-    : state.diretorias.filter((item) => item.diretoria === diretoria);
-
-  renderGerencial();
-}
-
-function renderPublico() {
-  const participantes = state.participantesCalculados;
-  const pontosGerados = participantes.reduce((acc, item) => acc + Number(item.pontos_total || 0), 0);
-  const pontosResgatados = participantes.reduce((acc, item) => acc + Number(item.pontos_resgatados || 0), 0);
-  const saldo = participantes.reduce((acc, item) => acc + Number(item.saldo_disponivel || 0), 0);
-  const aptos20 = participantes.filter((item) => Number(item.saldo_disponivel || 0) >= 20).length;
-  const aptos100 = participantes.filter((item) => Number(item.saldo_disponivel || 0) >= 100).length;
-
-  if (els.publicKpiParticipantes) els.publicKpiParticipantes.textContent = formatInteger(participantes.length);
-  if (els.publicKpiPontosGerados) els.publicKpiPontosGerados.textContent = formatNumber(pontosGerados);
-  if (els.publicKpiPontosResgatados) els.publicKpiPontosResgatados.textContent = formatNumber(pontosResgatados);
-  if (els.publicKpiSaldo) els.publicKpiSaldo.textContent = formatNumber(saldo);
-  if (els.publicKpiAptos20) els.publicKpiAptos20.textContent = formatInteger(aptos20);
-  if (els.publicKpiAptos100) els.publicKpiAptos100.textContent = formatInteger(aptos100);
-
-  if (els.awardCatalog) {
-    els.awardCatalog.innerHTML = state.premios
-      .map((premio) => `
-        <article class="award-item">
-          <span>${escapeHtml(premio.nome)}</span>
-          <strong>${premio.premio_id === "composto" ? "10 kg = 1 pacote" : `${formatInteger(premio.custo_pontos)} pontos`}</strong>
-          <p>
-            ${
-              premio.premio_id === "composto"
-                ? "Benefício ambiental liberado automaticamente a cada 10 kg acumulados, até o limite de 10 pacotes por participante."
-                : "Prêmio disponível para resgate mediante saldo suficiente e confirmação da equipe técnica."
-            }
-          </p>
-          <div class="award-item__meta">
-            <span class="award-pill">Estoque: ${formatInteger(premio.estoque_inicial)}</span>
-          </div>
-        </article>
-      `)
-      .join("");
-  }
-}
-
-function renderGerencial() {
-  const participantes = state.filteredParticipantes;
-  const pontosGerados = participantes.reduce((acc, item) => acc + Number(item.pontos_total || 0), 0);
-  const pontosResgatados = participantes.reduce((acc, item) => acc + Number(item.pontos_resgatados || 0), 0);
-  const saldo = participantes.reduce((acc, item) => acc + Number(item.saldo_disponivel || 0), 0);
-
-  const brochesRetirados = participantes.reduce((acc, item) => acc + Number(item.broches_retirados || 0), 0);
-  const coposRetirados = participantes.reduce((acc, item) => acc + Number(item.copos_retirados || 0), 0);
-  const mochilasRetiradas = participantes.reduce((acc, item) => acc + Number(item.mochilas_retiradas || 0), 0);
-  const compostosRetirados = participantes.reduce((acc, item) => acc + Number(item.composto_retirado || 0), 0);
-  const estoqueRestante = state.premios.reduce((acc, item) => acc + Number(item.estoque_inicial || 0), 0);
-
-  if (els.kpiPontosGerados) els.kpiPontosGerados.textContent = formatNumber(pontosGerados);
-  if (els.kpiPontosResgatados) els.kpiPontosResgatados.textContent = formatNumber(pontosResgatados);
-  if (els.kpiSaldoCirculacao) els.kpiSaldoCirculacao.textContent = formatNumber(saldo);
-  if (els.kpiMovimentos) els.kpiMovimentos.textContent = formatInteger(state.movimentos.length);
-  if (els.kpiBrochesRetirados) els.kpiBrochesRetirados.textContent = formatInteger(brochesRetirados);
-  if (els.kpiCoposRetirados) els.kpiCoposRetirados.textContent = formatInteger(coposRetirados);
-  if (els.kpiMochilasRetiradas) els.kpiMochilasRetiradas.textContent = formatInteger(mochilasRetiradas);
-  if (els.kpiEstoqueRestante) els.kpiEstoqueRestante.textContent = formatInteger(estoqueRestante);
-
-  renderBarList(
-    els.chartResgatesPremio,
-    [
-      ["Broche", brochesRetirados],
-      ["Composto orgânico", compostosRetirados],
-      ["Copo", coposRetirados],
-      ["Mochila", mochilasRetiradas]
-    ],
-    "bar-item__fill--amber"
-  );
-
-  renderBarList(
-    els.chartEstoque,
-    state.premios.map((item) => [item.nome, Number(item.estoque_inicial || 0)]),
-    "bar-item__fill--blue"
-  );
-
-  renderBarList(
-    els.chartTopPontos,
-    [...participantes]
-      .sort((a, b) => Number(b.pontos_total || 0) - Number(a.pontos_total || 0))
-      .slice(0, 10)
-      .map((item) => [`ID ${item.n_id} · ${item.diretoria}`, Number(item.pontos_total || 0)]),
-    "bar-item__fill--green"
-  );
-
-  renderBarList(
-    els.chartTopSaldo,
-    [...participantes]
-      .sort((a, b) => Number(b.saldo_disponivel || 0) - Number(a.saldo_disponivel || 0))
-      .slice(0, 10)
-      .map((item) => [`ID ${item.n_id} · ${item.diretoria}`, Number(item.saldo_disponivel || 0)]),
-    "bar-item__fill--green"
-  );
-
-  renderBarList(
-    els.chartDiretorias,
-    [...state.filteredDiretorias]
-      .sort((a, b) => Number(b.pontos_total || 0) - Number(a.pontos_total || 0))
-      .map((item) => [item.diretoria, Number(item.pontos_total || 0)]),
-    "bar-item__fill--blue"
-  );
-
-  if (els.participantsCount) {
-    els.participantsCount.textContent = `${formatInteger(participantes.length)} registros`;
-  }
-
-  if (els.participantsTableBody) {
-    els.participantsTableBody.innerHTML = participantes.length
-      ? participantes
-          .map((item) => `
-            <tr>
-              <td>${escapeHtml(item.n_id)}</td>
-              <td>${escapeHtml(item.diretoria || "-")}</td>
-              <td>${formatNumber(item.pontos_total || 0)}</td>
-              <td>${formatNumber(item.pontos_resgatados || 0)}</td>
-              <td>${formatNumber(item.saldo_disponivel || 0)}</td>
-              <td>${formatInteger(item.broches_retirados || 0)}</td>
-              <td>${formatInteger(item.copos_retirados || 0)}</td>
-              <td>${formatInteger(item.mochilas_retiradas || 0)}</td>
-              <td>${formatInteger(item.composto_retirado || 0)}</td>
-            </tr>
-          `)
-          .join("")
-      : `<tr><td colspan="9">Nenhum participante encontrado para os filtros selecionados.</td></tr>`;
-  }
 }
 
 function updateResgatePreview() {
@@ -936,8 +692,6 @@ function renderMovementsHistory() {
 
 function renderTecnico() {
   renderMovementsHistory();
-  renderPesagensGrid();
-  populatePremiosSelect();
 
   if (els.compostoData && !els.compostoData.value) {
     els.compostoData.value = todayIso();
@@ -985,9 +739,10 @@ async function exportPesagensExcel() {
   worksheet.getRow(1).font = { bold: true };
 
   const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  });
+  const blob = new Blob(
+    [buffer],
+    { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+  );
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -1039,9 +794,10 @@ async function exportPremiacoesExcel() {
   worksheet.getRow(1).font = { bold: true };
 
   const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  });
+  const blob = new Blob(
+    [buffer],
+    { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+  );
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -1074,9 +830,11 @@ async function exportRelatorioCompleto() {
   ];
 
   state.movimentos
-    .filter((m) => m.tipo === "credito")
-    .forEach((m) => {
-      const participante = getParticipanteById(m.n_id);
+    .filter(m => m.tipo === "credito")
+    .forEach(m => {
+      const participante = state.participantesCalculados.find(
+        p => String(p.n_id) === String(m.n_id)
+      );
 
       wsPesagens.addRow({
         data: m.data || "",
@@ -1099,9 +857,11 @@ async function exportRelatorioCompleto() {
   ];
 
   state.movimentos
-    .filter((m) => m.tipo === "debito")
-    .forEach((m) => {
-      const participante = getParticipanteById(m.n_id);
+    .filter(m => m.tipo === "debito")
+    .forEach(m => {
+      const participante = state.participantesCalculados.find(
+        p => String(p.n_id) === String(m.n_id)
+      );
 
       wsPremios.addRow({
         data: m.data || "",
@@ -1122,9 +882,11 @@ async function exportRelatorioCompleto() {
   ];
 
   state.movimentos
-    .filter((m) => m.tipo === "beneficio")
-    .forEach((m) => {
-      const participante = getParticipanteById(m.n_id);
+    .filter(m => m.tipo === "beneficio")
+    .forEach(m => {
+      const participante = state.participantesCalculados.find(
+        p => String(p.n_id) === String(m.n_id)
+      );
 
       wsComposto.addRow({
         data: m.data || "",
@@ -1172,7 +934,7 @@ async function exportRelatorioCompleto() {
     { header: "Saldo", key: "saldo", width: 14 }
   ];
 
-  state.diretorias.forEach((d) => {
+  state.diretorias.forEach(d => {
     wsDiretorias.addRow({
       diretoria: d.diretoria,
       participantes: d.participantes,
@@ -1212,7 +974,7 @@ async function exportRelatorioCompleto() {
 
   const buffer = await workbook.xlsx.writeBuffer();
   const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   });
 
   const url = URL.createObjectURL(blob);
@@ -1227,30 +989,17 @@ async function exportRelatorioCompleto() {
 
 function refreshAll() {
   recalculateState();
-  populateFilters();
-  renderPublico();
-  applyFilters();
+  populatePremiosSelect();
   renderTecnico();
+  renderPesagensGrid();
+
+  if (els.reciclaDbStatus) {
+    els.reciclaDbStatus.textContent =
+      `Base carregada com ${formatInteger(state.participantesCalculados.length)} participantes e ${formatInteger(state.movimentos.length)} movimentos locais.`;
+  }
 }
 
 function bindEvents() {
-  tabButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      activateTab(button.dataset.tab);
-    });
-  });
-
-  els.filterDiretoria?.addEventListener("change", applyFilters);
-  els.filterFaixaSaldo?.addEventListener("change", applyFilters);
-
-  els.clearFiltersBtn?.addEventListener("click", () => {
-    if (els.filterDiretoria) els.filterDiretoria.value = "";
-    if (els.filterFaixaSaldo) els.filterFaixaSaldo.value = "";
-    applyFilters();
-  });
-
-  els.reloadDataBtn?.addEventListener("click", loadData);
-
   els.addPesagemRowBtn?.addEventListener("click", addDraftRow);
   els.processPesagensBtn?.addEventListener("click", processPesagensBatch);
   els.clearPesagensGridBtn?.addEventListener("click", clearDraftGrid);
@@ -1258,16 +1007,6 @@ function bindEvents() {
   els.exportPesagensExcelBtn?.addEventListener("click", exportPesagensExcel);
   els.exportPremiacoesExcelBtn?.addEventListener("click", exportPremiacoesExcel);
   els.exportRelatorioCompletoBtn?.addEventListener("click", exportRelatorioCompleto);
-
-  els.resgateId?.addEventListener("input", updateResgatePreview);
-  els.resgatePremio?.addEventListener("change", updateResgatePreview);
-  els.resgateQtd?.addEventListener("input", updateResgatePreview);
-  els.resgateForm?.addEventListener("submit", handleResgateSubmit);
-  els.clearResgateBtn?.addEventListener("click", () => {
-    if (els.resgateId) els.resgateId.value = "";
-    if (els.resgateQtd) els.resgateQtd.value = "1";
-    updateResgatePreview();
-  });
 
   els.compostoId?.addEventListener("input", updateCompostoPreview);
   els.compostoQtd?.addEventListener("input", updateCompostoPreview);
@@ -1278,11 +1017,21 @@ function bindEvents() {
     if (els.compostoData) els.compostoData.value = todayIso();
     updateCompostoPreview();
   });
+
+  els.resgateId?.addEventListener("input", updateResgatePreview);
+  els.resgatePremio?.addEventListener("change", updateResgatePreview);
+  els.resgateQtd?.addEventListener("input", updateResgatePreview);
+  els.resgateForm?.addEventListener("submit", handleResgateSubmit);
+  els.clearResgateBtn?.addEventListener("click", () => {
+    if (els.resgateId) els.resgateId.value = "";
+    if (els.resgateQtd) els.resgateQtd.value = "1";
+    updateResgatePreview();
+  });
 }
 
 async function loadData() {
-  if (els.fase2DbStatus) {
-    els.fase2DbStatus.textContent = "Lendo base de referência da Fase 2...";
+  if (els.reciclaDbStatus) {
+    els.reciclaDbStatus.textContent = "Lendo base técnica do Recicla CEDAE...";
   }
 
   const response = await fetch("./data/recicla-premiacao-seed.json", {
@@ -1299,16 +1048,7 @@ async function loadData() {
   state.participantesBase = rawRecords.map(normalizeParticipante);
   state.movimentos = loadMovimentos();
 
-  if (!state.pesagensDraft.length) {
-    ensureDraftRows(8);
-  }
-
   refreshAll();
-
-  if (els.fase2DbStatus) {
-    els.fase2DbStatus.textContent =
-      `Base carregada com ${formatInteger(state.participantesCalculados.length)} participantes e ${formatInteger(state.movimentos.length)} movimentos locais.`;
-  }
 }
 
 async function bootstrap() {
@@ -1323,8 +1063,8 @@ async function bootstrap() {
   } catch (error) {
     console.error(error);
 
-    if (els.fase2DbStatus) {
-      els.fase2DbStatus.textContent = "Erro ao carregar a Fase 2 do Recicla CEDAE.";
+    if (els.reciclaDbStatus) {
+      els.reciclaDbStatus.textContent = "Erro ao carregar a área técnica do Recicla CEDAE.";
     }
   }
 }

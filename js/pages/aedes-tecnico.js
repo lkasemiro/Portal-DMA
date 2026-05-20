@@ -1,6 +1,5 @@
 import { AedesAPI } from '../modules/aedes/aedes-api.js';
 
-// Mapeamento de Labels para transformar os IDs do banco em nomes legíveis
 const LABELS_MAP = {
     "objetos_acumulando_agua": "Objetos acumulando água",
     "reservatorio_de_agua": "Reservatório de água",
@@ -18,48 +17,33 @@ const LABELS_MAP = {
 async function inicializarModuloAedes() {
     try {
         console.log("A carregar Módulo Aedes...");
-        
-        // 1. Busca os lotes e a lista completa de unidades cadastras
         const todosLotes = await AedesAPI.getLotes();
-        
-        // --- ATENÇÃO: Ajuste o método abaixo conforme o nome real da sua API ---
-        const todasUnidades = await AedesAPI.getUnidades(); 
+        const todasUnidades = await AedesAPI.getUnidades();
 
-        // Filtro de Data (Corte em 14/05/2026 conforme regra da Área Técnica)
         const dataCorte = new Date('2026-05-14T00:00:00');
         const lotesValidos = todosLotes.filter(lote => {
             const dataLote = new Date(lote.data_envio);
             return dataLote >= dataCorte;
         });
 
-        // 2. Cruza os dados para incluir as unidades faltantes como "Não Informado"
         const lotesConsolidadosCompleto = integrarUnidadesAusentes(lotesValidos, todasUnidades);
-
-        // 3. Renderiza e configura a exportação com a lista completa (com os não informados inclusos)
         renderizarTabelaConsolidada(lotesConsolidadosCompleto);
 
-        // Configuração do Botão de Exportação
         const btnExport = document.getElementById('btnExportExcel');
         if (btnExport) {
             btnExport.onclick = () => exportarParaExcel(lotesConsolidadosCompleto);
         }
-
     } catch (error) {
         console.error("Erro crítico no Módulo Aedes:", error);
     }
 }
 
-/**
- * Cruza a lista de lotes enviados com a lista de unidades oficiais.
- * Unidades que não aparecem nos lotes ganham um registro do tipo "Não Informado".
- */
 function integrarUnidadesAusentes(lotes, todasUnidades) {
     if (!todasUnidades || !Array.isArray(todasUnidades)) {
         console.warn("Lista de unidades não encontrada ou inválida. Ignorando cruzamento.");
         return lotes;
     }
 
-    // Cria um Set com o nome (ou ID) de todas as unidades que enviaram lotes
     const unidadesQueEnviaram = new Set();
     lotes.forEach(lote => {
         const registros = lote.payload_completo?.dados || lote.dados || [];
@@ -68,48 +52,40 @@ function integrarUnidadesAusentes(lotes, todasUnidades) {
         });
     });
 
-    // Filtra quais unidades do cadastro oficial NÃO estão no Set de enviados
     const unidadesAusentes = todasUnidades.filter(u => {
-        // Ajuste 'u.nome' para a propriedade correta do seu objeto de unidade (ex: u.nome_unidade, u.descricao)
         const nomeUnidade = typeof u === 'string' ? u : (u.nome || u.nome_unidade);
         return nomeUnidade && !unidadesQueEnviaram.has(nomeUnidade.trim().toLowerCase());
     });
 
     if (unidadesAusentes.length === 0) return lotes;
 
-    // Cria um lote artificial para agrupar as unidades que faltaram
     const dadosAusentes = unidadesAusentes.map(u => {
         const nomeUnidade = typeof u === 'string' ? u : (u.nome || u.nome_unidade);
-        // Respeita a estrutura do array 'r' mapeado no seu código (r[1] = Unidade, r[2] = Vistoria, etc.)
         return [
-            null,                // r[0] - ID ou Data interna
-            nomeUnidade,         // r[1] - UNIDADE
-            "Não Informado",     // r[2] - VISTORIA
-            "-",                 // r[3] - FOCO
-            "-",                 // r[4] - REMEDIAÇÃO
-            "-",                 // r[5] - LOCAL FOCO
-            "",                  // r[6] - Outros local foco
-            "-",                 // r[7] - Motivo não vistoria
-            "",                  // r[8] - Outros motivo não vistoria
-            "-",                 // r[9] - Motivo não remediação
-            "",                  // r[10] - Outros motivo não remediação
-            "Unidade não enviou o lote até o momento." // r[11] - OBSERVAÇÕES
+            null,
+            nomeUnidade,
+            "Não Informado",
+            "-",
+            "-",
+            "-",
+            "",
+            "-",
+            "",
+            "-",
+            "",
+            "Unidade não enviou o lote até o momento."
         ];
     });
 
     const loteFaltantes = {
-        data_envio: null, // Sem data definida de envio
+        data_envio: null,
         focal_nome: "Sistema (Ausente)",
         dados: dadosAusentes
     };
 
-    // Retorna a lista original de lotes concatenada com o lote artificial das ausentes
     return [...lotes, loteFaltantes];
 }
 
-/**
- * Renderiza a tabela desmembrando os lotes em unidades individuais
- */
 function renderizarTabelaConsolidada(lotes) {
     const container = document.getElementById('containerTabelaAedes');
     if (!container) return;
@@ -148,10 +124,8 @@ function renderizarTabelaConsolidada(lotes) {
             const outrosLocalFoco           = (r[6] && !['sim', 'nao', 'não', '-'].includes(String(r[6]).toLowerCase().trim())) ? r[6] : "";
             const outrosMotivoNaoVistoria   = (r[8] && !['sim', 'nao', 'não', '-'].includes(String(r[8]).toLowerCase().trim())) ? r[8] : "";
             const outrosMotivoNaoRemediacao = (r[10] && !['sim', 'nao', 'não', '-'].includes(String(r[10]).toLowerCase().trim())) ? r[10] : "";
-            
             const observacoes = r[11] || "-";
 
-            // Tratamento visual para Vistoria (Adicionado estilo amarelo para "Não Informado")
             let iconVistoria = '<span style="color: #000; font-weight: bold;">✖</span>';
             if (fezVistoria) {
                 iconVistoria = '<span style="color: #16a34a; font-weight: bold;">✔</span>';
@@ -164,13 +138,11 @@ function renderizarTabelaConsolidada(lotes) {
                     ? `<span class="badge badge--danger"><span style="color: #ef4444; font-weight: bold;">✔</span></span>`
                     : '<span style="color: #000; font-weight: bold;">✖</span>')
                 : '-';
-
             const displayRemediacao = (fezVistoria && temFoco && !naoInformado)
                 ? (foiRemediado 
                     ? '<span style="color: #16a34a; font-weight: bold;">✔</span>' 
                     : '<span style="color: #ef4444; font-weight: bold;">✖</span>')
                 : '-';
-
             const detalheOutros = [outrosMotivoNaoVistoria, outrosLocalFoco, outrosMotivoNaoRemediacao]
                                   .filter(txt => txt && txt.trim().length > 0)
                                   .join(" | ");
@@ -196,9 +168,6 @@ function renderizarTabelaConsolidada(lotes) {
     container.innerHTML = html;
 }
 
-/**
- * Gera o ficheiro Excel consolidado (linha por unidade)
- */
 async function exportarParaExcel(lotes) {
     if (typeof ExcelJS === 'undefined') {
         alert("Erro: A biblioteca ExcelJS não foi carregada no HTML.");
@@ -207,7 +176,6 @@ async function exportarParaExcel(lotes) {
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Relatório Consolidado Aedes');
-
     worksheet.columns = [
         { header: 'DATA', key: 'data', width: 12 },
         { header: 'FOCAL', key: 'focal', width: 20 },
@@ -235,15 +203,13 @@ async function exportarParaExcel(lotes) {
             let localFoco     = Array.isArray(r[5]) ? r[5].join(", ") : (r[5] || "");
 
             const motivoNaoVistoria = (!fezVistoria && !naoInformado) ? (Array.isArray(r[7]) ? r[7].join(", ") : (r[7] || "-")) : "-";
-            
-            const motivoNaoRemediacao = (fezVistoria && temFoco && String(r[4]).toLowerCase() !== 'sim' && !naoInformado) 
-                ? (Array.isArray(r[9]) ? r[9].join(", ") : (r[9] || "-")) 
+            const motivoNaoRemediacao = (fezVistoria && temFoco && String(r[4]).toLowerCase() !== 'sim' && !naoInformado)
+                ? (Array.isArray(r[9]) ? r[9].join(", ") : (r[9] || "-"))
                 : "-";
-
+            
             const outrosLocalFoco           = (r[6] && !['sim', 'nao', 'não', '-'].includes(String(r[6]).toLowerCase().trim())) ? r[6] : "";
             const outrosMotivoNaoVistoria   = (r[8] && !['sim', 'nao', 'não', '-'].includes(String(r[8]).toLowerCase().trim())) ? r[8] : "";
             const outrosMotivoNaoRemediacao = (r[10] && !['sim', 'nao', 'não', '-'].includes(String(r[10]).toLowerCase().trim())) ? r[10] : "";
-
             const detalheOutros = [outrosMotivoNaoVistoria, outrosLocalFoco, outrosMotivoNaoRemediacao]
                                   .filter(txt => txt && txt.trim().length > 0)
                                   .join(" | ") || "-";
@@ -256,7 +222,7 @@ async function exportarParaExcel(lotes) {
                 data: dataEnvio,
                 focal: focalNome,
                 unidade: r[1] || "-",
-                vistoria: r[2] || "-", // Vai escrever "Não Informado" se for o caso
+                vistoria: r[2] || "-",
                 motivo_nao_vistoria: motivoNaoVistoria,
                 foco: excelFoco,
                 local_foco: excelLocalFoco,
@@ -265,7 +231,7 @@ async function exportarParaExcel(lotes) {
                 detalhes_outros: detalheOutros,
                 obs: r[11] || "-"
             });
-
+            
             row.getCell('data').alignment = { horizontal: 'center' };
             row.getCell('vistoria').alignment = { horizontal: 'center' };
             row.getCell('motivo_nao_vistoria').alignment = { horizontal: 'center' };
@@ -276,9 +242,8 @@ async function exportarParaExcel(lotes) {
         });
     });
 
-    // Estilização do Cabeçalho
     worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFF' } };
-    worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '16A34A' } }; // Verde Aedes
+    worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '16A34A' } };
     worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
 
     const buffer = await workbook.xlsx.writeBuffer();
@@ -295,5 +260,4 @@ async function exportarParaExcel(lotes) {
     }
 }
 
-// Inicialização
 document.addEventListener("DOMContentLoaded", inicializarModuloAedes);

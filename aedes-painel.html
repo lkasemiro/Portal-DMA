@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Analítico Aedes | DMA</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+</head>
+<body>
+
+  <style>
+    :root {
+      --sidebar-width: 260px;
+      --primary-blue: #0b3d91;
+      --dark-blue: #001d3d;
+      --accent-green: #16a34a;
+      --danger-red: #ef4444;
+      --bg-gray: #f4f7fa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-gray); display: flex; }
+
+    /* --- SIDEBAR FIXA (IDENTIDADE DMA) --- */
+    .sidebar { 
+      width: var(--sidebar-width);
+      background: var(--dark-blue); 
+      color: white; 
+      position: fixed; 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      z-index: 100; 
+      box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    }
+    .sidebar__header { padding: 25px 20px; background: rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; }
+    .logo-dma-estilizado { 
+      width: 45px; height: 45px;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); 
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; 
+      color: white; font-weight: 900; font-size: 1.2rem;
+      border: 2px solid rgba(255,255,255,0.2); 
+    }
+    .brand-name { display: flex; flex-direction: column; }
+    .brand-name b { font-size: 1.1rem; color: white; }
+    .brand-name span { font-size: 0.65rem; color: #22c55e; text-transform: uppercase; font-weight: bold; }
+    
+    .sidebar__nav { flex: 1; padding: 20px 0; }
+    .nav-item { 
+      display: flex; align-items: center;
+      gap: 12px; padding: 12px 25px; 
+      color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; 
+    }
+    .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); border-left: 4px solid #22c55e; }
+
+    /* --- CONTEÚDO PRINCIPAL --- */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
+      padding: 40px;
+    }
+  </style>
+
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <div class="logo-dma-estilizado">DMA</div>
+      <div class="brand-name">
+          <span>DEPARTAMENTO DE</span>
+          <b>MEIO AMBIENTE</b>
+          <span>SISTEMA DE GESTÃO</span>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="./area-tecnica.html" class="nav-item"><i class="fas fa-shield-alt"></i> Auditoria & Hub</a>
+      <a href="./aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> Módulo Aedes</a>
+      <a href="./aedes-painel.html" class="nav-item active"><i class="fas fa-chart-bar"></i> Painel Analítico</a>
+      <a href="./recicla-tecnico.html" class="nav-item"><i class="fas fa-recycle"></i> Módulo Recicla</a>
+    </nav>
+  </aside>
+
+  <main class="main-content" id="secao-painel-dashboard">
+    <div style="padding: 50px; text-align: center; color: #94a3b8;">
+      <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+      <p style="margin-top: 15px; font-weight: 500;">Carregando ecossistema gráfico...</p>
+    </div>
+  </main>
+
+  <script src="./js/core/api-config.js"></script>
+  <script src="./js/core/auth.js"></script>
+  <script type="module">
+      import { inicializarPainelAedes } from './js/pages/aedes-painel.js';
+      document.addEventListener("DOMContentLoaded", inicializarPainelAedes);
+  </script>
+</body>
+</html>

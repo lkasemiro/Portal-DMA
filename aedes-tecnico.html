@@ -24,7 +24,7 @@
 
     /* --- SIDEBAR FIXA (IDENTIDADE DMA) --- */
     .sidebar { 
-      width: var(--sidebar-width); 
+      width: var(--sidebar-width);
       background: var(--dark-blue); 
       color: white; 
       position: fixed; 
@@ -32,14 +32,15 @@
       display: flex; 
       flex-direction: column; 
       z-index: 100; 
-      box-shadow: 4px 0 15px rgba(0,0,0,0.1); 
+      box-shadow: 4px 0 15px rgba(0,0,0,0.1);
     }
     .sidebar__header { padding: 25px 20px; background: rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; }
     .logo-dma-estilizado { 
-      width: 45px; height: 45px; 
+      width: 45px; height: 45px;
       background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); 
       border-radius: 10px; display: flex; align-items: center; justify-content: center; 
-      color: white; font-weight: 900; font-size: 1.2rem; border: 2px solid rgba(255,255,255,0.2); 
+      color: white; font-weight: 900; font-size: 1.2rem;
+      border: 2px solid rgba(255,255,255,0.2); 
     }
     .brand-name { display: flex; flex-direction: column; }
     .brand-name b { font-size: 1.1rem; color: white; }
@@ -47,7 +48,8 @@
     
     .sidebar__nav { flex: 1; padding: 20px 0; }
     .nav-item { 
-      display: flex; align-items: center; gap: 12px; padding: 12px 25px; 
+      display: flex; align-items: center;
+      gap: 12px; padding: 12px 25px; 
       color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; 
     }
     .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); border-left: 4px solid #22c55e; }
@@ -85,6 +87,8 @@
       background: white;
       border-radius: 15px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
       border: 1px solid #eef2f6;
     }
@@ -99,31 +103,20 @@
       gap: 10px;
     }
 
-    /* Adicione ou atualize estas regras */
-    .panel {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        display: flex;
-        flex-direction: column;
-    }
-
     #containerTabelaAedes {
         width: 100%;
-        overflow-x: auto; /* Permite scroll horizontal em ecrãs pequenos */
+        overflow-x: auto;
     }
 
     .tabela-custom {
-        min-width: 1000px; /* Garante que as colunas de "Outros" tenham espaço */
+        width: 100%;
+        min-width: 1000px;
+        border-collapse: collapse;
     }
-    
-    /* Estilos injetados pelo JS */
-    .tabela-custom { width: 100%; border-collapse: collapse; }
     .tabela-custom th { background: #f8fafc; padding: 18px; text-align: left; color: #64748b; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid #edf2f7; }
     .tabela-custom td { padding: 18px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
     .badge { padding: 5px 10px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
     .badge--danger { background: #fee2e2; color: #ef4444; }
-
   </style>
 </head>
 <body>
@@ -140,6 +133,7 @@
     <nav class="sidebar__nav">
       <a href="./area-tecnica.html" class="nav-item"><i class="fas fa-shield-alt"></i> Auditoria & Hub</a>
       <a href="./aedes-tecnico.html" class="nav-item active"><i class="fas fa-bug"></i> Módulo Aedes</a>
+      <a href="./aedes-painel.html" class="nav-item"><i class="fas fa-chart-bar"></i> Painel Analítico</a>
       <a href="./recicla-tecnico.html" class="nav-item"><i class="fas fa-recycle"></i> Módulo Recicla</a>
     </nav>
   </aside>

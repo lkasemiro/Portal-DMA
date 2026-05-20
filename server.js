@@ -384,6 +384,106 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+/* ==========================================================================
+   ROTA COMPLETA: PAINEL ANALÍTICO (CONVERSÃO DE SEMANA PARA MÊS POR EXTENSO)
+========================================================================== */
+app.get("/api/aedes/painel-dados", async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        COALESCE("Ano", 2026) as "Ano",
+        
+        -- MAPEAMENTO CRONOLÓGICO: Transforma o número da semana no Mês correspondente
+        CASE 
+          WHEN "Semana" BETWEEN 1 AND 4 THEN 'Janeiro'
+          WHEN "Semana" BETWEEN 5 AND 8 THEN 'Fevereiro'
+          WHEN "Semana" BETWEEN 9 AND 13 THEN 'Março'
+          WHEN "Semana" BETWEEN 14 AND 17 THEN 'Abril'
+          WHEN "Semana" BETWEEN 18 AND 22 THEN 'Maio'
+          WHEN "Semana" BETWEEN 23 AND 26 THEN 'Junho'
+          WHEN "Semana" BETWEEN 27 AND 30 THEN 'Julho'
+          WHEN "Semana" BETWEEN 31 AND 35 THEN 'Agosto'
+          WHEN "Semana" BETWEEN 36 AND 39 THEN 'Setembro'
+          WHEN "Semana" BETWEEN 40 AND 44 THEN 'Outubro'
+          WHEN "Semana" BETWEEN 45 AND 48 THEN 'Novembro'
+          ELSE 'Dezembro'
+        END as "Mes_Nome",
+        
+        COALESCE("Unidade", 'Sem Unidade') as "Unidade",
+        
+        -- Volumetria dos Cards Principais (Mapeamento de strings para inteiros)
+        CASE WHEN "UV_Sim" = 'Sim' THEN 1 ELSE 0 END as visitada,
+        CASE WHEN "FE_Sim" = 'Sim' THEN 1 ELSE 0 END as foco_encontrado,
+        CASE WHEN "RM_Sim" = 'Sim' THEN 1 ELSE 0 END as foco_remediado,
+        CASE WHEN "RM_Não" = 'Sim' THEN 1 ELSE 0 END as foco_pendente,
+        
+        -- Gargalos Operacionais: Motivos de Não Vistoria (NV)
+        CASE WHEN "NV_Sem_condições_acesso" = 'Sim' THEN 1 ELSE 0 END as nv_acesso,
+        CASE WHEN "NV_Sem_brigadista_disponível" = 'Sim' THEN 1 ELSE 0 END as nv_brigadista,
+        CASE WHEN "NV_Sem_viatura_disponível" = 'Sim' THEN 1 ELSE 0 END as nv_viatura,
+        CASE WHEN "NV_Esquecimento" = 'Sim' THEN 1 ELSE 0 END as nv_esquecimento,
+        
+        -- Gargalos Logísticos: Motivos de Não Remediação (MNR) 
+        -- Nota: Respeitando os caracteres de quebra de linha (\r\n) injetados pelo Excel
+        CASE WHEN "MNR_Falta de treinamento_\r\ncapacitação" = 'Sim' THEN 1 ELSE 0 END as mnr_capacitacao,
+        CASE WHEN "MNR_Falta de cloro_\r\nlarvicida" = 'Sim' THEN 1 ELSE 0 END as mnr_larvicida,
+        CASE WHEN "MNR_Necessidade_limpeza_terreno" = 'Sim' THEN 1 ELSE 0 END as mnr_limpeza,
+        CASE WHEN "MNR_Reservatório_sem_cobertura" = 'Sim' THEN 1 ELSE 0 END as mnr_cobertura
+        
+      FROM aedes.excel_historico2
+      WHERE "Unidade" IS NOT NULL
+      ORDER BY "Ano" DESC, "Semana" ASC, "Unidade" ASC;
+    `;
+    
+    const result = await pool.query(query);
+    
+    // Retorna a coleção consolidada de registros em JSON
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Erro crítico no PostgreSQL executando /api/aedes/painel-dados:", err.message);
+    res.status(500).json({ 
+      error: "Falha interna no processamento analítico do banco de dados.", 
+      detalhes: err.message 
+    });
+  }
+});
+
+// ─── Puxadinho para alimentar o Dossiê Técnico (Sem mexer na grade) ───
+app.get("/api/aedes/focal-dossie", async (req, res) => {
+  try {
+    const { unidade } = req.query;
+    if (!unidade) {
+      return res.status(400).json({ error: "Nome da unidade é obrigatório." });
+    }
+
+    // Busca o último lote enviado que contém itens desta unidade 
+    // e cruza com o cadastro de focais para pegar matrícula e e-mail
+    const query = `
+      SELECT 
+        l.focal_nome AS nome,
+        f.matricula,
+        f.email
+      FROM aedes.vistorias_itens vi
+      INNER JOIN aedes.lotes l ON vi.lote_id = l.id
+      LEFT JOIN aedes.focais f ON LOWER(TRIM(l.focal_nome)) = LOWER(TRIM(f.nome))
+      WHERE vi.unidade_nome = $1
+      ORDER BY l.data_envio DESC
+      LIMIT 1
+    `;
+
+    const result = await pool.query(query, [unidade.trim()]);
+
+    if (result.rows.length === 0) {
+      return res.json({ nome: null, matricula: null, email: null });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Erro no puxadinho do dossiê:", err.message);
+    res.status(500).json({ error: "Erro interno ao buscar focal para o dossiê." });
+  }
+});
+
 // Error Handlers
 app.use((_req, res) => res.status(404).json({ error: "Rota não encontrada." }));
 app.use((err, _req, res, _next) => {

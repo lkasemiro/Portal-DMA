@@ -484,6 +484,126 @@ app.get("/api/aedes/focal-dossie", async (req, res) => {
   }
 });
 
+// ─── MÓDULO: AGENDA AMBIENTAL (ASSESSORIA DMA) ─────────────────────────────────
+
+// 1. Inicialização da Tabela da Agenda (Pode colocar dentro da sua função initSchema existente)
+async function initSchemaAgenda() {
+  try {
+    await pool.query(`CREATE SCHEMA IF NOT EXISTS dma;`);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS dma.agenda_eventos (
+        id SERIAL PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        categoria TEXT NOT NULL,
+        data_evento DATE NOT NULL,
+        horario TEXT,
+        local_evento TEXT NOT NULL,
+        descricao TEXT,
+        criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `);
+    console.log("📅 Tabela dma.agenda_eventos verificada/criada com sucesso.");
+  } catch (err) {
+    console.error("❌ Erro ao inicializar o schema da agenda:", err.message);
+  }
+}
+// Chame a função na inicialização do servidor
+initSchemaAgenda();
+
+
+// 2. ROTAS DA API (/api/agenda)
+
+// GET ─── Listar todos os eventos ordenados por proximidade cronológica
+app.get("/api/agenda", async (req, res) => {
+  try {
+    const query = `
+      SELECT id, titulo, categoria, data_evento::TEXT, horario, local_evento, descricao 
+      FROM dma.agenda_eventos 
+      ORDER BY data_evento ASC, horario ASC
+    `;
+    const result = await pool.query(query);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Erro ao buscar eventos da agenda:", err.message);
+    res.status(500).json({ error: "Erro interno ao processar a listagem da agenda." });
+  }
+});
+
+// POST ─── Lançar um novo evento no ecossistema
+app.post("/api/agenda", async (req, res) => {
+  try {
+    const { titulo, categoria, data_evento, horario, local, descricao } = req.body;
+    
+    if (!titulo || !categoria || !data_evento || !local) {
+      return res.status(400).json({ error: "Campos obrigatórios em falta (titulo, categoria, data_evento, local)." });
+    }
+
+    const query = `
+      INSERT INTO dma.agenda_eventos (titulo, categoria, data_evento, horario, local_evento, descricao)
+      VALUES ($1, $2, $3, $4, $5, $6) 
+      RETURNING id, titulo, categoria, data_evento::TEXT, horario, local_evento, descricao
+    `;
+    
+    const values = [titulo, categoria, data_evento, horario, local, descricao || ''];
+    const result = await pool.query(query, values);
+    
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Erro ao inserir evento na agenda:", err.message);
+    res.status(500).json({ error: "Erro interno ao salvar o evento." });
+  }
+});
+
+// PUT ─── Modificar/Atualizar um evento existente
+app.put("/api/agenda/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { titulo, categoria, data_evento, horario, local, descricao } = req.body;
+
+    if (!titulo || !categoria || !data_evento || !local) {
+      return res.status(400).json({ error: "Campos obrigatórios em falta para atualização." });
+    }
+
+    const query = `
+      UPDATE dma.agenda_eventos 
+      SET titulo = $1, categoria = $2, data_evento = $3, horario = $4, local_evento = $5, descricao = $6
+      WHERE id = $7 
+      RETURNING id, titulo, categoria, data_evento::TEXT, horario, local_evento, descricao
+    `;
+
+    const values = [titulo, categoria, data_evento, horario, local, descricao || '', id];
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Evento não encontrado para atualização." });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Erro ao atualizar evento na agenda:", err.message);
+    res.status(500).json({ error: "Erro interno ao atualizar o evento." });
+  }
+});
+
+// DELETE ─── Remover fisicamente o evento do banco de dados
+app.delete("/api/agenda/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const query = `DELETE FROM dma.agenda_eventos WHERE id = $1 RETURNING id`;
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Evento não encontrado para remoção." });
+    }
+
+    res.json({ success: true, message: "Evento removido com sucesso de forma definitiva." });
+  } catch (err) {
+    console.error("❌ Erro ao remover evento da agenda:", err.message);
+    res.status(500).json({ error: "Erro interno ao remover o evento." });
+  }
+});
+
 // Error Handlers
 app.use((_req, res) => res.status(404).json({ error: "Rota não encontrada." }));
 app.use((err, _req, res, _next) => {

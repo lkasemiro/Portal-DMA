@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Conteúdo | Autonomia DMA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #001d3d;
+            --accent-blue: #0056b3;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --text-dark: #334155;
+            --border-color: #cbd5e1;
+            --success-green: #22c55e;
+            --error-red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); color: var(--text-dark); padding-bottom: 50px; }
+
+        .admin-header {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .admin-header h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .admin-header h1 span { font-weight: 300; font-size: 1.1rem; color: #94a3b8; }
+
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-title { font-size: 1.2rem; margin-bottom: 20px; color: var(--primary-blue); display: flex; align-items: center; gap: 8px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+        .form-control {
+            width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px;
+            font-family: inherit; font-size: 0.95rem; transition: border-color 0.2s;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent-blue); }
+        
+        .hint { font-size: 0.8rem; color: #64748b; margin-top: 5px; }
+
+        .btn-submit {
+            background: var(--accent-blue); color: var(--white); border: none; width: 100%;
+            padding: 14px; border-radius: 6px; font-weight: 700; font-size: 1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s;
+        }
+        .btn-submit:hover { background: #004085; }
+
+        .status-alert {
+            padding: 15px; border-radius: 6px; margin-top: 20px; display: none;
+            font-weight: 600; text-align: center;
+        }
+        .status-alert.success { background: #dcfce7; color: #15803d; display: block; }
+        .status-alert.error { background: #fee2e2; color: #b91c1c; display: block; }
+    </style>
+</head>
+<body>
+
+    <header class="admin-header">
+        <h1><i class="fa-solid fa-wand-magic-sparkles"></i> Autonomia DMA <span>// API em Produção</span></h1>
+        <a href="./index3.html" target="_blank" style="color: white; text-decoration: none; font-size: 0.9rem;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Portal Público</a>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <div class="card-title">
+                <i class="fa-solid fa-dumpster" style="color: #854d0e;"></i> 
+                Atualizar Módulo via API: Resíduos Sólidos
+            </div>
+
+            <form id="formPublicacao">
+                <div class="form-group">
+                    <label for="tituloModulo">Título do Card no Portal</label>
+                    <input type="text" id="tituloModulo" class="form-control" value="Resíduos sólidos: como descartar" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="linkCanva">URL da Apresentação (Canva / Box)</label>
+                    <input type="url" id="linkCanva" class="form-control" placeholder="https://www.canva.com/design/.../watch?embed" required>
+                    <p class="hint">Cole a URL pública ou o link de incorporação (embed) da apresentação.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="arquivoUpload">Arquivo de Guia Técnico Complementar (Opcional)</label>
+                    <input type="file" id="arquivoUpload" class="form-control" name="arquivo">
+                    <p class="hint">Se enviado, este arquivo será processado pela API e associado ao registro.</p>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSalvar">
+                    <i class="fa-solid fa-database"></i> Transmitir e Gravar no Banco de Dados
+                </button>
+            </form>
+
+            <div id="statusMessage" class="status-alert"></div>
+        </div>
+    </main>
+
+    <script src="./js/gerenciador.js"></script>
+</body>
+</html>

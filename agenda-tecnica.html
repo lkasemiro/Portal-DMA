@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerenciador da Agenda Ambiental | CEDAE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-blue: #0b3d91;
+      --dark-blue: #001d3d;
+      --accent-green: #22c55e;
+      --danger-red: #ef4444;
+      --white: #ffffff;
+      --border-color: #cbd5e1;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f7fa; margin: 0; padding: 20px; color: #334155; }
+    
+    .panel-header { margin-bottom: 20px; }
+    .panel-header h1 { font-size: 1.4rem; color: var(--dark-blue); font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0; }
+    .panel-header p { font-size: 0.85rem; color: #64748b; margin: 4px 0 0 0; }
+
+    .split-container { display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
+    .card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--dark-blue); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
+    
+    /* Formulário */
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+    .input-field { width: 100%; padding: 9px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13.5px; font-family: inherit; box-sizing: border-box; color: #1e293b; }
+    .input-field:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.1); }
+    
+    /* Badges de Categoria na Tabela */
+    .badge { display: inline-block; padding: 3px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 700; color: white; text-transform: uppercase; }
+    .badge-geracao { background-color: #14532d; }
+    .badge-sinalizacao { background-color: #1e40af; }
+    .badge-pgrs { background-color: #c2410c; }
+    .badge-externo { background-color: #581c87; }
+    .badge-reuniao { background-color: #7c2d12; }
+
+    /* Customização da Tabela */
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    th { padding: 10px; color: #64748b; font-weight: 700; border-bottom: 2px solid #e2e8f0; }
+    td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    tr:hover td { background: #f8fafc; }
+
+    .actions-cell { display: flex; gap: 5px; }
+    .action-btn { border: none; width: 26px; height: 26px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; transition: opacity 0.2s; }
+    .action-btn.edit { background: #e2e8f0; color: #334155; }
+    .action-btn.delete { background: #fee2e2; color: var(--danger-red); }
+    .action-btn:hover { opacity: 0.85; }
+
+    .btn-submit { background: var(--primary-blue); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; width: 100%; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-submit:hover { background: var(--dark-blue); }
+  </style>
+</head>
+<body>
+
+  <header class="panel-header">
+    <h1><i class="fas fa-calendar-alt"></i> Controle da Agenda Ambiental (Assessoria)</h1>
+    <p>Adicione, modifique ou remova compromissos do ecossistema de dados da CEDAE.</p>
+  </header>
+
+  <div class="split-container">
+    
+    <section class="card">
+      <div class="card-title" id="formModoTitulo"><i class="fas fa-plus-circle"></i> Novo Registro</div>
+      <form id="formAgendaEventos">
+        <input type="hidden" id="evento_id" value="" />
+
+        <div class="form-group">
+          <label for="titulo">Nome do Evento/Compromisso *</label>
+          <input type="text" id="titulo" class="input-field" placeholder="Ex: Mutirão de Reflorestamento" required />
+        </div>
+
+        <div class="form-group">
+          <label for="categoria">Categoria Operacional *</label>
+          <select id="categoria" class="input-field" required>
+            <option value="geracao">Geração/Destinação de Resíduos</option>
+            <option value="sinalizacao">Sinalização e Placas</option>
+            <option value="pgrs">PGRS Elaborados</option>
+            <option value="externo">Eventos Ambientais Externos</option>
+            <option value="reuniao">Reuniões Técnicas Internas</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label for="data_evento">Data de Realização *</label>
+            <input type="date" id="data_evento" class="input-field" required />
+          </div>
+          <div class="form-group">
+            <label for="horario">Horário Cronograma</label>
+            <input type="text" id="horario" class="input-field" placeholder="Ex: 09:00h às 12h" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="local">Localidade / Instalação CEDAE *</label>
+          <input type="text" id="local" class="input-field" placeholder="Ex: ETA Laranjal ou Sede" required />
+        </div>
+
+        <div class="form-group">
+          <label for="descricao">Notas Técnicas Extra</label>
+          <textarea id="descricao" class="input-field" rows="3" placeholder="Metas, pautas ou contatos..." style="resize:none; font-size:12.5px;"></textarea>
+        </div>
+
+        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="submit" id="btnSalvar" class="btn-submit"><i class="fas fa-save"></i> Publicar Evento</button>
+          <button type="button" id="btnCancelar" class="btn-submit" style="background:#64748b; display:none;">Cancelar Edição</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><i class="fas fa-database"></i> Eventos Sincronizados no Neon</div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Alvo</th>
+              <th>Compromisso</th>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Instalação</th>
+              <th style="width: 70px; text-align: center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="corpoTabelaAgenda">
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 20px; color: #64748b;">
+                <i class="fas fa-spinner fa-spin"></i> Consultando registros ativos...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const API_URL = "/api/agenda";
+    let memoriaLocalEventos = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        carregarEventosDoServidor();
+        document.getElementById("formAgendaEventos").addEventListener("submit", processarSubmissao);
+        document.getElementById("btnCancelar").addEventListener("click", resetarEstadoFormulario);
+    });
+
+    async function carregarEventosDoServidor() {
+        try {
+            const res = await fetch(API_URL);
+            if (!res.ok) throw new Error();
+            memoriaLocalEventos = await res.json();
+            renderizarTabela();
+        } catch {
+            document.getElementById("corpoTabelaAgenda").innerHTML = `
+                <tr><td colspan="6" style="text-align:center; color:var(--danger-red); font-weight:600; padding:15px;">
+                    <i class="fas fa-exclamation-triangle"></i> Erro de sincronismo com as rotas.
+                </td></tr>`;
+        }
+    }
+
+    function renderizarTabela() {
+        const tbody = document.getElementById("corpoTabelaAgenda");
+        if (memoriaLocalEventos.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:15px;">Nenhum evento mapeado no cronograma.</td></tr>`;
+            return;
+        }
+
+        const labelsMap = {
+            'geracao': 'Resíduos', 'sinalizacao': 'Sinalização',
+            'pgrs': 'PGRS', 'externo': 'Externo', 'reuniao': 'Reunião'
+        };
+
+        tbody.innerHTML = memoriaLocalEventos.map(ev => {
+            const dataLegivel = new Date(ev.data_evento).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            return `
+                <tr>
+                    <td><span class="badge badge-${ev.categoria}">${labelsMap[ev.categoria] || ev.categoria}</span></td>
+                    <td><strong>${ev.titulo}</strong></td>
+                    <td>${dataLegivel}</td>
+                    <td>${ev.horario || 'Integral'}</td>
+                    <td>${ev.local_evento}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button type="button" class="action-btn edit" onclick="acionarModoEdicao(${ev.id})" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="action-btn delete" onclick="removerDoBanco(${ev.id})" title="Excluir"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+        }).join('');
+    }
+
+    async function processarSubmissao(e) {
+        e.preventDefault();
+        const id = document.getElementById("evento_id").value;
+        const payload = {
+            titulo: document.getElementById("titulo").value,
+            categoria: document.getElementById("categoria").value,
+            data_evento: document.getElementById("data_evento").value,
+            horario: document.getElementById("horario").value,
+            local: document.getElementById("local").value,
+            descricao: document.getElementById("descricao").value
+        };
+
+        try {
+            const res = await fetch(id ? `${API_URL}/${id}` : API_URL, {
+                method: id ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error();
+            resetarEstadoFormulario();
+            await carregarEventosDoServidor();
+        } catch {
+            alert("Erro nas transações das rotas. Verifique a API.");
+        }
+    }
+
+    function acionarModoEdicao(id) {
+        const ev = memoriaLocalEventos.find(item => item.id === id);
+        if (!ev) return;
+
+        document.getElementById("evento_id").value = ev.id;
+        document.getElementById("titulo").value = ev.titulo;
+        document.getElementById("categoria").value = ev.categoria;
+        document.getElementById("data_evento").value = ev.data_evento.split('T')[0];
+        document.getElementById("horario").value = ev.horario || '';
+        document.getElementById("local").value = ev.local_evento;
+        document.getElementById("descricao").value = ev.descricao || '';
+
+        document.getElementById("formModoTitulo").innerHTML = `<i class="fas fa-edit"></i> Editando Registro`;
+        document.getElementById("btnSalvar").innerHTML = `<i class="fas fa-check"></i> Salvar Alterações`;
+        document.getElementById("btnCancelar").style.display = "flex";
+    }
+
+    async function removerDoBanco(id) {
+        if(!confirm("Remover este compromisso do servidor de forma permanente?")) return;
+        try {
+            const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error();
+            await carregarEventosDoServidor();
+        } catch {
+            alert("Não foi possível excluir.");
+        }
+    }
+
+    function resetarEstadoFormulario() {
+        document.getElementById("formAgendaEventos").reset();
+        document.getElementById("evento_id").value = "";
+        document.getElementById("formModoTitulo").innerHTML = `<i class="fas fa-plus-circle"></i> Novo Registro`;
+        document.getElementById("btnSalvar").innerHTML = `<i class="fas fa-save"></i> Publicar Evento`;
+        document.getElementById("btnCancelar").style.display = "none";
+    }
+  </script>
+</body>
+</html>

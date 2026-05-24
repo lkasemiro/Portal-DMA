@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda Ambiental | Portal DMA</title>
+  <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-blue: #001d3d;
+      --accent-blue: #0056b3;
+      --white: #ffffff;
+      --page-bg: #f8fafc;
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --line: #dbe4ee;
+      --cat-geracao: #14532d;
+      --cat-sinalizacao: #1e40af;
+      --cat-pgrs: #c2410c;
+      --cat-evento: #581c87;
+      --cat-reuniao: #7c2d12;
+      --shadow: 0 10px 24px rgba(0, 29, 61, 0.06);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--page-bg);
+      color: var(--text-main);
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .module-page {
+      min-height: 100vh;
+      padding: 28px 34px 34px;
+    }
+
+    .module-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: end;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .module-title span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .module-title h1 {
+      color: var(--primary-blue);
+      font-size: clamp(1.65rem, 3vw, 2.35rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .module-title p {
+      max-width: 660px;
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .agenda-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px 12px;
+      max-width: 520px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .legend-dot,
+    .event-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .agenda-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(310px, 350px);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .calendar-wrapper,
+    .sidebar-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .calendar-wrapper {
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .calendar-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .calendar-controls h2 {
+      color: var(--primary-blue);
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .btn-arrow {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: var(--primary-blue);
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn-arrow:hover {
+      background: #eef4fb;
+      border-color: #cbd5e1;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      text-align: center;
+    }
+
+    .weekday {
+      padding: 0 0 8px;
+      color: #8da0bc;
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .calendar-day {
+      min-height: clamp(66px, 9vh, 92px);
+      padding: 8px;
+      border: 1px solid #edf2f7;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .calendar-day:hover {
+      background: var(--white);
+      border-color: #cbd5e1;
+      box-shadow: 0 6px 14px rgba(0, 29, 61, 0.06);
+    }
+
+    .calendar-day.empty {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .calendar-day.today,
+    .calendar-day.selected {
+      background: #eff6ff;
+      border-color: #93c5fd;
+    }
+
+    .day-number {
+      color: #334155;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .day-events-dots {
+      width: 100%;
+      min-height: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    .events-sidebar {
+      display: grid;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .sidebar-card {
+      padding: 20px;
+    }
+
+    .sidebar-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 14px;
+      color: var(--primary-blue);
+      font-size: 1.02rem;
+      font-weight: 800;
+    }
+
+    .event-list {
+      display: grid;
+      gap: 11px;
+      max-height: min(520px, calc(100vh - 210px));
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .event-item-card {
+      padding: 14px;
+      border-left: 4px solid #cbd5e1;
+      border-radius: 8px;
+      background: #f8fafc;
+      display: grid;
+      gap: 7px;
+    }
+
+    .event-item-card h4 {
+      color: var(--primary-blue);
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .event-item-card p {
+      color: #64748b;
+      font-size: 0.79rem;
+      line-height: 1.45;
+    }
+
+    .event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: #475569;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .event-meta i {
+      color: #94a3b8;
+      margin-right: 4px;
+    }
+
+    .next-events-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(135deg, #001d3d, #06315f);
+      color: var(--white);
+    }
+
+    .next-events-card span {
+      display: block;
+      color: rgba(255,255,255,0.62);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .next-events-card b {
+      display: block;
+      margin-top: 8px;
+      font-size: 1.45rem;
+    }
+
+    .next-events-card p {
+      margin-top: 6px;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .bg-geracao { background-color: var(--cat-geracao); }
+    .bg-sinalizacao { background-color: var(--cat-sinalizacao); }
+    .bg-pgrs { background-color: var(--cat-pgrs); }
+    .bg-evento { background-color: var(--cat-evento); }
+    .bg-reuniao { background-color: var(--cat-reuniao); }
+
+    .border-geracao { border-left-color: var(--cat-geracao); }
+    .border-sinalizacao { border-left-color: var(--cat-sinalizacao); }
+    .border-pgrs { border-left-color: var(--cat-pgrs); }
+    .border-evento { border-left-color: var(--cat-evento); }
+    .border-reuniao { border-left-color: var(--cat-reuniao); }
+
+    @media (max-width: 1040px) {
+      .module-header {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .agenda-legend {
+        justify-content: flex-start;
+        max-width: none;
+      }
+
+      .agenda-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .event-list {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .module-page {
+        padding: 20px;
+      }
+
+      .calendar-wrapper,
+      .sidebar-card {
+        padding: 16px;
+      }
+
+      .calendar-grid {
+        gap: 5px;
+      }
+
+      .calendar-day {
+        min-height: 56px;
+        padding: 6px;
+      }
+
+      .weekday {
+        font-size: 0.65rem;
+      }
+
+      .legend-item {
+        font-size: 0.68rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="module-page">
+    <header class="module-header">
+      <div class="module-title">
+        <span><i class="fa-solid fa-calendar-days"></i> Programacao ambiental</span>
+        <h1>Agendas e Programacoes Ambientais</h1>
+        <p>Calendario de acoes, eventos, entregas tecnicas e programacoes ambientais acompanhadas pelo DMA.</p>
+      </div>
+
+      <div class="agenda-legend" aria-label="Legenda de categorias">
+        <div class="legend-item"><div class="legend-dot bg-geracao"></div> Geracao/Destinacao</div>
+        <div class="legend-item"><div class="legend-dot bg-sinalizacao"></div> Sinalizacao e Placas</div>
+        <div class="legend-item"><div class="legend-dot bg-pgrs"></div> PGRS</div>
+        <div class="legend-item"><div class="legend-dot bg-evento"></div> Eventos Externos</div>
+        <div class="legend-item"><div class="legend-dot bg-reuniao"></div> Reunioes Tecnicas</div>
+      </div>
+    </header>
+
+    <section class="agenda-layout">
+      <article class="calendar-wrapper">
+        <div class="calendar-controls">
+          <button class="btn-arrow" id="btnPrevMonth" type="button" aria-label="Mes anterior">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <h2 id="calendarTitle">Janeiro 2026</h2>
+          <button class="btn-arrow" id="btnNextMonth" type="button" aria-label="Proximo mes">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid" aria-label="Calendario mensal"></div>
+      </article>
+
+      <aside class="events-sidebar">
+        <div class="next-events-card">
+          <span>Eventos no mes</span>
+          <b id="monthCount">0</b>
+          <p>Selecione um dia no calendario para ver a programacao detalhada.</p>
+        </div>
+
+        <div class="sidebar-card">
+          <h3 id="selectedDateTitle"><i class="fa-regular fa-calendar-check"></i> Eventos no Dia</h3>
+          <div class="event-list" id="selectedDayEventsList"></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const events = [
+      {
+        id: 1,
+        title: "Coleta Semestral de Residuos",
+        description: "Retirada e pesagem de reciclaveis consolidados nas dependencias operacionais.",
+        date: "2026-01-02",
+        time: "09:00 - 16:00",
+        location: "Predio-Sede",
+        category: "geracao"
+      },
+      {
+        id: 2,
+        title: "Entrega e Revisao do PGRS",
+        description: "Reuniao de alinhamento com a superintendencia para validacao do plano elaborado.",
+        date: "2026-01-02",
+        time: "14:00",
+        location: "Sala de Reunioes DMA",
+        category: "pgrs"
+      },
+      {
+        id: 3,
+        title: "Vistoria de Sinalizacao Ambiental",
+        description: "Conferencia de placas e orientacoes visuais em area operacional.",
+        date: "2026-01-03",
+        time: "10:00",
+        location: "Unidade operacional",
+        category: "sinalizacao"
+      },
+      {
+        id: 4,
+        title: "Reuniao Tecnica Interna",
+        description: "Organizacao dos proximos materiais de comunicacao ambiental.",
+        date: "2026-01-16",
+        time: "11:00",
+        location: "DMA",
+        category: "reuniao"
+      }
+    ];
+
+    const monthNames = [
+      "Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+    const weekdayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
+    const categoryLabels = {
+      geracao: "Geracao/Destinacao",
+      sinalizacao: "Sinalizacao e Placas",
+      pgrs: "PGRS",
+      evento: "Eventos Externos",
+      reuniao: "Reunioes Tecnicas"
+    };
+
+    const calendarGrid = document.querySelector("#calendarGrid");
+    const calendarTitle = document.querySelector("#calendarTitle");
+    const selectedDateTitle = document.querySelector("#selectedDateTitle");
+    const selectedDayEventsList = document.querySelector("#selectedDayEventsList");
+    const monthCount = document.querySelector("#monthCount");
+
+    let currentDate = new Date(2026, 0, 1);
+    let selectedDateKey = "2026-01-02";
+
+    function toDateKey(year, month, day) {
+      return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    function formatDateTitle(dateKey) {
+      const [year, month, day] = dateKey.split("-").map(Number);
+      return `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year}`;
+    }
+
+    function eventsForDate(dateKey) {
+      return events.filter((event) => event.date === dateKey);
+    }
+
+    function eventsForMonth(year, month) {
+      const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
+      return events.filter((event) => event.date.startsWith(monthKey));
+    }
+
+    function renderSelectedDay() {
+      const dayEvents = eventsForDate(selectedDateKey);
+      selectedDateTitle.innerHTML = `<i class="fa-regular fa-calendar-check"></i> Eventos em ${formatDateTitle(selectedDateKey)}`;
+
+      if (!dayEvents.length) {
+        selectedDayEventsList.innerHTML = `
+          <div class="event-item-card">
+            <h4>Nenhum evento publicado</h4>
+            <p>Este dia ainda nao possui programacao ambiental cadastrada.</p>
+          </div>
+        `;
+        return;
+      }
+
+      selectedDayEventsList.innerHTML = dayEvents.map((event) => `
+        <article class="event-item-card border-${event.category}">
+          <h4>${event.title}</h4>
+          <p>${event.description}</p>
+          <div class="event-meta">
+            <span><i class="fa-regular fa-clock"></i>${event.time}</span>
+            <span><i class="fa-solid fa-location-dot"></i>${event.location}</span>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
+      const monthEvents = eventsForMonth(year, month);
+
+      calendarTitle.textContent = `${monthNames[month]} ${year}`;
+      monthCount.textContent = monthEvents.length;
+      calendarGrid.innerHTML = weekdayNames.map((day) => `<div class="weekday">${day}</div>`).join("");
+
+      for (let i = 0; i < firstDay; i += 1) {
+        calendarGrid.insertAdjacentHTML("beforeend", '<div class="calendar-day empty"></div>');
+      }
+
+      for (let day = 1; day <= lastDate; day += 1) {
+        const dateKey = toDateKey(year, month, day);
+        const dayEvents = eventsForDate(dateKey);
+        const isSelected = dateKey === selectedDateKey;
+        const dots = dayEvents.map((event) => `<div class="event-dot bg-${event.category}" title="${categoryLabels[event.category]}"></div>`).join("");
+
+        const dayEl = document.createElement("button");
+        dayEl.type = "button";
+        dayEl.className = `calendar-day ${isSelected ? "selected" : ""}`;
+        dayEl.innerHTML = `
+          <span class="day-number">${day}</span>
+          <div class="day-events-dots">${dots}</div>
+        `;
+        dayEl.addEventListener("click", () => {
+          selectedDateKey = dateKey;
+          renderCalendar();
+          renderSelectedDay();
+        });
+        calendarGrid.appendChild(dayEl);
+      }
+    }
+
+    document.querySelector("#btnPrevMonth").addEventListener("click", () => {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      renderCalendar();
+    });
+
+    document.querySelector("#btnNextMonth").addEventListener("click", () => {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+      renderCalendar();
+    });
+
+    renderCalendar();
+    renderSelectedDay();
+  </script>
+</body>
+</html>

@@ -443,15 +443,43 @@
         </div>
 
         <div class="pdf-stage">
-          <iframe class="pdf-frame" id="pdfFrame" title="Material de residuos solidos em PDF"></iframe>
-          <div class="pdf-fallback" id="pdfFallback">
-            <div>
-              <i class="fa-solid fa-file-pdf"></i>
-              <strong>PDF pronto para exibicao</strong>
-              <p>Se o material nao abrir aqui, confira se o arquivo esta em <b>assets</b> com o nome configurado no JavaScript desta pagina.</p>
-            </div>
-          </div>
-        </div>
+
+  <iframe
+    class="pdf-frame"
+    id="panelFrame"
+    title="Painel QLIK">
+  </iframe>
+
+  <div class="pdf-fallback" id="pdfFallback">
+
+    <div>
+
+      <i class="fa-solid fa-chart-column"></i>
+
+      <strong>Painel corporativo QLIK</strong>
+
+      <p>
+        O painel pode exigir autenticacao corporativa
+        ou permissao da rede interna da CEDAE.
+      </p>
+
+      <a
+        id="openExternalPanel"
+        class="btn primary"
+        target="_blank"
+        style="margin-top:14px;">
+
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+        Abrir painel
+
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
       </article>
 
       <aside class="side-stack">
@@ -496,12 +524,13 @@
       id: "painel-pgrs",
       title: "Painel de acompanhamento PGRS",
       summary: "Painel interativo para acompanhamento dos PGRS das unidades.",
-      url: "https://iraja.cedae.corp/sense/app/6c6324de-919b-490b-9e99-d5d8371c0630/overview",
+      url: "https://iraja.cedae.corp/sense/app/6c6324de-919b-490b-9e99-d5d8371c0630/sheet/UDbfPhj/state/analysis",
       author: "Equipe tecnica DMA",
       status: "Publicado",
       kind: "PAINEL"
     },
 
+  
     {
       id: "dashboard-residuos",
       title: "Dashboard de residuos",
@@ -513,7 +542,7 @@
     }
   ];
 
-  const pdfFrame = document.querySelector("#pdfFrame");
+  const panelFrame = document.querySelector("#panelFrame");
   const pdfFallback = document.querySelector("#pdfFallback");
   const materialList = document.querySelector("#materialList");
   const materialTitle = document.querySelector("#materialTitle");
@@ -548,10 +577,10 @@
     setLinkTargets(material.url);
 
     pdfFallback.style.display = "none";
-    pdfFrame.style.display = "block";
+    panelFrame.style.display = "block";
 
     // AGORA CARREGA LINK EXTERNO
-    pdfFrame.src = material.url;
+    panelFrame.src = material.url;
 
     document.querySelectorAll(".material-item").forEach((button) => {
       button.classList.toggle(
@@ -590,10 +619,10 @@
     });
   }
 
-  pdfFrame.addEventListener("error", () => {
-    pdfFrame.style.display = "none";
-    pdfFallback.style.display = "grid";
-  });
+  panelFrame.addEventListener("error", () => {
+  panelFrame.style.display = "none";
+  pdfFallback.style.display = "grid";
+});
 
   renderMaterials();
   selectMaterial(publishedMaterials[0].id);

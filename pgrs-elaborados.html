@@ -402,6 +402,169 @@
         padding: 14px;
       }
     }
+    .panel-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panel-preview {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  min-height: 520px;
+  border: 1px solid #dbe4ee;
+  background: #f8fafc;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+}
+
+.panel-image {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  display: block;
+  filter: blur(1px);
+  transform: scale(1.01);
+}
+
+.panel-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 4, 94, 0.08),
+      rgba(3, 4, 94, 0.72)
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.overlay-content {
+  max-width: 420px;
+  text-align: center;
+  color: white;
+}
+
+.overlay-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,0.12);
+
+  border: 1px solid rgba(255,255,255,0.18);
+
+  margin-bottom: 18px;
+
+  font-size: 0.78rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.03em;
+}
+
+.overlay-content h2 {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.overlay-content p {
+  color: rgba(255,255,255,0.82);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.open-panel-btn {
+  height: 52px;
+
+  padding: 0 26px;
+
+  border-radius: 12px;
+
+  background: white;
+
+  color: #001d3d;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition: 0.25s ease;
+}
+
+.open-panel-btn:hover {
+  transform: translateY(-2px);
+}
+
+.preview-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.kpi-card {
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 22px;
+
+  border: 1px solid #dbe4ee;
+
+  box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+}
+
+.kpi-card span {
+  display: block;
+
+  color: #64748b;
+
+  font-size: 0.82rem;
+
+  margin-bottom: 10px;
+}
+
+.kpi-card strong {
+  font-size: 2rem;
+
+  color: #001d3d;
+
+  font-family: "Syne", sans-serif;
+}
+
+@media (max-width: 900px) {
+
+  .preview-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 560px) {
+
+  .preview-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-image {
+    height: 380px;
+  }
+
+}
   </style>
 </head>
 <body>
@@ -442,39 +605,68 @@
           </div>
         </div>
 
-        <div class="pdf-stage">
+   <div class="panel-stage">
 
-  <iframe
-    class="pdf-frame"
-    id="panelFrame"
-    title="Painel QLIK">
-  </iframe>
+  <div class="panel-preview">
 
-  <div class="pdf-fallback" id="pdfFallback">
+    <img
+      src="./assets/pgrs-preview.png"
+      alt="Preview do painel PGRS"
+      class="panel-image"
+    />
 
-    <div>
+    <div class="panel-overlay">
 
-      <i class="fa-solid fa-chart-column"></i>
+      <div class="overlay-content">
 
-      <strong>Painel corporativo QLIK</strong>
+        <div class="overlay-badge">
+          <i class="fa-solid fa-chart-line"></i>
+          Painel corporativo QLIK
+        </div>
 
-      <p>
-        O painel pode exigir autenticacao corporativa
-        ou permissao da rede interna da CEDAE.
-      </p>
+        <h2>Visualização protegida</h2>
 
-      <a
-        id="openExternalPanel"
-        class="btn primary"
-        target="_blank"
-        style="margin-top:14px;">
+        <p>
+          O dashboard completo está hospedado
+          no ambiente corporativo da CEDAE.
+        </p>
 
-        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <a
+          id="openExternalPanel"
+          class="open-panel-btn"
+          target="_blank"
+          rel="noopener"
+        >
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          Abrir painel completo
+        </a>
 
-        Abrir painel
+      </div>
 
-      </a>
+    </div>
 
+  </div>
+
+  <div class="preview-kpis">
+
+    <div class="kpi-card">
+      <span>Unidades monitoradas</span>
+      <strong>124</strong>
+    </div>
+
+    <div class="kpi-card">
+      <span>PGRS concluídos</span>
+      <strong>107</strong>
+    </div>
+
+    <div class="kpi-card">
+      <span>Pendências</span>
+      <strong>17</strong>
+    </div>
+
+    <div class="kpi-card">
+      <span>Conformidade</span>
+      <strong>89%</strong>
     </div>
 
   </div>
@@ -524,7 +716,7 @@
       id: "painel-pgrs",
       title: "Painel de acompanhamento PGRS",
       summary: "Painel interativo para acompanhamento dos PGRS das unidades.",
-      url: "https://iraja.cedae.corp/sense/app/6c6324de-919b-490b-9e99-d5d8371c0630/sheet/UDbfPhj/state/analysis",
+      url: "https://iraja.cedae.corp/single/?appid=6c6324de-919b-490b-9e99-d5d8371c0630&sheet=UDbfPhj",
       author: "Equipe tecnica DMA",
       status: "Publicado",
       kind: "PAINEL"
@@ -552,7 +744,14 @@
   const materialStatus = document.querySelector("#materialStatus");
   const openMaterial = document.querySelector("#openMaterial");
   const openMaterialTop = document.querySelector("#openMaterialTop");
+  const PANEL_URL =
+"https://iraja.cedae.corp/single/?appid=6c6324de-919b-490b-9e99-d5d8371c0630&sheet=UDbfPhj";
 
+document.querySelector("#openExternalPanel").href = PANEL_URL;
+
+document.querySelector("#openMaterial").href = PANEL_URL;
+
+document.querySelector("#openMaterialTop").href = PANEL_URL;
   // REMOVE ESTES:
   // const downloadMaterial
   // const downloadMaterialTop

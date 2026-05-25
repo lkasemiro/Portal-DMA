@@ -3,310 +3,454 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programa Recicla CEDAE | Portal DMA</title>
+  <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-blue: #001d3d;
+      --green: #16a34a;
+      --green-dark: #14532d;
+      --teal: #0f766e;
+      --white: #ffffff;
+      --page-bg: #f7faf8;
+      --text-main: #123044;
+      --text-muted: #64748b;
+      --line: #dbe8df;
+      --paper: #ffffff;
+      --shadow: 0 12px 30px rgba(20, 83, 45, 0.08);
+    }
 
-  <title>Recicla CEDAE · Fase 2</title>
-  <meta name="description" content="Recicla CEDAE - Fase 2" />
-  <meta name="theme-color" content="#0b3d91" />
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./css/global.css" />
-  <link rel="stylesheet" href="./css/recicla-fase2.css" />
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 85% 8%, rgba(34, 197, 94, 0.12), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f1fdf4 48%, #edf7f1 100%);
+      color: var(--text-main);
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .module-page {
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .program-logo {
+      width: 66px;
+      height: 66px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      object-fit: contain;
+      background: var(--white);
+      padding: 6px;
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .module-title span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--green-dark);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .module-title h1 {
+      color: var(--primary-blue);
+      font-size: clamp(1.75rem, 3vw, 2.55rem);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .module-title p {
+      max-width: 720px;
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .module-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--white);
+      color: var(--primary-blue);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      border-color: var(--green);
+      background: var(--green);
+      color: var(--white);
+    }
+
+    .recicla-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 230px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .viewer-card,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .viewer-toolbar {
+      min-height: 52px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: #fbfffc;
+    }
+
+    .viewer-toolbar strong {
+      display: block;
+      color: var(--primary-blue);
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    .viewer-toolbar span {
+      display: block;
+      margin-top: 2px;
+      color: var(--text-muted);
+      font-size: 0.74rem;
+    }
+
+    .viewer-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .pdf-stage {
+      height: calc(100dvh - 88px);
+      min-height: 610px;
+      padding: 10px;
+      background:
+        linear-gradient(180deg, rgba(248, 250, 252, 0.92), rgba(241, 248, 244, 0.96)),
+        repeating-linear-gradient(90deg, rgba(20, 83, 45, 0.025) 0, rgba(20, 83, 45, 0.025) 1px, transparent 1px, transparent 34px);
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #dbe8df;
+      border-radius: 8px;
+      display: block;
+      background: var(--white);
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      padding: 12px;
+    }
+
+    .panel h2 {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--primary-blue);
+      font-size: 1rem;
+      margin-bottom: 14px;
+    }
+
+    .status-card {
+      padding: 14px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #14532d, #0f766e);
+      color: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .status-card span {
+      display: block;
+      color: rgba(255,255,255,0.68);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .status-card b {
+      display: block;
+      margin-top: 8px;
+      font-size: 1.25rem;
+      line-height: 1.05;
+    }
+
+    .status-card p {
+      margin-top: 8px;
+      color: rgba(255,255,255,0.72);
+      font-size: 0.74rem;
+      line-height: 1.45;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: start;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      line-height: 1.42;
+    }
+
+    .meta-row i {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1fdf4;
+      color: var(--green-dark);
+    }
+
+    .meta-row b {
+      display: block;
+      color: var(--primary-blue);
+      font-size: 0.78rem;
+      margin-bottom: 2px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .kpi-card {
+      min-height: 74px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfffc;
+    }
+
+    .kpi-card span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .kpi-card b {
+      display: block;
+      margin-top: 8px;
+      color: var(--green-dark);
+      font-size: 1.05rem;
+    }
+
+    .next-card {
+      border: 1px solid rgba(0, 29, 61, 0.14);
+      border-radius: 8px;
+      padding: 12px;
+      background: #ffffff;
+    }
+
+    .next-card p {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .next-card .btn {
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 1040px) {
+      .recicla-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .module-actions {
+        justify-content: flex-start;
+      }
+
+      .pdf-stage {
+        height: 72vh;
+        min-height: 520px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .module-page {
+        padding: 10px;
+      }
+
+      .viewer-tools {
+        width: 100%;
+      }
+
+      .btn {
+        flex: 1;
+      }
+
+      .viewer-toolbar {
+        padding: 14px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .pdf-stage {
+        height: calc(100dvh - 160px);
+        min-height: 380px;
+        padding: 6px;
+      }
+
+      .panel,
+      .status-card,
+      .next-card {
+        padding: 14px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-  <header class="topbar">
-    <div class="topbar__left">
-      <a href="./index.html" class="topbar__back-link" aria-label="Voltar ao Portal DMA">
-        ← Portal DMA
-      </a>
-
-      <div class="brand-block">
-        <h1 class="brand-title">Recicla CEDAE · Fase 2</h1>
-        <p class="brand-subtitle">
-          Mobilização institucional para gestão de resíduos, engajamento interno e valorização da reciclagem.
-        </p>
-      </div>
-    </div>
-
-    <div class="topbar__logo">
-      <img
-        src="./assets/logo-cedae-transparente.png"
-        alt="Logo CEDAE"
-      />
-    </div>
-  </header>
-
   <main class="module-page">
-    <!-- HERO -->
-    <section class="hero-card">
-      <div class="hero-card__layout">
-        <div class="hero-card__content">
-          <p class="section-label">Lançamento institucional</p>
-          <h2>Recicla CEDAE avança para a Fase 2 com nova etapa de mobilização e acompanhamento contínuo</h2>
-          <p>
-            Após os resultados alcançados na primeira etapa, o programa entra em uma nova fase com reforço
-            da mobilização interna, da comunicação institucional e do acompanhamento contínuo dos resultados
-            vinculados à gestão de resíduos e à participação das diretorias.
-          </p>
-
-          <div class="hero-actions">
-            <a href="#fase1" class="btn btn--primary">Ver resultados da Fase 1</a>
-            <a href="#fase2" class="btn btn--secondary">Conhecer a Fase 2</a>
-            <a href="#consulta-creditos" class="btn btn--ghost">Consultar créditos</a>
+    <section class="recicla-grid">
+      <article class="viewer-card" aria-label="Visualizador do material Recicla">
+        <div class="viewer-toolbar">
+          <div>
+            <strong>Recicla CEDAE 2025</strong>
+            <span>PDF publicado pela equipe tecnica</span>
+          </div>
+          <div class="viewer-tools">
+            <a class="btn" href="./assets/recicla-2025.pdf" target="_blank" rel="noopener" aria-label="Abrir material">
+              <i class="fa-solid fa-up-right-from-square"></i>
+            </a>
+            <a class="btn" href="./assets/recicla-2025.pdf" download aria-label="Baixar material">
+              <i class="fa-solid fa-download"></i>
+            </a>
           </div>
         </div>
 
-        <div class="hero-card__logo-wrap" aria-hidden="true">
-          <img
-            src="./assets/logo-recicla-cedae-removebg-preview.png"
-            alt="Logo Recicla CEDAE"
-            class="hero-card__logo"
-          />
+        <div class="pdf-stage">
+          <iframe class="pdf-frame" src="./assets/recicla-2025.pdf#toolbar=0&navpanes=0&scrollbar=0&zoom=page-fit&view=Fit" title="Material Recicla 2025 em PDF"></iframe>
         </div>
-      </div>
-    </section>
-
-    <!-- BLOCO 1 -->
-    <section id="fase1" class="split-section">
-      <!-- ESQUERDA -->
-      <article class="content-panel content-panel--context">
-        <div class="section-tag">Contexto institucional</div>
-        <h2>Gestão de resíduos, engajamento interno e meta institucional</h2>
-
-        <p>
-          O Recicla CEDAE integra a estratégia institucional de fortalecimento da gestão de resíduos,
-          incentivo à segregação correta de materiais recicláveis e consolidação de práticas alinhadas
-          à responsabilidade socioambiental no ambiente corporativo.
-        </p>
-
-        <p>
-          A iniciativa contribui para a construção de uma cultura organizacional orientada por sustentabilidade,
-          consumo consciente, valorização da logística reversa e melhoria contínua dos processos internos
-          associados ao manejo de resíduos.
-        </p>
-
-        <div class="info-card-grid">
-          <article class="info-card">
-            <h3>Objetivo</h3>
-            <p>
-              Incentivar o descarte correto de materiais recicláveis e ampliar a participação dos empregados
-              em práticas permanentes de responsabilidade ambiental no ambiente de trabalho.
-            </p>
-          </article>
-
-          <article class="info-card">
-            <h3>Justificativa</h3>
-            <p>
-              Fortalecer uma política interna de sustentabilidade, reduzir desperdícios,
-              qualificar a destinação dos resíduos e ampliar o engajamento das diretorias
-              em uma agenda ambiental comum.
-            </p>
-          </article>
-
-          <article class="info-card">
-            <h3>Meta institucional</h3>
-            <p>
-              Consolidar uma rotina institucional de acompanhamento dos resultados do programa,
-              ampliar a adesão interna e apoiar o avanço da companhia em práticas aderentes
-              à certificação Lixo Zero.
-            </p>
-          </article>
-        </div>
-
-        <section class="public-section">
-          <div class="section-head">
-            <div>
-              <p class="section-label">Comunicação institucional</p>
-              <h3>Bloco visual e peças de campanha em preparação</h3>
-            </div>
-          </div>
-
-          <div class="education-grid" id="publicEducationGrid"></div>
-        </section>
       </article>
 
-      <!-- DIREITA -->
-      <article class="content-panel content-panel--indicators">
-        <div class="section-tag">Resultados da Fase 1</div>
-        <h2>Indicativos públicos do programa</h2>
-
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <span>Participantes mobilizados</span>
-            <strong id="publicKpiParticipantes">0</strong>
-          </div>
-
-          <div class="kpi-card">
-            <span>Resíduos destinados corretamente</span>
-            <strong id="publicKpiPesoTotal">0 kg</strong>
-          </div>
-
-          <div class="kpi-card">
-            <span>Diretorias participantes</span>
-            <strong id="publicKpiDiretorias">0</strong>
-          </div>
-        </div>
-
-        <section class="public-section">
-          <div class="section-head">
-            <div>
-              <p class="section-label">Premiações</p>
-              <h3>Catálogo de recompensas e benefícios</h3>
-            </div>
-          </div>
-
-          <section class="award-catalog" id="awardCatalog"></section>
+      <aside class="side-stack">
+        <section class="status-card">
+          <span>Status do modulo</span>
+          <b>Fase 2025</b>
+          <p>Pagina preparada para centralizar materiais aprovados do Programa Recicla e reduzir dependencias de postagem manual.</p>
         </section>
-      </article>
-    </section>
 
-    <!-- BLOCO 2 -->
-    <section class="split-section">
-      <!-- ESQUERDA -->
-      <article class="content-panel content-panel--context">
-        <div class="section-tag">Orientações do programa</div>
-        <h2>Materiais aceitos, campanha visual e orientações de descarte</h2>
-
-        <section class="public-section">
-          <div class="section-head">
-            <div>
-              <p class="section-label">Orientações de descarte</p>
-              <h3>Materiais aceitos e não aceitos no programa</h3>
+        <section class="panel">
+          <h2><i class="fa-solid fa-circle-info"></i> Publicacao</h2>
+          <div class="meta-list">
+            <div class="meta-row">
+              <i class="fa-solid fa-layer-group"></i>
+              <div><b>Modulo</b><span>Programa Recicla CEDAE</span></div>
             </div>
-          </div>
-
-          <div class="materials-grid">
-            <article class="materials-box materials-box--accepted">
-              <h3>Materiais aceitos</h3>
-              <ul id="acceptedMaterialsList"></ul>
-            </article>
-
-            <article class="materials-box materials-box--rejected">
-              <h3>Materiais não aceitos</h3>
-              <ul id="rejectedMaterialsList"></ul>
-            </article>
+            <div class="meta-row">
+              <i class="fa-solid fa-file-pdf"></i>
+              <div><b>Arquivo</b><span>assets/recicla-2025.pdf</span></div>
+            </div>
+            <div class="meta-row">
+              <i class="fa-solid fa-stamp"></i>
+              <div><b>Fluxo futuro</b><span>Upload tecnico, aprovacao e publicacao automatica.</span></div>
+            </div>
           </div>
         </section>
 
-        <div class="folder-placeholder">
-          <h3>Artes e materiais visuais da campanha</h3>
-          <p>
-            Esta área está reservada para receber as peças visuais do programa,
-            com identidade própria para a Fase 2, orientações de participação,
-            reforço das metas institucionais e comunicação dos materiais aceitos.
-          </p>
-          <div class="folder-placeholder__box">
-            Área reservada para artes do programa
-          </div>
-        </div>
-      </article>
-
-      <!-- DIREITA -->
-      <article class="content-panel content-panel--indicators">
-        <div class="section-tag">Classificação pública</div>
-        <h2>Top 20 participantes por volume acumulado</h2>
-
-        <section class="public-section">
-          <div class="section-head section-head--between">
-            <div>
-              <p class="section-label">Ranking público</p>
-              <h3>Classificação exibida somente por ID</h3>
+        <section class="panel">
+          <h2><i class="fa-solid fa-chart-simple"></i> Indicadores</h2>
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span>Materiais</span>
+              <b>1</b>
             </div>
-
-            <span id="historicTop20Count" class="table-count">0 registros</span>
-          </div>
-
-          <div class="public-highlight" id="historicTop20Highlight">
-            Classificação pública indisponível.
-          </div>
-
-          <div class="table-wrap">
-            <table class="participants-table">
-              <thead>
-                <tr>
-                  <th>Posição</th>
-                  <th>ID</th>
-                  <th>Diretoria</th>
-                  <th>Somatório</th>
-                </tr>
-              </thead>
-              <tbody id="historicTop20Body"></tbody>
-            </table>
+            <div class="kpi-card">
+              <span>Status</span>
+              <b>Preview</b>
+            </div>
+            <div class="kpi-card">
+              <span>Origem</span>
+              <b>DMA</b>
+            </div>
+            <div class="kpi-card">
+              <span>Publico</span>
+              <b>Interno</b>
+            </div>
           </div>
         </section>
-      </article>
+
+        <section class="next-card">
+          <p>No proximo passo, este PDF entra como uma postagem aprovada no feed tecnico, igual ao modulo de residuos.</p>
+          <a class="btn primary" href="./area-tecnica-postagens.html#composer">
+            <i class="fa-solid fa-plus"></i>
+            Criar postagem
+          </a>
+        </section>
+      </aside>
     </section>
-
-    <!-- BLOCO 3 -->
-    <section id="fase2" class="split-section">
-      <!-- ESQUERDA -->
-      <article class="content-panel content-panel--context">
-        <div class="section-tag">Fase 2</div>
-        <h2>Nova etapa do programa</h2>
-
-        <p>
-          A Fase 2 do Recicla CEDAE dará continuidade ao programa com reforço da comunicação institucional,
-          atualização periódica dos resultados e manutenção da sistemática de acompanhamento por ID dos participantes.
-        </p>
-
-        <div class="timeline-card">
-          <h3>Datas e dinâmica da nova fase</h3>
-          <ul class="timeline-list">
-            <li><strong>Abertura da nova fase:</strong> <span id="data-abertura">A definir</span></li>
-            <li><strong>Inscrições:</strong> <span id="periodo-inscricao">Via formulário institucional</span></li>
-            <li><strong>Atualização dos resultados:</strong> acompanhamento mensal</li>
-            <li><strong>Divulgação pública:</strong> ranking por ID e indicadores consolidados</li>
-          </ul>
-        </div>
-
-        <div class="rules-card">
-          <h3>Regras gerais do programa</h3>
-          <ul class="rules-list">
-            <li>As inscrições poderão ser realizadas inicialmente por formulário institucional vinculado ao e-mail corporativo.</li>
-            <li>As pesagens serão registradas pela equipe técnica em ambiente restrito de controle.</li>
-            <li>Os créditos serão vinculados ao ID do participante.</li>
-            <li>Na área pública não serão exibidos nomes de participantes, apenas IDs e resultados agregados.</li>
-            <li>O acompanhamento individual poderá ser consultado por ID.</li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- DIREITA -->
-      <article id="consulta-creditos" class="content-panel content-panel--indicators">
-        <div class="section-tag">Consulta individual</div>
-        <h2>Consulte aqui seus créditos</h2>
-
-        <p>
-          Informe seu ID para verificar o volume acumulado, os status de premiação,
-          a retirada de composto registrada e os prêmios atualmente disponíveis.
-        </p>
-
-        <form id="consultaForm" class="consulta-form" autocomplete="off">
-          <label for="consultaId">ID do participante</label>
-          <div class="consulta-form__row">
-            <input
-              id="consultaId"
-              name="consultaId"
-              type="text"
-              inputmode="numeric"
-              placeholder="Digite seu ID"
-              maxlength="20"
-            />
-            <button type="submit" class="btn btn--primary">Consultar</button>
-          </div>
-        </form>
-
-        <div id="consultaResultado" class="consulta-result">
-          <div class="empty-state">Nenhuma consulta realizada.</div>
-        </div>
-      </article>
-    </section>
-
-    <footer class="module-footer">
-      <p id="fase2DbStatus">Inicializando módulo...</p>
-    </footer>
   </main>
-
-  <script src="./js/recicla-fase2.js"></script>
 </body>
 </html>

@@ -429,7 +429,7 @@
           <button class="btn-arrow" id="btnPrevMonth" type="button" aria-label="Mes anterior">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <h2 id="calendarTitle">Janeiro 2026</h2>
+          <h2 id="calendarTitle">Maio 2026</h2>
           <button class="btn-arrow" id="btnNextMonth" type="button" aria-label="Proximo mes">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
@@ -494,7 +494,7 @@
     ];
 
     const monthNames = [
-      "Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho",
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
       "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
     const weekdayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
@@ -513,7 +513,7 @@
     const monthCount = document.querySelector("#monthCount");
 
     let currentDate = new Date(2026, 0, 1);
-    let selectedDateKey = "2026-01-02";
+    let selectedDateKey = "2026-05-22";
 
     function toDateKey(year, month, day) {
       return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;

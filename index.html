@@ -281,7 +281,7 @@
       background: var(--white);
       color: var(--primary-blue);
       cursor: pointer;
-      display: inline-flex;
+      display: none; /* Escondido por padrão no Desktop */
       align-items: center;
       justify-content: center;
       flex: 0 0 auto;
@@ -295,7 +295,7 @@
       background: var(--white);
       color: var(--primary-blue);
       cursor: pointer;
-      display: inline-flex;
+      display: inline-flex; /* Visível por padrão no Desktop */
       align-items: center;
       justify-content: center;
       flex: 0 0 auto;
@@ -323,35 +323,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 0 0 auto;
-    }
-
-    .topbar-link {
-      min-height: 38px;
-      padding: 0 13px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: var(--white);
-      color: var(--primary-blue);
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 800;
-    }
-
-    .topbar-link.primary {
-      border-color: var(--accent-blue);
-      background: var(--accent-blue);
-      color: var(--white);
     }
 
     .stage-frame-wrap {
@@ -624,8 +595,40 @@
     .overlay.show {
       display: block;
     }
+        /* Torna as caixas de profundidade horizontais e menores */
+    .depth-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
 
-    /* Media Queries Atualizadas para Alta Fidelidade Mobile */
+    .depth-card {
+      min-height: 70px; /* Reduz de 116px para 70px */
+      padding: 10px 16px;
+      display: flex; /* Alinha o conteúdo em linha, não em bloco */
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+    }
+
+    .depth-icon-wrap {
+      margin: 0; /* Remove o espaçamento vertical */
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+    }
+
+    .depth-name {
+      font-size: 0.85rem;
+    }
+
+    /* Expande os cards de módulos para preencherem melhor o espaço */
+    .module-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 colunas em vez de 4 */
+      gap: 20px;
+    }
+
+    /* Media Queries */
     @media (max-width: 1120px) {
       :root { --sidebar-width: 260px; }
       .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -662,9 +665,12 @@
       }
 
       .portal-shell.sidebar-collapsed .module-link { grid-template-columns: 28px 1fr; justify-items: stretch; padding: 10px 12px; }
-      .collapse-sidebar-btn { display: none; }
+      
+      /* Inversão Mobile de botões */
+      .collapse-sidebar-btn { display: none !important; }
+      .mobile-menu-btn { display: inline-flex !important; }
+      
       .stage-topbar { padding: 0 16px; }
-      .topbar-link span { display: none; }
       .welcome-inner { padding: 20px; }
       .depth-cards { grid-template-columns: 1fr; gap: 12px; }
     }
@@ -676,9 +682,6 @@
       .topbar-left { gap: 8px; }
       .stage-title strong { font-size: 0.9rem; }
       .stage-title span { font-size: 0.68rem; }
-      
-      .topbar-actions { gap: 4px; }
-      .topbar-link { min-height: 36px; padding: 0 10px; }
       
       .module-grid { grid-template-columns: 1fr; gap: 12px; }
       .hero-card { min-height: auto; padding: 20px; }
@@ -772,16 +775,6 @@
             <span id="stageSubtitle">Selecione um modulo na barra lateral para abrir no centro do portal.</span>
           </div>
         </div>
-         <div class="topbar-actions">
-          <button class="topbar-link" id="homeBtn" type="button">
-            <i class="fa-solid fa-house"></i>
-            <span>Inicio</span>
-          </button>
-          <button class="topbar-link primary" id="openNewTabBtn" type="button">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            <span>Abrir</span>
-          </button>
-        </div>
       </header>
 
       <section class="stage-frame-wrap">
@@ -862,7 +855,6 @@
   <div class="overlay" id="overlay"></div>
 
   <script>
-    // Mantive rigorosamente o mesmo script original estável que você estruturou
     const sidebar = document.querySelector("#moduleSidebar");
     const portalShell = document.querySelector("#portalShell");
     const overlay = document.querySelector("#overlay");
@@ -872,8 +864,6 @@
     const welcomeScreen = document.querySelector("#welcomeScreen");
     const stageTitle = document.querySelector("#stageTitle");
     const stageSubtitle = document.querySelector("#stageSubtitle");
-    const openNewTabBtn = document.querySelector("#openNewTabBtn");
-    const homeBtn = document.querySelector("#homeBtn");
     let currentSrc = "";
 
     function isMobileLayout() {
@@ -943,14 +933,6 @@
     document.querySelector("[data-home='true']").addEventListener("click", (event) => {
       event.preventDefault();
       showHome();
-    });
-
-    homeBtn.addEventListener("click", showHome);
-
-    openNewTabBtn.addEventListener("click", () => {
-      if (currentSrc) {
-        window.open(currentSrc, "_blank", "noopener");
-      }
     });
 
     mobileMenuBtn.addEventListener("click", () => {

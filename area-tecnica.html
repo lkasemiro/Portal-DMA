@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Area Tecnica | Portal DMA</title>
+  <title>Área Técnica | Portal DMA</title>
   <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <style>
@@ -23,7 +23,6 @@
       --orange: #f59e0b;
       --purple: #8b5cf6;
       --white: #ffffff;
-      --shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
     }
 
     * {
@@ -33,473 +32,254 @@
     }
 
     body {
-      min-height: 100vh;
-      overflow-x: hidden;
-      background:
-        radial-gradient(circle at 82% 8%, rgba(56, 182, 255, 0.12), transparent 28%),
-        radial-gradient(circle at 12% 78%, rgba(16, 185, 129, 0.07), transparent 30%),
-        linear-gradient(160deg, #061528 0%, #041020 42%, #03081a 72%, #020510 100%);
+      background: var(--deep-blue);
       color: var(--text-body);
-      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* Layout focado estritamente no conteúdo para rodar fluido no iframe */
+    .content-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
     }
 
-    button {
-      font: inherit;
-    }
-
-    .tech-page {
-      min-height: 100vh;
-      padding: 28px 34px 34px;
-    }
-
-    .tech-header {
+    .dashboard-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 22px;
-      align-items: end;
-      padding-bottom: 20px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .tech-title span {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      color: var(--blue);
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .tech-title h1 {
-      color: var(--text-title);
-      font-size: clamp(1.8rem, 3vw, 2.55rem);
-      line-height: 1.08;
-      letter-spacing: 0;
-    }
-
-    .tech-title p {
-      max-width: 720px;
-      margin-top: 9px;
-      color: var(--text-muted);
-      font-size: 0.92rem;
-      line-height: 1.55;
-    }
-
-    .tech-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      min-height: 40px;
-      padding: 0 14px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.045);
-      color: var(--text-title);
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 850;
-      white-space: nowrap;
-    }
-
-    .btn.primary {
-      border-color: rgba(56, 182, 255, 0.45);
-      background: var(--blue);
-      color: #031229;
-    }
-
-    .tech-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
-      gap: 22px;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
       align-items: start;
     }
 
+    @media (max-width: 960px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .main-stack, .side-stack {
+      display: grid;
+      gap: 24px;
+    }
+
+    /* Cards e Painéis */
     .panel {
+      background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(7, 19, 48, 0.82);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
     .panel-header {
-      min-height: 58px;
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      background: rgba(255, 255, 255, 0.025);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
     }
 
     .panel-header h2 {
+      font-size: 1.15rem;
       color: var(--text-title);
-      font-size: 1rem;
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
     }
 
     .panel-header span {
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.06em;
+      font-size: 0.75rem;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
     }
 
-    .module-grid {
-      padding: 18px;
+    /* Status Grid */
+    .status-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
     }
 
-    .module-card {
-      min-height: 176px;
-      padding: 18px;
+    .status-card {
+      background: var(--panel-soft);
       border: 1px solid var(--line);
       border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: rgba(255, 255, 255, 0.035);
-      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      padding: 16px;
     }
 
-    .module-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(56, 182, 255, 0.35);
-      background: rgba(56, 182, 255, 0.075);
-    }
-
-    .module-card i {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--blue);
-      font-size: 1.05rem;
-    }
-
-    .module-card h3 {
-      margin-top: 18px;
-      color: var(--text-title);
-      font-size: 1rem;
-      line-height: 1.3;
-    }
-
-    .module-card p {
-      margin-top: 8px;
+    .status-card span {
+      display: block;
+      font-size: 0.75rem;
       color: var(--text-muted);
-      font-size: 0.8rem;
-      line-height: 1.45;
+      margin-bottom: 6px;
     }
 
-    .module-card small {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 14px;
-      color: var(--text-body);
-      font-size: 0.72rem;
-      font-weight: 900;
-      text-transform: uppercase;
+    .status-card strong {
+      display: block;
+      font-size: 1.4rem;
+      color: var(--text-title);
     }
 
-    .audit-preview {
-      padding: 18px;
+    /* Tabelas Responsivas */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .audit-table {
+    table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.82rem;
+      text-align: left;
+      font-size: 0.88rem;
     }
 
-    .audit-table th {
-      padding: 11px 10px;
-      color: var(--text-muted);
-      text-align: left;
-      font-size: 0.7rem;
-      text-transform: uppercase;
+    th, td {
+      padding: 12px 16px;
       border-bottom: 1px solid var(--line);
     }
 
-    .audit-table td {
-      padding: 13px 10px;
-      color: var(--text-body);
-      border-bottom: 1px solid rgba(255,255,255,0.055);
+    th {
+      color: var(--text-title);
+      font-weight: 600;
+      background: var(--panel-soft);
+    }
+
+    tr:hover td {
+      background: rgba(255,255,255,0.02);
     }
 
     .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      background: rgba(16, 185, 129, 0.15);
       color: var(--green);
-      font-size: 0.72rem;
-      font-weight: 900;
     }
 
-    .side-stack {
+    /* Feed de Postagens */
+    .feed-list {
       display: grid;
-      gap: 16px;
-    }
-
-    .stat-grid {
-      padding: 16px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    .stat-card {
-      min-height: 92px;
-      padding: 15px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255,255,255,0.035);
-    }
-
-    .stat-card span {
-      display: block;
-      color: var(--text-muted);
-      font-size: 0.66rem;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .stat-card b {
-      display: block;
-      margin-top: 8px;
-      color: var(--text-title);
-      font-size: 1.7rem;
-    }
-
-    .feed-list {
-      padding: 16px;
-      display: grid;
-      gap: 10px;
-    }
-
     .feed-item {
-      padding: 13px;
+      display: block;
+      background: var(--panel-soft);
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(255,255,255,0.035);
+      padding: 14px;
+      text-decoration: none;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .feed-item:hover {
+      border-color: var(--blue);
+      transform: translateY(-2px);
     }
 
     .feed-item strong {
       display: block;
       color: var(--text-title);
-      font-size: 0.86rem;
-      line-height: 1.35;
-      margin-bottom: 5px;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
     }
 
     .feed-item span {
+      display: block;
       color: var(--text-muted);
-      font-size: 0.74rem;
+      font-size: 0.78rem;
       line-height: 1.4;
-    }
-
-    @media (max-width: 1120px) {
-      .tech-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .module-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 760px) {
-      .tech-page {
-        padding: 14px;
-      }
-
-      .tech-header {
-        grid-template-columns: 1fr;
-      }
-
-      .tech-actions {
-        justify-content: flex-start;
-      }
-
-      .module-grid,
-      .stat-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .tech-title h1 {
-        font-size: 1.6rem;
-      }
-
-      .tech-title p {
-        font-size: 0.82rem;
-      }
-
-      .module-card {
-        min-height: 140px;
-        padding: 15px;
-      }
-
-      .panel-header {
-        min-height: auto;
-        padding: 14px;
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .audit-preview {
-        overflow-x: auto;
-        padding: 12px;
-      }
     }
   </style>
 </head>
 <body>
-  <main class="tech-page">
-    <header class="tech-header">
-      <div class="tech-title">
-        <span><i class="fa-solid fa-water"></i> Fundo tecnico do portal</span>
-        <h1>Area Tecnica DMA</h1>
-        <p>Hub interno para auditoria, postagens, agenda, dados operacionais e preparacao dos conteudos que aparecem na superficie clara do portal.</p>
-      </div>
 
-      <div class="tech-actions">
-        <a class="btn" href="./index.html">
-          <i class="fa-solid fa-dumpster"></i>
-          Ver superficie
-        </a>
-        <a class="btn primary" href="./area-tecnica-postagens.html#composer">
-          <i class="fa-solid fa-plus"></i>
-          Criar postagem
-        </a>
-      </div>
-    </header>
-
-    <section class="tech-grid">
-      <div>
+  <div class="content-container">
+    <section class="dashboard-grid">
+      
+      <div class="main-stack">
+        
         <section class="panel">
           <div class="panel-header">
-            <h2><i class="fa-solid fa-diagram-project"></i> Submodulos tecnicos</h2>
-            <span>Preview</span>
+            <h2><i class="fa-solid fa-chart-pie"></i> Visão geral técnica</h2>
+            <span>Métricas gerais</span>
           </div>
-
-          <div class="module-grid">
-            <a class="module-card" href="./area-tecnica-postagens.html">
-              <div>
-                <i class="fa-solid fa-newspaper"></i>
-                <h3>Postagens</h3>
-                <p>Feed interno, upload de Canva/PDF, aprovacao e publicacao na pagina clara.</p>
-              </div>
-              <small><i class="fa-solid fa-arrow-right"></i> Entrar</small>
-            </a>
-
-            <a class="module-card" href="./agenda.html">
-              <div>
-                <i class="fa-solid fa-calendar-days"></i>
-                <h3>Agenda Ambiental</h3>
-                <p>Programacoes e eventos que podem ser mantidos pela equipe tecnica.</p>
-              </div>
-              <small><i class="fa-solid fa-arrow-right"></i> Abrir</small>
-            </a>
-
-            <a class="module-card" href="./aedes-tecnico.html">
-              <div>
-                <i class="fa-solid fa-bug"></i>
-                <h3>Modulo Aedes</h3>
-                <p>Acompanhamento dos lotes, vistorias, focais e indicadores operacionais.</p>
-              </div>
-              <small><i class="fa-solid fa-arrow-right"></i> Consultar</small>
-            </a>
-
-            <a class="module-card" href="./recicla-tecnico.html">
-              <div>
-                <i class="fa-solid fa-recycle"></i>
-                <h3>Modulo Recicla</h3>
-                <p>Gestao tecnica do programa e dos materiais de comunicacao do Recicla.</p>
-              </div>
-              <small><i class="fa-solid fa-arrow-right"></i> Planejar</small>
-            </a>
-
-            <a class="module-card" href="./residuos-solidos-como-descartar.html">
-              <div>
-                <i class="fa-solid fa-dumpster"></i>
-                <h3>Como descartar</h3>
-                <p>Pagina publica alimentada por materiais aprovados no feed tecnico.</p>
-              </div>
-              <small><i class="fa-solid fa-arrow-right"></i> Ver pagina</small>
-            </a>
-
-            <a class="module-card" href="./index.html">
-              <div>
-                <i class="fa-solid fa-layer-group"></i>
-                <h3>Portal completo</h3>
-                <p>Voltar para a navegacao geral com barra lateral fixa de modulos.</p>
-              </div>
-              <small><i class="fa-solid fa-house"></i> Inicio</small>
-            </a>
+          <div class="status-grid">
+            <div class="status-card">
+              <span>Programas ativos</span>
+              <strong>7</strong>
+            </div>
+            <div class="status-card">
+              <span>PGRS validados</span>
+              <strong>14</strong>
+            </div>
+            <div class="status-card">
+              <span>Módulos em dev</span>
+              <strong>2</strong>
+            </div>
           </div>
         </section>
 
-        <section class="panel" style="margin-top: 22px;">
+        <section class="panel">
           <div class="panel-header">
-            <h2><i class="fa-solid fa-list-ul"></i> Ultimos registros processados</h2>
-            <span>Aedes / auditoria</span>
+            <h2><i class="fa-solid fa-layer-group"></i> Status de integração dos módulos</h2>
+            <span>Validação de rotas</span>
           </div>
-
-          <div class="audit-preview">
-            <table class="audit-table">
+          <div class="table-responsive">
+            <table>
               <thead>
                 <tr>
-                  <th>Origem</th>
-                  <th>Registro</th>
-                  <th>Status</th>
-                  <th>Atualizacao</th>
+                  <th>Módulo</th>
+                  <th>Escopo do dado</th>
+                  <th>Status atual</th>
+                  <th>Tipo</th>
                 </tr>
               </thead>
-              <tbody id="mainDataTable">
+              <tbody>
                 <tr>
-                  <td>Aedes</td>
-                  <td>Lotes de vistoria</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Sincronizado</span></td>
-                  <td>Preview</td>
+                  <td>Recicla CEDAE</td>
+                  <td>Fase 2 - Piloto</td>
+                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
+                  <td>Módulo</td>
                 </tr>
                 <tr>
-                  <td>Conteudo</td>
-                  <td>Postagens aprovadas</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-clock"></i> Em desenho</span></td>
-                  <td>MVP</td>
+                  <td>Combate à Dengue</td>
+                  <td>Casos e vistorias</td>
+                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
+                  <td>Módulo</td>
+                </tr>
+                <tr>
+                  <td>Resíduos</td>
+                  <td>Inventário estático</td>
+                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
+                  <td>Módulo</td>
+                </tr>
+                <tr>
+                  <td>Sinalizações</td>
+                  <td>Modelos e placas</td>
+                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
+                  <td>Módulo</td>
+                </tr>
+                <tr>
+                  <td>PGRS</td>
+                  <td>Planos elaborados</td>
+                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
+                  <td>Módulo</td>
                 </tr>
                 <tr>
                   <td>Agenda</td>
                   <td>Eventos ambientais</td>
                   <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
-                  <td>Modulo</td>
+                  <td>Módulo</td>
                 </tr>
               </tbody>
             </table>
@@ -510,52 +290,28 @@
       <aside class="side-stack">
         <section class="panel">
           <div class="panel-header">
-            <h2><i class="fa-solid fa-gauge-high"></i> Indicadores</h2>
-            <span>Operacao</span>
-          </div>
-          <div class="stat-grid">
-            <div class="stat-card">
-              <span>Vistorias realizadas</span>
-              <b id="kpi-vistorias-sim">--</b>
-            </div>
-            <div class="stat-card">
-              <span>Focos encontrados</span>
-              <b id="kpi-focos">--</b>
-            </div>
-            <div class="stat-card">
-              <span>Lotes sincronizados</span>
-              <b id="kpi-lotes">--</b>
-            </div>
-            <div class="stat-card">
-              <span>Postagens</span>
-              <b>3</b>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-rss"></i> Feed tecnico</h2>
+            <h2><i class="fa-solid fa-rss"></i> Feed técnico</h2>
             <span>Resumo</span>
           </div>
           <div class="feed-list">
             <a class="feed-item" href="./area-tecnica-postagens.html">
               <strong>Central de postagens criada</strong>
-              <span>Fluxo de rascunho, aprovacao e publicacao preparado para virar API.</span>
+              <span>Fluxo de rascunho, aprovação e publicação preparado para virar API.</span>
             </a>
-            <a class="feed-item" href="./residuos-solidos-como-descartar.html">
-              <strong>PDF de residuos em destaque</strong>
-              <span>Pagina clara agora exibe material aprovado como protagonista.</span>
+            <a class="feed-item" href="./residuos-solidos.html">
+              <strong>PDF de resíduos em destaque</strong>
+              <span>Página clara agora exibe material aprovado como protagonista.</span>
             </a>
             <a class="feed-item" href="./agenda.html">
               <strong>Agenda enquadrada no shell</strong>
-              <span>Modulo visual sem cabecalho duplicado dentro do portal.</span>
+              <span>Módulo visual sem cabeçalho duplicado dentro do portal.</span>
             </a>
           </div>
         </section>
       </aside>
+
     </section>
-  </main>
+  </div>
 
   <script type="module" src="./js/pages/area-tecnica.js"></script>
 </body>

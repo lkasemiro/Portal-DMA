@@ -2,33 +2,52 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title> Sistema de Gestão Ambiental</title>
-  <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+
+  <title>Portal Ambiental</title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="./assets/logo-cedae-transparente.png"
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
     :root {
       --sidebar-width: 292px;
       --topbar-height: 70px;
+
       --primary-blue: #001d3d;
       --accent-blue: #0056b3;
       --accent-green: #22c55e;
       --accent-red: #ef4444;
+
       --bg-page: #f8fafc;
-      --bg-soft: #eef4f8;
       --text-main: #0f2747;
       --text-muted: #64748b;
       --line: #dbe4ee;
       --white: #ffffff;
+
       --shadow: 0 12px 28px rgba(0, 29, 61, 0.08);
-      --surface: #fffbea;
-      --water: #cceeff;
-      --river: #0077b6;
-      --teal: #2a9d8f;
-      --abyss: #03045e;
+
+      --card-bg-green: #ecfdf3;
+      --card-bg-red: #fef2f2;
     }
 
     * {
@@ -37,217 +56,168 @@
       box-sizing: border-box;
     }
 
-    html {
+    html,
+    body {
       height: 100%;
-      -webkit-text-size-adjust: 100%;
     }
 
     body {
-      height: 100%;
-      min-height: 100dvh;
       overflow: hidden;
       background: var(--bg-page);
       color: var(--text-main);
-      font-family: "DM Sans", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family:
+        "DM Sans",
+        "Segoe UI",
+        system-ui,
+        sans-serif;
     }
 
     a {
-      color: inherit;
       text-decoration: none;
+      color: inherit;
     }
 
     button {
       font: inherit;
+      border: none;
+      background: none;
     }
 
     .portal-shell {
-      height: 100dvh;
-      width: 100%;
+      height: 100vh;
       display: grid;
       grid-template-columns: var(--sidebar-width) 1fr;
-      background: var(--bg-page);
-      transition: grid-template-columns 0.24s ease;
       overflow: hidden;
+      transition: grid-template-columns 0.25s ease;
     }
 
     .portal-shell.sidebar-collapsed {
       grid-template-columns: 76px 1fr;
     }
 
+    /* SIDEBAR */
+
     .module-sidebar {
-      height: 100dvh;
+      background: var(--primary-blue);
+      color: white;
       padding: 18px 16px;
       display: flex;
       flex-direction: column;
-      background: var(--primary-blue);
-      color: var(--white);
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 8px 0 30px rgba(0, 29, 61, 0.18);
-      z-index: 20;
-      transition: width 0.24s ease, padding 0.24s ease, transform 0.24s ease;
-    }
-
-    .portal-shell.sidebar-collapsed .module-sidebar {
-      width: 76px;
-      padding-left: 10px;
-      padding-right: 10px;
+      overflow-y: auto;
+      border-right: 1px solid rgba(255,255,255,0.08);
     }
 
     .brand-block {
-      padding: 8px 8px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       display: grid;
       grid-template-columns: 46px 1fr;
       gap: 12px;
       align-items: center;
-    }
 
-    .portal-shell.sidebar-collapsed .brand-block {
-      grid-template-columns: 46px;
-      justify-content: center;
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    .portal-shell.sidebar-collapsed .brand-block > div,
-    .portal-shell.sidebar-collapsed .sidebar-label,
-    .portal-shell.sidebar-collapsed .module-link span,
-    .portal-shell.sidebar-collapsed .sidebar-footer {
-      display: none;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
     }
 
     .brand-logo {
       width: 46px;
       height: 46px;
-      border-radius: 8px;
-      object-fit: contain;
-      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      background: white;
       padding: 5px;
+      object-fit: contain;
     }
 
     .brand-block b {
       display: block;
-      font-size: 1.12rem;
-      line-height: 1.1;
+      font-size: 1rem;
     }
 
     .brand-block span {
-      display: block;
-      margin-top: 4px;
-      color: rgba(255, 255, 255, 0.68);
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.65);
       text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .sidebar-section {
-      margin-top: 18px;
+      margin-top: 20px;
     }
 
     .sidebar-label {
-      margin: 0 8px 8px;
-      color: rgba(255, 255, 255, 0.48);
-      font-size: 0.68rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.7rem;
       text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
     }
 
     .nav-list {
       display: grid;
-      gap: 7px;
+      gap: 8px;
     }
 
     .module-link {
       width: 100%;
-      min-height: 46px;
-      padding: 10px 12px;
-      border: 1px solid transparent;
-      border-radius: 8px;
+      min-height: 48px;
+
       display: grid;
       grid-template-columns: 28px 1fr;
-      gap: 11px;
+      gap: 12px;
       align-items: center;
-      background: transparent;
-      color: rgba(255, 255, 255, 0.76);
-      cursor: pointer;
-      text-align: left;
-      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-    }
 
-    .portal-shell.sidebar-collapsed .module-link {
-      grid-template-columns: 1fr;
-      justify-items: center;
-      padding: 9px;
+      padding: 10px 12px;
+
+      border-radius: 10px;
+      cursor: pointer;
+
+      color: rgba(255,255,255,0.75);
+
+      transition: 0.2s ease;
     }
 
     .module-link:hover,
     .module-link.active {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.12);
-      color: var(--white);
+      background: rgba(255,255,255,0.08);
+      color: white;
     }
 
     .module-link i {
       width: 28px;
       height: 28px;
       border-radius: 8px;
-      display: inline-flex;
+
+      display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--white);
-      background: rgba(255, 255, 255, 0.11);
+
+      background: rgba(255,255,255,0.12);
     }
 
     .module-link strong {
       display: block;
-      font-size: 0.86rem;
-      line-height: 1.25;
+      font-size: 0.84rem;
     }
 
     .module-link small {
-      display: block;
-      margin-top: 2px;
-      color: rgba(255, 255, 255, 0.5);
       font-size: 0.68rem;
-      line-height: 1.25;
+      color: rgba(255,255,255,0.5);
     }
 
-    .module-link.recicla i { background: #16a34a; }
-    .module-link.aedes i { background: #ef4444; }
-    .module-link.geracao i { background: #14532d; }
-    .module-link.placas i { background: #1e40af; }
-    .module-link.pgrs i { background: #c2410c; }
-    .module-link.agenda i { background: #581c87; }
-    .module-link.descarte i { background: #7c2d12; }
-    .module-link.tecnica i { background: #38b6ff; color: #031229; }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 14px 8px 2px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    .recicla i { background: #16a34a; }
+    .aedes i { background: #ef4444; }
+    .geracao i { background: #14532d; }
+    .placas i { background: #1e40af; }
+    .pgrs i { background: #c2410c; }
+    .agenda i { background: #581c87; }
+    .descarte i { background: #7c2d12; }
+    .tecnica i {
+      background: #38b6ff;
+      color: #031229;
     }
 
-    .status-pill {
-      padding: 12px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      color: rgba(255, 255, 255, 0.66);
-      font-size: 0.74rem;
-      line-height: 1.45;
-    }
-
-    .status-pill b {
-      display: block;
-      margin-bottom: 3px;
-      color: var(--white);
-      font-size: 0.82rem;
-    }
+    /* MAIN */
 
     .main-stage {
-      min-width: 0;
-      height: 100dvh;
       display: grid;
       grid-template-rows: var(--topbar-height) 1fr;
       overflow: hidden;
@@ -255,902 +225,744 @@
 
     .stage-topbar {
       height: var(--topbar-height);
-      padding: 0 24px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.94);
+
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
-      z-index: 10;
+
+      padding: 0 22px;
+
+      background: rgba(255,255,255,0.96);
+
+      border-bottom: 1px solid var(--line);
     }
 
     .topbar-left {
-      min-width: 0;
       display: flex;
       align-items: center;
       gap: 12px;
-      flex: 1;
-    }
-
-    .mobile-menu-btn {
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--white);
-      color: var(--primary-blue);
-      cursor: pointer;
-      display: none; /* Escondido por padrão no Desktop */
-      align-items: center;
-      justify-content: center;
-      flex: 0 0 auto;
+      min-width: 0;
     }
 
     .collapse-sidebar-btn {
       width: 40px;
       height: 40px;
+
+      border-radius: 10px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--white);
-      color: var(--primary-blue);
-      cursor: pointer;
-      display: inline-flex; /* Visível por padrão no Desktop */
+
+      display: flex;
       align-items: center;
       justify-content: center;
-      flex: 0 0 auto;
-    }
 
-    .stage-title {
-      min-width: 0;
-      flex: 1;
+      cursor: pointer;
+
+      background: white;
+      color: var(--primary-blue);
     }
 
     .stage-title strong {
       display: block;
+      font-size: 0.95rem;
       color: var(--primary-blue);
-      font-size: 0.98rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .stage-title span {
-      display: block;
-      margin-top: 2px;
-      color: var(--text-muted);
       font-size: 0.74rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: var(--text-muted);
     }
 
+    /* CONTENT */
+
     .stage-frame-wrap {
-      min-height: 0;
-      height: 100%;
       position: relative;
-      background: var(--bg-page);
+      height: 100%;
+      overflow: hidden;
     }
 
     .welcome-screen {
       height: 100%;
       overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      padding: 0;
+
       background:
-        radial-gradient(ellipse 620px 280px at 50% -6%, rgba(255, 236, 128, 0.22), transparent 62%),
-        radial-gradient(ellipse 80px 22px at 18% 18%, rgba(255,255,255,0.24), transparent 100%),
-        radial-gradient(ellipse 58px 18px at 78% 22%, rgba(255,255,255,0.2), transparent 100%),
-        linear-gradient(180deg, #fffbea 0%, #e0f5ff 18%, #cceeff 35%, #b8e4ff 52%, #90cdf4 68%, #5fa8d3 82%, #2b7db5 94%, #03045e 100%);
+        var(--bg-page);
     }
 
-    .welcome-inner {
-      max-width: 1120px;
+    .container-hub {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 38px;
-      position: relative;
+      padding: 40px 30px 60px;
     }
 
-    .water-shimmer {
-      height: 3px;
-      width: 100%;
-      background: linear-gradient(90deg, transparent 0%, rgba(56,182,255,0.45) 20%, rgba(255,255,255,0.95) 42%, rgba(56,182,255,0.55) 62%, transparent 100%);
-      animation: shimmer 5s ease-in-out infinite;
-    }
+    .section-title {
+      margin-bottom: 20px;
 
-    @keyframes shimmer {
-      0%, 100% { opacity: 0.48; transform: scaleX(0.96); }
-      50% { opacity: 1; transform: scaleX(1.02); }
-    }
-
-    .hero-card {
-      min-height: 360px;
-      padding: 44px;
-      border: 1px solid rgba(255, 255, 255, 0.86);
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(18px);
-      box-shadow:
-        0 2px 0 rgba(255,255,255,0.95) inset,
-        0 24px 64px rgba(0, 100, 180, 0.12),
-        0 4px 20px rgba(0, 119, 182, 0.08);
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 300px;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .hero-card .label {
-      display: inline-flex;
-      width: max-content;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 13px;
-      border-radius: 8px;
-      background: rgba(42, 157, 143, 0.1);
-      border: 1px solid rgba(42, 157, 143, 0.35);
-      color: #1a7a6e;
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .hero-eyebrow {
-      margin-top: 24px;
-      color: rgba(0, 80, 130, 0.42);
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .hero-card h1 {
-      max-width: 720px;
-      margin-top: 10px;
-      color: #0d3b5e;
-      font-family: "Syne", "Segoe UI", sans-serif;
-      font-size: clamp(2.25rem, 4.8vw, 4.2rem);
-      line-height: 1.02;
-      letter-spacing: 0;
-    }
-
-    .accent-green { color: var(--teal); }
-    .accent-blue { color: var(--river); }
-
-    .wave-divider {
-      width: 74px;
-      height: 14px;
-      margin: 20px 0 0;
-    }
-
-    .hero-card p {
-      max-width: 680px;
-      margin-top: 18px;
-      color: #475569;
-      line-height: 1.68;
-      font-weight: 300;
-    }
-
-    .hero-orbit {
-      aspect-ratio: 1;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.72);
-      background:
-        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.96), rgba(204,238,255,0.62) 52%, rgba(0,119,182,0.16) 100%);
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-orbit::before,
-    .hero-orbit::after {
-      content: "";
-      position: absolute;
-      border: 1px solid rgba(0,119,182,0.16);
-      border-radius: 999px;
-    }
-
-    .hero-orbit::before { width: 74%; height: 74%; }
-    .hero-orbit::after { width: 46%; height: 46%; border-color: rgba(42,157,143,0.2); }
-
-    .hero-orbit img {
-      width: min(150px, 70%);
-      height: auto;
-      object-fit: contain;
-      position: relative;
-      z-index: 1;
-    }
-
-    .depth-section {
-      margin-top: 18px;
-    }
-
-    .depth-label {
-      margin-bottom: 10px;
-      text-align: center;
-      color: rgba(0, 50, 110, 0.55);
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .depth-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .depth-card {
-      min-height: 116px;
-      padding: 16px 12px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.65);
-      border-radius: 10px;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-      backdrop-filter: blur(12px);
-      transition: transform 0.2s ease;
-      cursor: pointer;
-    }
-
-    .depth-card:hover {
-      transform: translateY(-3px);
-    }
-
-    .depth-card.surface { background: rgba(255, 255, 255, 0.78); box-shadow: 0 4px 18px rgba(0, 180, 216, 0.13); }
-    .depth-card.mid { background: rgba(0, 119, 182, 0.12); box-shadow: 0 4px 18px rgba(0, 119, 182, 0.16); }
-    .depth-card.abyss { background: rgba(3, 4, 94, 0.78); border-color: rgba(255, 255, 255, 0.12); box-shadow: 0 4px 18px rgba(3, 4, 94, 0.32); }
-
-    .depth-indicator { position: absolute; left: 0; right: 0; top: 0; height: 3px; }
-    .surface .depth-indicator { background: #00b4d8; }
-    .mid .depth-indicator { background: #0077b6; }
-    .abyss .depth-indicator { background: linear-gradient(90deg, #4361ee, #03045e); }
-
-    .depth-icon-wrap {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      margin: 0 auto 10px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: rgba(255,255,255,0.16);
-    }
+      gap: 10px;
 
-    .depth-name {
-      display: block;
-      color: #0d3b5e;
-      font-family: "Syne", "Segoe UI", sans-serif;
-      font-size: 0.82rem;
+      color: #64748b;
+
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+
+      font-size: 0.9rem;
       font-weight: 800;
-      line-height: 1.25;
     }
 
-    .abyss .depth-name { color: rgba(255,255,255,0.92); }
+    /* HERO CARDS */
 
-    .depth-sub {
-      display: block;
-      margin-top: 4px;
-      color: rgba(0, 80, 130, 0.48);
-      font-size: 0.65rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
+    .programs-main-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+
+      margin-bottom: 50px;
+    }
+
+    .program-card-premium {
+      position: relative;
+
+      min-height: 260px;
+
+      padding: 34px;
+
+      border-radius: 22px;
+
+      overflow: hidden;
+
+      cursor: pointer;
+
+      transition: 0.25s ease;
+
+      text-align: left;
+    }
+
+    .program-card-premium:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-recicla {
+      background:
+        linear-gradient(
+          180deg,
+          #ffffff 40%,
+          var(--card-bg-green) 100%
+        );
+
+      border: 1px solid rgba(34,197,94,0.16);
+    }
+
+    .card-aedes {
+      background:
+        linear-gradient(
+          180deg,
+          #ffffff 40%,
+          var(--card-bg-red) 100%
+        );
+
+      border: 1px solid rgba(239,68,68,0.12);
+    }
+
+    .bg-img-premium {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+
+      width: 110px;
+      height: 110px;
+
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .card-info-premium {
+      position: relative;
+      z-index: 2;
+      max-width: 75%;
+    }
+
+    .tag-premium {
+      display: inline-block;
+
+      padding: 6px 14px;
+
+      border-radius: 8px;
+
+      color: white;
+
+      font-size: 0.7rem;
+      font-weight: 800;
       text-transform: uppercase;
     }
 
-    .abyss .depth-sub { color: rgba(255,255,255,0.36); }
+    .card-info-premium h2 {
+      margin-top: 12px;
+      margin-bottom: 10px;
 
-    .module-grid {
-      margin-top: 26px;
+      font-size: 1.7rem;
+      color: var(--primary-blue);
+    }
+
+    .card-info-premium p {
+      color: #475569;
+      line-height: 1.5;
+      font-size: 0.9rem;
+    }
+
+    /* TOOLS */
+
+    .tools-management-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
     }
 
-    .module-card {
-      min-height: 150px;
-      padding: 20px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255,255,255,0.9);
-      box-shadow: 0 8px 22px rgba(0, 29, 61, 0.04);
+    .tool-box {
+      min-height: 160px;
+
+      background: white;
+
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+
+      padding: 24px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
       cursor: pointer;
+
+      transition: 0.2s ease;
+
+      position: relative;
+      overflow: hidden;
+
       text-align: left;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .module-card:hover {
+    .tool-box:hover {
       transform: translateY(-3px);
       box-shadow: var(--shadow);
     }
 
-    .module-card i { margin-bottom: 18px; font-size: 1.2rem; color: var(--primary-blue); }
-    .module-card b { display: block; color: var(--primary-blue); font-size: 0.98rem; line-height: 1.3; }
-    .module-card span { display: block; margin-top: 8px; color: var(--text-muted); font-size: 0.78rem; line-height: 1.45; }
+    .tool-box i {
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+    }
+
+    .tool-box p {
+      font-weight: 700;
+      line-height: 1.4;
+      color: #334155;
+    }
+
+    .tool-box span {
+      margin-top: 10px;
+      color: #64748b;
+      font-size: 0.76rem;
+    }
+
+    .tool-box::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+
+      width: 100%;
+      height: 4px;
+    }
+
+    .dot-green::after { background: #14532d; }
+    .dot-blue::after { background: #1e40af; }
+    .dot-orange::after { background: #c2410c; }
+    .dot-purple::after { background: #581c87; }
+    .dot-brown::after { background: #7c2d12; }
+
+    /* IFRAME */
 
     .content-frame {
       width: 100%;
       height: 100%;
       border: 0;
+
       display: none;
-      background: var(--white);
+
+      background: white;
     }
 
     .content-frame.active {
       display: block;
     }
 
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 15;
+    /* RESPONSIVO */
+
+    @media (max-width: 980px) {
+      .programs-main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tools-management-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
-    .overlay.show {
-      display: block;
-    }
-        /* Torna as caixas de profundidade horizontais e menores */
-    .depth-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
+    @media (max-width: 680px) {
+      .portal-shell {
+        grid-template-columns: 1fr;
+      }
 
-    .depth-card {
-      min-height: 70px; /* Reduz de 116px para 70px */
-      padding: 10px 16px;
-      display: flex; /* Alinha o conteúdo em linha, não em bloco */
-      align-items: center;
-      gap: 14px;
-      text-align: left;
-    }
+      .module-sidebar {
+        display: none;
+      }
 
-    .depth-icon-wrap {
-      margin: 0; /* Remove o espaçamento vertical */
-      width: 34px;
-      height: 34px;
-      flex-shrink: 0;
-    }
+      .container-hub {
+        padding: 24px 18px 60px;
+      }
 
-    .depth-name {
-      font-size: 0.85rem;
-    }
+      .tools-management-grid {
+        grid-template-columns: 1fr;
+      }
 
-    /* Expande os cards de módulos para preencherem melhor o espaço */
-    .module-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 colunas em vez de 4 */
-      gap: 20px;
-    }
+      .card-info-premium {
+        max-width: 100%;
+      }
 
-    /* Media Queries */
-    @media (max-width: 1120px) {
-      :root { --sidebar-width: 260px; }
-      .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .hero-card { grid-template-columns: 1fr; }
-      .hero-orbit { display: none; }
+      .program-card-premium {
+        min-height: 220px;
+      }
     }
-
-    @media (max-width: 860px) {
-      :root { --topbar-height: 66px; }
-      
-      .portal-shell { grid-template-columns: 1fr; }
-      .portal-shell.sidebar-collapsed { grid-template-columns: 1fr; }
-
-       .module-sidebar {
-      height: 100dvh;
-      padding: 18px 16px;
-      display: flex;
-      flex-direction: column;
-      background: var(--primary-blue);
-      color: var(--white);
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 8px 0 30px rgba(0, 29, 61, 0.18);
-      z-index: 20;
-      transition: width 0.24s ease, padding 0.24s ease, transform 0.24s ease;
-    }
-
-    .portal-shell.sidebar-collapsed .module-sidebar {
-      width: 76px;
-      padding-left: 10px;
-      padding-right: 10px;
-    }
-
-    .brand-block {
-      padding: 8px 8px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      display: grid;
-      grid-template-columns: 46px 1fr;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .portal-shell.sidebar-collapsed .brand-block {
-      grid-template-columns: 46px;
-      justify-content: center;
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    .portal-shell.sidebar-collapsed .brand-block > div,
-    .portal-shell.sidebar-collapsed .sidebar-label,
-    .portal-shell.sidebar-collapsed .module-link span,
-    .portal-shell.sidebar-collapsed .sidebar-footer {
-      display: none;
-    }
-
-
-      .portal-shell.sidebar-collapsed .module-link { grid-template-columns: 28px 1fr; justify-items: stretch; padding: 10px 12px; }
-      
-      /* Inversão Mobile de botões */
-      .collapse-sidebar-btn { display: none !important; }
-      .mobile-menu-btn { display: inline-flex !important; }
-      
-      .stage-topbar { padding: 0 16px; }
-      .welcome-inner { padding: 20px; }
-      .depth-cards { grid-template-columns: 1fr; gap: 12px; }
-    }
-
-    @media (max-width: 560px) {
-      :root { --topbar-height: 60px; }
-      
-      .stage-topbar { gap: 8px; }
-      .topbar-left { gap: 8px; }
-      .stage-title strong { font-size: 0.9rem; }
-      .stage-title span { font-size: 0.68rem; }
-      
-      .module-grid { grid-template-columns: 1fr; gap: 12px; }
-      .hero-card { min-height: auto; padding: 20px; }
-      .hero-card h1 { font-size: clamp(1.5rem, 6vw, 2rem); }
-      .hero-card p { font-size: 0.85rem; margin-top: 12px; }
-      .depth-card { min-height: 90px; padding: 12px; }
-    }
-    /* --- CONTAINER CENTRAL --- */
-    .container-hub {
-      max-width: 1200px;
-      margin: 50px auto;
-      padding: 0 30px;
-    }
-
-    .section-title {
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #64748b;
-      margin-bottom: 20px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* --- NOVA ORGANIZAÇÃO: SEÇÃO DE PROGRAMAS (2 CARDS GRANDES SÓBRIOS) --- */
-    .programs-main-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 25px;
-      margin-bottom: 50px;
-    }
-
-    .program-card-premium {
-      height: 280px;
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 35px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-      transition: all 0.35s ease;
-      background: #ffffff;
-    }
-
-    /* Estilização sobria baseada no Aedes (Vermelho sutil) e Recicla (Verde sutil) */
-    .card-recicla {
-      border: 1px solid rgba(34, 197, 94, 0.2);
-      background: linear-gradient(180deg, #ffffff 50%, var(--card-bg-green) 100%);
-    }
-    .card-aedes {
-      border: 1px solid rgba(239, 68, 68, 0.15);
-      background: linear-gradient(180deg, #ffffff 50%, var(--card-bg-red) 100%);
-    }
-
-    .program-card-premium:hover {
-      transform: translateY(-5px);
-    }
-    .card-recicla:hover { box-shadow: 0 16px 35px rgba(34, 197, 94, 0.12); }
-    .card-aedes:hover { box-shadow: 0 16px 35px rgba(239, 68, 68, 0.1); }
-
-    .bg-img-premium {
-      position: absolute;
-      top: 25px;
-      right: 35px;
-      width: 110px;
-      height: 110px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      z-index: 1;
-      opacity: 0.9;
-    }
-
-    .card-info-premium {
-      position: relative;
-      z-index: 3;
-      color: var(--primary-blue);
-      max-width: 75%;
-    }
-    
-    .card-info-premium h2 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--primary-blue);
-      margin-top: 10px;
-      margin-bottom: 8px;
-    }
-
-    .card-info-premium p {
-      font-size: 0.88rem;
-      color: #475569;
-      line-height: 1.5;
-    }
-
-    .tag-premium {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: white;
-    }
- /* --- SEÇÃO DE FERRAMENTAS E RESÍDUOS (5 BLOCOS INFERIORES) --- */
-    .tools-management-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
-    }
-
-    .tool-box {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-decoration: none;
-      min-height: 150px;
-      transition: all 0.25s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .tool-box:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 24px rgba(0, 29, 61, 0.06);
-      border-color: #cbd5e1;
-    }
-
-    .tool-box p {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: #334155;
-      line-height: 1.4;
-      z-index: 2;
-    }
-
-    .tool-box span {
-      font-size: 0.75rem;
-      color: #64748b;
-      margin-top: 10px;
-      z-index: 2;
-    }
-
-    /* Pontos de cor discretos e sóbrios na base de cada bloco */
-    .tool-box::after {
-      content: '';
-      position: absolute;
-      left: 0; bottom: 0; width: 100%; height: 4px;
-    }
-    .dot-green::after  { background-color: #14532d; }
-    .dot-blue::after   { background-color: #1e40af; }
-    .dot-orange::after { background-color: #c2410c; }
-    .dot-purple::after { background-color: #581c87; }
-    .dot-brown::after  { background-color: #7c2d12; }
-
-    /* Ícones discretos nos blocos */
-    .tool-box i {
-      font-size: 1.1rem;
-      margin-bottom: 14px;
-    }
-    .dot-green i  { color: #14532d; }
-    .dot-blue i   { color: #1e40af; }
-    .dot-orange i { color: #c2410c; }
-    .dot-purple i { color: #581c87; }
-    .dot-brown i  { color: #7c2d12; }
-  
-
-
-
   </style>
 </head>
+
 <body>
+
   <div class="portal-shell" id="portalShell">
-    <aside class="module-sidebar" id="moduleSidebar">
-      <a class="brand-block" href="#" data-home="true" aria-label="Inicio do Portal DMA">
-        <img class="brand-logo" src="./assets/logo-cedae-transparente.png" alt="Logo Cedae" />
+
+    <!-- SIDEBAR -->
+
+    <aside class="module-sidebar">
+
+      <a class="brand-block" href="#" id="homeBtn">
+        <img
+          class="brand-logo"
+          src="./assets/logo-cedae-transparente.png"
+          alt="Logo"
+        />
+
         <div>
           <b>Portal Ambiental</b>
           <span>Assessoria de Meio Ambiente</span>
         </div>
       </a>
 
-      <section class="sidebar-section">
-        <div class="sidebar-label">Programas ambientais</div>
-        <nav class="nav-list">
-          <button class="module-link recicla" type="button" data-src="./recicla-fase2.html" data-title="Programa Recicla CEDAE" data-subtitle="Plano piloto, indicadores e comunicacao do Recicla.">
-            <i class="fa-solid fa-recycle"></i>
-            <span><strong>Programa Recicla</strong><small>Em desenvolvimento</small></span>
-          </button>
-          <button class="module-link aedes" type="button" data-src="./aedes.html" data-title="Programa Combate a Dengue" data-subtitle="Monitoramento preventivo e controle de vetores.">
-            <i class="fa-solid fa-bug"></i>
-            <span><strong>Combate a Dengue</strong><small>Ativo</small></span>
-          </button>
-        </nav>
-      </section>
-  
+      <!-- PROGRAMAS -->
 
       <section class="sidebar-section">
-        <div class="sidebar-label">Gestao e residuos</div>
-        <nav class="nav-list">
-          <button class="module-link geracao" type="button" data-src="./quantitativo-residuos.html" data-title="Quantitativo de Geracao e Destinacao" data-subtitle="Inventario operacional de residuos da companhia.">
-            <i class="fa-solid fa-boxes-stacked"></i>
-            <span><strong>Quantitativo de residuos</strong><small>Acessar inventario</small></span>
-          </button>
-          <button class="module-link placas" type="button" data-src="./placas-sinalizacoes.html" data-title="Placas e Sinalizacoes Ambientais" data-subtitle="Modelos, padroes e orientacoes de sinalizacao.">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <span><strong>Placas e sinalizacoes</strong><small>Ver modelos</small></span>
-          </button>
-          <button class="module-link pgrs" type="button" data-src="./pgrs-elaborados.html" data-title="PGRS Elaborados" data-subtitle="Consulta de planos e materiais relacionados.">
-            <i class="fa-solid fa-file-shield"></i>
-            <span><strong>PGRS elaborados</strong><small>Consultar planos</small></span>
-          </button>
-          <button class="module-link agenda" type="button" data-src="./agenda.html" data-title="Agendas de Eventos e Programacoes" data-subtitle="Calendario de acoes, eventos e programacoes ambientais.">
-            <i class="fa-solid fa-calendar-days"></i>
-            <span><strong>Agendas e eventos</strong><small>Ver calendario</small></span>
-          </button>
-          <button class="module-link descarte" type="button" data-src="./residuos-solidos-como-descartar.html" data-title="Residuos Solidos: Como Descartar" data-subtitle="Guia pratico e materiais aprovados pela equipe tecnica.">
-            <i class="fa-solid fa-dumpster"></i>
-            <span><strong>Residuos Solidos: Como Descartar</strong><small>Acessar guia pratico</small></span>
-          </button>
-    </nav>
-      </section>
 
-      <section class="sidebar-section">
-        <div class="sidebar-label">Fundo tecnico</div>
-        <nav class="nav-list">
-          <button class="module-link tecnica" type="button" data-src="./area-tecnica.html" data-title="Area Tecnica" data-subtitle="Hub interno, auditoria, agenda e postagens.">
-            <i class="fa-solid fa-shield-alt"></i>
-            <span><strong>Area tecnica</strong><small>Entrar no hub</small></span>
-          </button>
-        </nav>
-      </section>
-
-      <div class="sidebar-footer">
-        <div class="status-pill">
-          <b>Preview navegavel</b>
-          Os modulos abrem no centro e a barra lateral permanece fixa.
+        <div class="sidebar-label">
+          Programas ambientais
         </div>
-      </div>
-    </aside>
-    <main class="main-stage">
-      <header class="stage-topbar">
-        <div class="topbar-left">
-          <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Abrir modulos">
-            <i class="fa-solid fa-bars"></i>
+
+        <nav class="nav-list">
+
+          <button
+            class="module-link recicla"
+            data-src="./recicla-fase2.html"
+            data-title="Programa Recicla CEDAE"
+            data-subtitle="Plano piloto e indicadores"
+          >
+            <i class="fa-solid fa-recycle"></i>
+
+            <span>
+              <strong>Programa Recicla</strong>
+              <small>Em desenvolvimento</small>
+            </span>
           </button>
-          <button class="collapse-sidebar-btn" id="collapseSidebarBtn" type="button" aria-label="Recolher barra lateral">
+
+          <button
+            class="module-link aedes"
+            data-src="./aedes.html"
+            data-title="Programa Combate a Dengue"
+            data-subtitle="Monitoramento preventivo"
+          >
+            <i class="fa-solid fa-bug"></i>
+
+            <span>
+              <strong>Combate a Dengue</strong>
+              <small>Ativo</small>
+            </span>
+          </button>
+
+        </nav>
+      </section>
+
+      <!-- GESTÃO -->
+
+      <section class="sidebar-section">
+
+        <div class="sidebar-label">
+          Gestão e resíduos
+        </div>
+
+        <nav class="nav-list">
+
+          <button
+            class="module-link geracao"
+            data-src="./quantitativo-residuos.html"
+            data-title="Quantitativo de resíduos"
+            data-subtitle="Inventário operacional"
+          >
+            <i class="fa-solid fa-boxes-stacked"></i>
+
+            <span>
+              <strong>Quantitativo de resíduos</strong>
+              <small>Inventário</small>
+            </span>
+          </button>
+
+          <button
+            class="module-link placas"
+            data-src="./placas-sinalizacoes.html"
+            data-title="Placas e sinalizações"
+            data-subtitle="Modelos e orientações"
+          >
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <span>
+              <strong>Placas e sinalizações</strong>
+              <small>Modelos</small>
+            </span>
+          </button>
+
+          <button
+            class="module-link pgrs"
+            data-src="./pgrs-elaborados.html"
+            data-title="PGRS elaborados"
+            data-subtitle="Consulta de planos"
+          >
+            <i class="fa-solid fa-file-shield"></i>
+
+            <span>
+              <strong>PGRS elaborados</strong>
+              <small>Consultar</small>
+            </span>
+          </button>
+
+        </nav>
+      </section>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main-stage">
+
+      <header class="stage-topbar">
+
+        <div class="topbar-left">
+
+          <button
+            class="collapse-sidebar-btn"
+            id="collapseSidebarBtn"
+          >
             <i class="fa-solid fa-angles-left"></i>
           </button>
 
           <div class="stage-title">
-            <strong id="stageTitle">Inicio</strong>
-            <span id="stageSubtitle">Selecione um modulo na barra lateral para abrir no centro do portal.</span>
+            <strong id="stageTitle">Início</strong>
+
+            <span id="stageSubtitle">
+              Selecione um módulo na barra lateral.
+            </span>
           </div>
+
         </div>
+
       </header>
 
-     <main class="container-hub">
-    
-    <div class="section-title">
-      <i class="fa-solid fa-layer-group"></i> Programas Ambientais
-    </div>
-    
-    <div class="programs-main-grid">
-      
-      <a href="./recicla-fase2.html" class="program-card-premium card-recicla">
-        <div class="bg-img-premium" style="background-image: url('./assets/logo-recicla-cedae-removebg-preview.png');"></div>
-        <div class="card-info-premium">
-          <span class="tag-premium" style="background: var(--accent-green);">Em desenvolvimento</span>
-          <h2>Programa Recicla CEDAE</h2>
-          <p>Plataforma unificada para o acompanhamento do plano piloto e expansão das metas de reciclagem da companhia.</p>
-        </div>
-      </a>
-      
-      <a href="./aedes.html" class="program-card-premium card-aedes">
-        <div class="bg-img-premium" style="background-image: url('./assets/logo_pura_dengue.png');"></div>
-        <div class="card-info-premium">
-          <span class="tag-premium" style="background: var(--accent-red);">Ativo</span>
-          <h2>Programa Combate à Dengue</h2>
-          <p>Monitoramento preventivo, mapas de focos e controle rigoroso de vetores nas unidades operacionais da CEDAE.</p>
-        </div>
-      </a>
+      <!-- CONTENT -->
 
-    </div>
+      <div class="stage-frame-wrap">
 
-    <div class="section-title">
-      <i class="fa-solid fa-chart-pie"></i> Gestão Operacional e Resíduos
-    </div>
+        <!-- HOME -->
 
-    <div class="tools-management-grid">
-      
-      <a href="#" class="tool-box dot-green">
-        <i class="fa-solid fa-boxes-stacked"></i>
-        <p>Quantitativo de Geração e destinação de resíduos da Companhia</p>
-        <span>Acessar inventário</span>
-      </a>
+        <section
+          class="welcome-screen"
+          id="welcomeScreen"
+        >
 
-      <a href="#" class="tool-box dot-blue">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        <p>Placas e sinalizações ambientais</p>
-        <span>Ver modelos</span>
-      </a>
+          <main class="container-hub">
 
-      <a href="#" class="tool-box dot-orange">
-        <i class="fa-solid fa-file-shield"></i>
-        <p>PGRS elaborados</p>
-        <span>Consultar planos</span>
-      </a>
+            <div class="section-title">
+              <i class="fa-solid fa-layer-group"></i>
+              Programas Ambientais
+            </div>
 
-      <a href="./agenda.html" class="tool-box dot-purple">
-        <i class="fa-solid fa-calendar-days"></i>
-        <p>Agendas de eventos e programações ambientais</p>
-        <span>Ver calendário</span>
-      </a>
+            <div class="programs-main-grid">
 
-      <a href="./residuos-solidos-como-descartar.html" class="tool-box dot-brown">
-        <i class="fa-solid fa-dumpster"></i>
-        <p>Resíduos sólidos: como descartar</p>
-        <span>Acessar guia prático</span>
-      </a>
+              <button
+                class="program-card-premium card-recicla"
+                data-shortcut="./recicla-fase2.html"
+              >
 
-    </div>
+                <div
+                  class="bg-img-premium"
+                  style="background-image:url('./assets/logo-recicla-cedae-removebg-preview.png');"
+                ></div>
 
-  </main>
+                <div class="card-info-premium">
+
+                  <span
+                    class="tag-premium"
+                    style="background:var(--accent-green)"
+                  >
+                    Em desenvolvimento
+                  </span>
+
+                  <h2>Programa Recicla CEDAE</h2>
+
+                  <p>
+                    Plataforma unificada para o acompanhamento
+                    do plano piloto.
+                  </p>
+
+                </div>
+
+              </button>
+
+              <button
+                class="program-card-premium card-aedes"
+                data-shortcut="./aedes.html"
+              >
+
+                <div
+                  class="bg-img-premium"
+                  style="background-image:url('./assets/logo_pura_dengue.png');"
+                ></div>
+
+                <div class="card-info-premium">
+
+                  <span
+                    class="tag-premium"
+                    style="background:var(--accent-red)"
+                  >
+                    Ativo
+                  </span>
+
+                  <h2>Programa Combate à Dengue</h2>
+
+                  <p>
+                    Monitoramento preventivo e controle de vetores.
+                  </p>
+
+                </div>
+
+              </button>
+
+            </div>
+
+            <div class="section-title">
+              <i class="fa-solid fa-chart-pie"></i>
+              Gestão Operacional
+            </div>
+
+            <div class="tools-management-grid">
+
+              <button
+                class="tool-box dot-green"
+                data-shortcut="./quantitativo-residuos.html"
+              >
+                <i class="fa-solid fa-boxes-stacked"></i>
+
+                <p>
+                  Quantitativo de geração de resíduos
+                </p>
+
+                <span>
+                  Acessar inventário
+                </span>
+              </button>
+
+              <button
+                class="tool-box dot-blue"
+                data-shortcut="./placas-sinalizacoes.html"
+              >
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <p>
+                  Placas e sinalizações ambientais
+                </p>
+
+                <span>
+                  Ver modelos
+                </span>
+              </button>
+
+              <button
+                class="tool-box dot-orange"
+                data-shortcut="./pgrs-elaborados.html"
+              >
+                <i class="fa-solid fa-file-shield"></i>
+
+                <p>
+                  PGRS elaborados
+                </p>
+
+                <span>
+                  Consultar planos
+                </span>
+              </button>
+
+            </div>
+
+          </main>
+
+        </section>
+
+        <!-- IFRAME -->
+
+        <iframe
+          id="contentFrame"
+          class="content-frame"
+          title="Conteudo do modulo"
+        ></iframe>
+
+      </div>
+
+    </main>
 
   </div>
 
-  <div class="overlay" id="overlay"></div>
-
   <script>
-    const sidebar = document.querySelector("#moduleSidebar");
-    const portalShell = document.querySelector("#portalShell");
-    const overlay = document.querySelector("#overlay");
-    const mobileMenuBtn = document.querySelector("#mobileMenuBtn");
-    const collapseSidebarBtn = document.querySelector("#collapseSidebarBtn");
-    const frame = document.querySelector("#contentFrame");
-    const welcomeScreen = document.querySelector("#welcomeScreen");
-    const stageTitle = document.querySelector("#stageTitle");
-    const stageSubtitle = document.querySelector("#stageSubtitle");
-    let currentSrc = "";
+    const portalShell =
+      document.querySelector("#portalShell");
 
-    function isMobileLayout() {
-      return window.matchMedia("(max-width: 860px)").matches;
-    }
+    const collapseSidebarBtn =
+      document.querySelector("#collapseSidebarBtn");
 
-    function setSidebarCollapsed(collapsed) {
-      portalShell.classList.toggle("sidebar-collapsed", collapsed);
-      collapseSidebarBtn.setAttribute("aria-label", collapsed ? "Expandir barra lateral" : "Recolher barra lateral");
-      collapseSidebarBtn.innerHTML = collapsed
-        ? '<i class="fa-solid fa-angles-right"></i>'
-        : '<i class="fa-solid fa-angles-left"></i>';
-      if (!isMobileLayout()) {
-        localStorage.setItem("portalSidebarCollapsed", collapsed ? "true" : "false");
-      }
-    }
+    const frame =
+      document.querySelector("#contentFrame");
 
-    function closeMobileSidebar() {
-      sidebar.classList.remove("open");
-      overlay.classList.remove("show");
-    }
+    const welcomeScreen =
+      document.querySelector("#welcomeScreen");
 
-    function setActiveBySrc(src) {
-      document.querySelectorAll(".module-link").forEach((item) => {
-        item.classList.toggle("active", item.dataset.src === src);
-      });
-    }
+    const stageTitle =
+      document.querySelector("#stageTitle");
+
+    const stageSubtitle =
+      document.querySelector("#stageSubtitle");
 
     function openModule(src, title, subtitle) {
-      currentSrc = src;
+
       frame.src = src;
+
       frame.classList.add("active");
+
       welcomeScreen.style.display = "none";
-      stageTitle.textContent = title || "Modulo";
-      stageSubtitle.textContent = subtitle || src;
-      setActiveBySrc(src);
-      closeMobileSidebar();
+
+      stageTitle.textContent =
+        title || "Modulo";
+
+      stageSubtitle.textContent =
+        subtitle || src;
+
+      document
+        .querySelectorAll(".module-link")
+        .forEach((item) => {
+
+          item.classList.toggle(
+            "active",
+            item.dataset.src === src
+          );
+
+        });
     }
 
     function showHome() {
-      currentSrc = "";
-      frame.removeAttribute("src");
+
       frame.classList.remove("active");
+
+      frame.removeAttribute("src");
+
       welcomeScreen.style.display = "block";
-      stageTitle.textContent = "Inicio";
-      stageSubtitle.textContent = "Selecione um modulo na barra lateral para abrir no centro do portal.";
-      document.querySelectorAll(".module-link").forEach((item) => item.classList.remove("active"));
-      closeMobileSidebar();
+
+      stageTitle.textContent = "Início";
+
+      stageSubtitle.textContent =
+        "Selecione um módulo na barra lateral.";
+
+      document
+        .querySelectorAll(".module-link")
+        .forEach((item) =>
+          item.classList.remove("active")
+        );
     }
 
-    document.querySelectorAll(".module-link").forEach((button) => {
-      button.addEventListener("click", () => {
-        openModule(button.dataset.src, button.dataset.title, button.dataset.subtitle);
+    document
+      .querySelectorAll(".module-link")
+      .forEach((button) => {
+
+        button.addEventListener("click", () => {
+
+          openModule(
+            button.dataset.src,
+            button.dataset.title,
+            button.dataset.subtitle
+          );
+
+        });
+
       });
-    });
 
-    document.querySelectorAll("[data-shortcut]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const src = button.dataset.shortcut;
-        const target = document.querySelector(`.module-link[data-src="${src}"]`);
-        if (target) {
-          openModule(target.dataset.src, target.dataset.title, target.dataset.subtitle);
-        }
+    document
+      .querySelectorAll("[data-shortcut]")
+      .forEach((button) => {
+
+        button.addEventListener("click", () => {
+
+          const src =
+            button.dataset.shortcut;
+
+          const target =
+            document.querySelector(
+              `.module-link[data-src="${src}"]`
+            );
+
+          if (target) {
+
+            openModule(
+              target.dataset.src,
+              target.dataset.title,
+              target.dataset.subtitle
+            );
+
+          }
+
+        });
+
       });
-    });
 
-    document.querySelector("[data-home='true']").addEventListener("click", (event) => {
-      event.preventDefault();
-      showHome();
-    });
+    document
+      .querySelector("#homeBtn")
+      .addEventListener("click", (event) => {
 
-    mobileMenuBtn.addEventListener("click", () => {
-      sidebar.classList.add("open");
-      overlay.classList.add("show");
-    });
+        event.preventDefault();
+
+        showHome();
+
+      });
 
     collapseSidebarBtn.addEventListener("click", () => {
-      setSidebarCollapsed(!portalShell.classList.contains("sidebar-collapsed"));
+
+      portalShell.classList.toggle(
+        "sidebar-collapsed"
+      );
+
     });
-
-    overlay.addEventListener("click", closeMobileSidebar);
-
-    window.addEventListener("resize", () => {
-      if (isMobileLayout()) {
-        portalShell.classList.remove("sidebar-collapsed");
-        closeMobileSidebar();
-      } else {
-        setSidebarCollapsed(localStorage.getItem("portalSidebarCollapsed") === "true");
-      }
-    });
-
-    if (!isMobileLayout()) {
-      setSidebarCollapsed(localStorage.getItem("portalSidebarCollapsed") === "true");
-    }
-
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-      });
-    }
   </script>
+
 </body>
 </html>

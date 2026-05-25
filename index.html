@@ -642,27 +642,48 @@
       .portal-shell { grid-template-columns: 1fr; }
       .portal-shell.sidebar-collapsed { grid-template-columns: 1fr; }
 
-      .module-sidebar {
-        position: fixed;
-        inset: 0 auto 0 0;
-        width: 280px;
-        max-width: 85vw;
-        transform: translateX(-100%);
-        transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-      }
+       .module-sidebar {
+      height: 100dvh;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      background: var(--primary-blue);
+      color: var(--white);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 8px 0 30px rgba(0, 29, 61, 0.18);
+      z-index: 20;
+      transition: width 0.24s ease, padding 0.24s ease, transform 0.24s ease;
+    }
 
-      .module-sidebar.open { transform: translateX(0); }
-      .portal-shell.sidebar-collapsed .module-sidebar { width: 280px; max-width: 85vw; padding: 18px 16px; }
-      .portal-shell.sidebar-collapsed .brand-block { grid-template-columns: 46px 1fr; justify-content: stretch; padding: 8px 8px 20px; }
-      
-      .portal-shell.sidebar-collapsed .brand-block > div,
-      .portal-shell.sidebar-collapsed .sidebar-label,
-      .portal-shell.sidebar-collapsed .module-link span,
-      .portal-shell.sidebar-collapsed .sidebar-footer {
-        display: block;
-      }
+    .portal-shell.sidebar-collapsed .module-sidebar {
+      width: 76px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .brand-block {
+      padding: 8px 8px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .portal-shell.sidebar-collapsed .brand-block {
+      grid-template-columns: 46px;
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .portal-shell.sidebar-collapsed .brand-block > div,
+    .portal-shell.sidebar-collapsed .sidebar-label,
+    .portal-shell.sidebar-collapsed .module-link span,
+    .portal-shell.sidebar-collapsed .sidebar-footer {
+      display: none;
+    }
+
 
       .portal-shell.sidebar-collapsed .module-link { grid-template-columns: 28px 1fr; justify-items: stretch; padding: 10px 12px; }
       
@@ -689,6 +710,177 @@
       .hero-card p { font-size: 0.85rem; margin-top: 12px; }
       .depth-card { min-height: 90px; padding: 12px; }
     }
+    /* --- CONTAINER CENTRAL --- */
+    .container-hub {
+      max-width: 1200px;
+      margin: 50px auto;
+      padding: 0 30px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin-bottom: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* --- NOVA ORGANIZAÇÃO: SEÇÃO DE PROGRAMAS (2 CARDS GRANDES SÓBRIOS) --- */
+    .programs-main-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin-bottom: 50px;
+    }
+
+    .program-card-premium {
+      height: 280px;
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 35px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      transition: all 0.35s ease;
+      background: #ffffff;
+    }
+
+    /* Estilização sobria baseada no Aedes (Vermelho sutil) e Recicla (Verde sutil) */
+    .card-recicla {
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      background: linear-gradient(180deg, #ffffff 50%, var(--card-bg-green) 100%);
+    }
+    .card-aedes {
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      background: linear-gradient(180deg, #ffffff 50%, var(--card-bg-red) 100%);
+    }
+
+    .program-card-premium:hover {
+      transform: translateY(-5px);
+    }
+    .card-recicla:hover { box-shadow: 0 16px 35px rgba(34, 197, 94, 0.12); }
+    .card-aedes:hover { box-shadow: 0 16px 35px rgba(239, 68, 68, 0.1); }
+
+    .bg-img-premium {
+      position: absolute;
+      top: 25px;
+      right: 35px;
+      width: 110px;
+      height: 110px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1;
+      opacity: 0.9;
+    }
+
+    .card-info-premium {
+      position: relative;
+      z-index: 3;
+      color: var(--primary-blue);
+      max-width: 75%;
+    }
+    
+    .card-info-premium h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary-blue);
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+
+    .card-info-premium p {
+      font-size: 0.88rem;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .tag-premium {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: white;
+    }
+ /* --- SEÇÃO DE FERRAMENTAS E RESÍDUOS (5 BLOCOS INFERIORES) --- */
+    .tools-management-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    .tool-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      min-height: 150px;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0, 29, 61, 0.06);
+      border-color: #cbd5e1;
+    }
+
+    .tool-box p {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #334155;
+      line-height: 1.4;
+      z-index: 2;
+    }
+
+    .tool-box span {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 10px;
+      z-index: 2;
+    }
+
+    /* Pontos de cor discretos e sóbrios na base de cada bloco */
+    .tool-box::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 0; width: 100%; height: 4px;
+    }
+    .dot-green::after  { background-color: #14532d; }
+    .dot-blue::after   { background-color: #1e40af; }
+    .dot-orange::after { background-color: #c2410c; }
+    .dot-purple::after { background-color: #581c87; }
+    .dot-brown::after  { background-color: #7c2d12; }
+
+    /* Ícones discretos nos blocos */
+    .tool-box i {
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+    }
+    .dot-green i  { color: #14532d; }
+    .dot-blue i   { color: #1e40af; }
+    .dot-orange i { color: #c2410c; }
+    .dot-purple i { color: #581c87; }
+    .dot-brown i  { color: #7c2d12; }
+  
+
+
+
   </style>
 </head>
 <body>
@@ -715,6 +907,7 @@
           </button>
         </nav>
       </section>
+  
 
       <section class="sidebar-section">
         <div class="sidebar-label">Gestao e residuos</div>
@@ -735,11 +928,11 @@
             <i class="fa-solid fa-calendar-days"></i>
             <span><strong>Agendas e eventos</strong><small>Ver calendario</small></span>
           </button>
-          <button class="module-link descarte" type="button" data-src="./residuos-solidos.html" data-title="Residuos Solidos: Como Descartar" data-subtitle="Guia pratico e materiais aprovados pela equipe tecnica.">
+          <button class="module-link descarte" type="button" data-src="./residuos-solidos-como-descartar.html" data-title="Residuos Solidos: Como Descartar" data-subtitle="Guia pratico e materiais aprovados pela equipe tecnica.">
             <i class="fa-solid fa-dumpster"></i>
             <span><strong>Residuos Solidos: Como Descartar</strong><small>Acessar guia pratico</small></span>
           </button>
-        </nav>
+    </nav>
       </section>
 
       <section class="sidebar-section">
@@ -759,7 +952,6 @@
         </div>
       </div>
     </aside>
-
     <main class="main-stage">
       <header class="stage-topbar">
         <div class="topbar-left">
@@ -777,79 +969,74 @@
         </div>
       </header>
 
-      <section class="stage-frame-wrap">
-        <div class="welcome-screen" id="welcomeScreen">
-          <div class="water-shimmer" aria-hidden="true"></div>
-          <div class="welcome-inner">
-            <section class="hero-card">
-              <div>
-                <span class="label"><i class="fa-solid fa-leaf"></i> Especial Semana do Meio Ambiente</span>
-                <div class="hero-eyebrow">CEDAE · Meio Ambiente · 2026</div>
-                <h1>Na <span class="accent-green">superficie</span>, a luz. <br>No fundo, os <span class="accent-blue">dados</span>.</h1>
-                <div class="wave-divider" aria-hidden="true">
-                  <svg viewBox="0 0 74 14" fill="none" xmlns="http://www.w3.org/2000/svg" width="74" height="14">
-                    <path d="M1 7 Q10 1 19 7 Q28 13 37 7 Q46 1 55 7 Q64 13 73 7" stroke="#0096c7" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.62"/>
-                  </svg>
-                </div>
-                <p>
-                  Plataforma de inteligencia e engajamento ambiental da CEDAE: um espaco onde a equipe publica,
-                  valida e monitora dados com autonomia. Feito por nos, para nos.
-                </p>
-              </div>
-              <div class="hero-orbit">
-                <img src="./assets/logo-cedae-transparente.png" alt="Logo Cedae" />
-              </div>
-            </section>
-
-            <section class="depth-section" aria-label="Niveis de profundidade dos dados">
-              <div class="depth-label">Niveis de profundidade dos dados</div>
-              <div class="depth-cards">
-                <button class="depth-card surface" type="button" data-shortcut="./residuos-solidos.html">
-                  <div class="depth-indicator" aria-hidden="true"></div>
-                  <div class="depth-icon-wrap"><i class="fa-solid fa-users" style="color:#00b4d8;"></i></div>
-                  <span class="depth-name">Superficie</span>
-                  <span class="depth-sub">Geral</span>
-                </button>
-
-                <button class="depth-card mid" type="button" data-shortcut="./agenda.html">
-                  <div class="depth-indicator" aria-hidden="true"></div>
-                  <div class="depth-icon-wrap"><i class="fa-solid fa-helmet-safety" style="color:#0077b6;"></i></div>
-                  <span class="depth-name">Zona Intermediaria</span>
-                  <span class="depth-sub">Tecnicos</span>
-                </button>
-
-                <button class="depth-card abyss" type="button" data-shortcut="./area-tecnica.html">
-                  <div class="depth-indicator" aria-hidden="true"></div>
-                  <div class="depth-icon-wrap"><i class="fa-solid fa-user-tie" style="color:#001d3d;"></i></div>
-                  <span class="depth-name">Fundo dos Dados</span>
-                  <span class="depth-sub">Gestao</span>
-                </button>
-              </div>
-            </section>
-
-            <section class="module-grid" aria-label="Atalhos de modulos">
-              <button class="module-card" type="button" data-shortcut="./recicla-fase2.html">
-                <i class="fa-solid fa-recycle"></i>
-                <b>Programa Recicla CEDAE</b>
-                <span>Plano piloto e comunicacao do programa.</span>
-              </button>
-              <button class="module-card" type="button" data-shortcut="./aedes.html">
-                <i class="fa-solid fa-bug"></i>
-                <b>Programa Combate a Dengue</b>
-                <span>Modulo em producao para controle de vistorias.</span>
-              </button>
-              <button class="module-card" type="button" data-shortcut="./residuos-solidos.html">
-                <i class="fa-solid fa-dumpster"></i>
-                <b>Residuos: como descartar</b>
-                <span>Guia pratico e materiais publicados.</span>
-              </button>
-            </section>
-          </div>
+     <main class="container-hub">
+    
+    <div class="section-title">
+      <i class="fa-solid fa-layer-group"></i> Programas Ambientais
+    </div>
+    
+    <div class="programs-main-grid">
+      
+      <a href="./recicla-fase2.html" class="program-card-premium card-recicla">
+        <div class="bg-img-premium" style="background-image: url('./assets/logo-recicla-cedae-removebg-preview.png');"></div>
+        <div class="card-info-premium">
+          <span class="tag-premium" style="background: var(--accent-green);">Em desenvolvimento</span>
+          <h2>Programa Recicla CEDAE</h2>
+          <p>Plataforma unificada para o acompanhamento do plano piloto e expansão das metas de reciclagem da companhia.</p>
         </div>
+      </a>
+      
+      <a href="./aedes.html" class="program-card-premium card-aedes">
+        <div class="bg-img-premium" style="background-image: url('./assets/logo_pura_dengue.png');"></div>
+        <div class="card-info-premium">
+          <span class="tag-premium" style="background: var(--accent-red);">Ativo</span>
+          <h2>Programa Combate à Dengue</h2>
+          <p>Monitoramento preventivo, mapas de focos e controle rigoroso de vetores nas unidades operacionais da CEDAE.</p>
+        </div>
+      </a>
 
-        <iframe class="content-frame" id="contentFrame" title="Modulo aberto no Portal DMA"></iframe>
-      </section>
-    </main>
+    </div>
+
+    <div class="section-title">
+      <i class="fa-solid fa-chart-pie"></i> Gestão Operacional e Resíduos
+    </div>
+
+    <div class="tools-management-grid">
+      
+      <a href="#" class="tool-box dot-green">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <p>Quantitativo de Geração e destinação de resíduos da Companhia</p>
+        <span>Acessar inventário</span>
+      </a>
+
+      <a href="#" class="tool-box dot-blue">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <p>Placas e sinalizações ambientais</p>
+        <span>Ver modelos</span>
+      </a>
+
+      <a href="#" class="tool-box dot-orange">
+        <i class="fa-solid fa-file-shield"></i>
+        <p>PGRS elaborados</p>
+        <span>Consultar planos</span>
+      </a>
+
+      <a href="./agenda.html" class="tool-box dot-purple">
+        <i class="fa-solid fa-calendar-days"></i>
+        <p>Agendas de eventos e programações ambientais</p>
+        <span>Ver calendário</span>
+      </a>
+
+      <a href="./residuos-solidos-como-descartar.html" class="tool-box dot-brown">
+        <i class="fa-solid fa-dumpster"></i>
+        <p>Resíduos sólidos: como descartar</p>
+        <span>Acessar guia prático</span>
+      </a>
+
+    </div>
+
+  </main>
+
   </div>
 
   <div class="overlay" id="overlay"></div>

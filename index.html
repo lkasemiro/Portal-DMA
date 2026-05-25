@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title> Sistema de Gestão Ambiental</title>
   <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
@@ -39,10 +39,12 @@
 
     html {
       height: 100%;
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
-      min-height: 100%;
+      height: 100%;
+      min-height: 100dvh;
       overflow: hidden;
       background: var(--bg-page);
       color: var(--text-main);
@@ -60,10 +62,12 @@
 
     .portal-shell {
       height: 100dvh;
+      width: 100%;
       display: grid;
       grid-template-columns: var(--sidebar-width) 1fr;
       background: var(--bg-page);
       transition: grid-template-columns 0.24s ease;
+      overflow: hidden;
     }
 
     .portal-shell.sidebar-collapsed {
@@ -246,6 +250,7 @@
       height: 100dvh;
       display: grid;
       grid-template-rows: var(--topbar-height) 1fr;
+      overflow: hidden;
     }
 
     .stage-topbar {
@@ -265,6 +270,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      flex: 1;
     }
 
     .mobile-menu-btn {
@@ -297,6 +303,7 @@
 
     .stage-title {
       min-width: 0;
+      flex: 1;
     }
 
     .stage-title strong {
@@ -349,14 +356,16 @@
 
     .stage-frame-wrap {
       min-height: 0;
-      height: calc(100dvh - var(--topbar-height));
+      height: 100%;
       position: relative;
       background: var(--bg-page);
     }
 
     .welcome-screen {
       height: 100%;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
       padding: 0;
       background:
         radial-gradient(ellipse 620px 280px at 50% -6%, rgba(255, 236, 128, 0.22), transparent 62%),
@@ -473,16 +482,8 @@
       border-radius: 999px;
     }
 
-    .hero-orbit::before {
-      width: 74%;
-      height: 74%;
-    }
-
-    .hero-orbit::after {
-      width: 46%;
-      height: 46%;
-      border-color: rgba(42,157,143,0.2);
-    }
+    .hero-orbit::before { width: 74%; height: 74%; }
+    .hero-orbit::after { width: 46%; height: 46%; border-color: rgba(42,157,143,0.2); }
 
     .hero-orbit img {
       width: min(150px, 70%);
@@ -522,36 +523,18 @@
       text-align: center;
       backdrop-filter: blur(12px);
       transition: transform 0.2s ease;
+      cursor: pointer;
     }
 
     .depth-card:hover {
       transform: translateY(-3px);
     }
 
-    .depth-card.surface {
-      background: rgba(255, 255, 255, 0.78);
-      box-shadow: 0 4px 18px rgba(0, 180, 216, 0.13);
-    }
+    .depth-card.surface { background: rgba(255, 255, 255, 0.78); box-shadow: 0 4px 18px rgba(0, 180, 216, 0.13); }
+    .depth-card.mid { background: rgba(0, 119, 182, 0.12); box-shadow: 0 4px 18px rgba(0, 119, 182, 0.16); }
+    .depth-card.abyss { background: rgba(3, 4, 94, 0.78); border-color: rgba(255, 255, 255, 0.12); box-shadow: 0 4px 18px rgba(3, 4, 94, 0.32); }
 
-    .depth-card.mid {
-      background: rgba(0, 119, 182, 0.12);
-      box-shadow: 0 4px 18px rgba(0, 119, 182, 0.16);
-    }
-
-    .depth-card.abyss {
-      background: rgba(3, 4, 94, 0.78);
-      border-color: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 4px 18px rgba(3, 4, 94, 0.32);
-    }
-
-    .depth-indicator {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 3px;
-    }
-
+    .depth-indicator { position: absolute; left: 0; right: 0; top: 0; height: 3px; }
     .surface .depth-indicator { background: #00b4d8; }
     .mid .depth-indicator { background: #0077b6; }
     .abyss .depth-indicator { background: linear-gradient(90deg, #4361ee, #03045e); }
@@ -576,9 +559,7 @@
       line-height: 1.25;
     }
 
-    .abyss .depth-name {
-      color: rgba(255,255,255,0.92);
-    }
+    .abyss .depth-name { color: rgba(255,255,255,0.92); }
 
     .depth-sub {
       display: block;
@@ -590,9 +571,7 @@
       text-transform: uppercase;
     }
 
-    .abyss .depth-sub {
-      color: rgba(255,255,255,0.36);
-    }
+    .abyss .depth-sub { color: rgba(255,255,255,0.36); }
 
     .module-grid {
       margin-top: 26px;
@@ -618,26 +597,9 @@
       box-shadow: var(--shadow);
     }
 
-    .module-card i {
-      margin-bottom: 18px;
-      font-size: 1.2rem;
-      color: var(--primary-blue);
-    }
-
-    .module-card b {
-      display: block;
-      color: var(--primary-blue);
-      font-size: 0.98rem;
-      line-height: 1.3;
-    }
-
-    .module-card span {
-      display: block;
-      margin-top: 8px;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      line-height: 1.45;
-    }
+    .module-card i { margin-bottom: 18px; font-size: 1.2rem; color: var(--primary-blue); }
+    .module-card b { display: block; color: var(--primary-blue); font-size: 0.98rem; line-height: 1.3; }
+    .module-card span { display: block; margin-top: 8px; color: var(--text-muted); font-size: 0.78rem; line-height: 1.45; }
 
     .content-frame {
       width: 100%;
@@ -655,7 +617,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.36);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 15;
     }
 
@@ -663,64 +625,35 @@
       display: block;
     }
 
+    /* Media Queries Atualizadas para Alta Fidelidade Mobile */
     @media (max-width: 1120px) {
-      :root {
-        --sidebar-width: 260px;
-      }
-
-      .module-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .hero-card {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-orbit {
-        display: none;
-      }
+      :root { --sidebar-width: 260px; }
+      .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-card { grid-template-columns: 1fr; }
+      .hero-orbit { display: none; }
     }
 
     @media (max-width: 860px) {
-      :root {
-        --topbar-height: 66px;
-      }
-
-      body {
-        overflow: hidden;
-      }
-
-      .portal-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .portal-shell.sidebar-collapsed {
-        grid-template-columns: 1fr;
-      }
+      :root { --topbar-height: 66px; }
+      
+      .portal-shell { grid-template-columns: 1fr; }
+      .portal-shell.sidebar-collapsed { grid-template-columns: 1fr; }
 
       .module-sidebar {
         position: fixed;
         inset: 0 auto 0 0;
-        width: min(var(--sidebar-width), 88vw);
+        width: 280px;
+        max-width: 85vw;
         transform: translateX(-100%);
-        transition: transform 0.24s ease;
+        transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .module-sidebar.open {
-        transform: translateX(0);
-      }
-
-      .portal-shell.sidebar-collapsed .module-sidebar {
-        width: min(var(--sidebar-width), 86vw);
-        padding: 18px 16px;
-      }
-
-      .portal-shell.sidebar-collapsed .brand-block {
-        grid-template-columns: 46px 1fr;
-        justify-content: stretch;
-        padding: 8px 8px 20px;
-      }
-
+      .module-sidebar.open { transform: translateX(0); }
+      .portal-shell.sidebar-collapsed .module-sidebar { width: 280px; max-width: 85vw; padding: 18px 16px; }
+      .portal-shell.sidebar-collapsed .brand-block { grid-template-columns: 46px 1fr; justify-content: stretch; padding: 8px 8px 20px; }
+      
       .portal-shell.sidebar-collapsed .brand-block > div,
       .portal-shell.sidebar-collapsed .sidebar-label,
       .portal-shell.sidebar-collapsed .module-link span,
@@ -728,87 +661,30 @@
         display: block;
       }
 
-      .portal-shell.sidebar-collapsed .module-link {
-        grid-template-columns: 28px 1fr;
-        justify-items: stretch;
-        padding: 10px 12px;
-      }
-
-      .main-stage {
-        height: 100dvh;
-      }
-
-      .collapse-sidebar-btn {
-        display: none;
-      }
-
-      .stage-topbar {
-        padding: 0 14px;
-      }
-
-      .topbar-link span {
-        display: none;
-      }
-
-      .welcome-screen {
-        padding: 0;
-      }
-
-      .welcome-inner {
-        padding: 18px;
-      }
-
-      .depth-cards {
-        grid-template-columns: 1fr;
-      }
+      .portal-shell.sidebar-collapsed .module-link { grid-template-columns: 28px 1fr; justify-items: stretch; padding: 10px 12px; }
+      .collapse-sidebar-btn { display: none; }
+      .stage-topbar { padding: 0 16px; }
+      .topbar-link span { display: none; }
+      .welcome-inner { padding: 20px; }
+      .depth-cards { grid-template-columns: 1fr; gap: 12px; }
     }
 
     @media (max-width: 560px) {
-      :root {
-        --topbar-height: 62px;
-      }
-
-      .stage-topbar {
-        gap: 10px;
-      }
-
-      .stage-title strong {
-        font-size: 0.86rem;
-      }
-
-      .stage-title span {
-        font-size: 0.68rem;
-      }
-
-      .topbar-actions {
-        gap: 6px;
-      }
-
-      .topbar-link {
-        min-height: 36px;
-        padding: 0 10px;
-      }
-
-      .module-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-card {
-        min-height: auto;
-        padding: 22px;
-      }
-
-      .hero-card h1 {
-        font-size: clamp(1.72rem, 10vw, 2.4rem);
-      }
-
-      .hero-card p {
-        font-size: 0.88rem;
-      }
-
-      .depth-card {
-        min-height: 98px;
-      }
+      :root { --topbar-height: 60px; }
+      
+      .stage-topbar { gap: 8px; }
+      .topbar-left { gap: 8px; }
+      .stage-title strong { font-size: 0.9rem; }
+      .stage-title span { font-size: 0.68rem; }
+      
+      .topbar-actions { gap: 4px; }
+      .topbar-link { min-height: 36px; padding: 0 10px; }
+      
+      .module-grid { grid-template-columns: 1fr; gap: 12px; }
+      .hero-card { min-height: auto; padding: 20px; }
+      .hero-card h1 { font-size: clamp(1.5rem, 6vw, 2rem); }
+      .hero-card p { font-size: 0.85rem; margin-top: 12px; }
+      .depth-card { min-height: 90px; padding: 12px; }
     }
   </style>
 </head>
@@ -916,7 +792,7 @@
               <div>
                 <span class="label"><i class="fa-solid fa-leaf"></i> Especial Semana do Meio Ambiente</span>
                 <div class="hero-eyebrow">CEDAE · Meio Ambiente · 2026</div>
-                <h1>Na <span class="accent-green">superficie</span>, a luz. No fundo, os <span class="accent-blue">dados</span>.</h1>
+                <h1>Na <span class="accent-green">superficie</span>, a luz. <br>No fundo, os <span class="accent-blue">dados</span>.</h1>
                 <div class="wave-divider" aria-hidden="true">
                   <svg viewBox="0 0 74 14" fill="none" xmlns="http://www.w3.org/2000/svg" width="74" height="14">
                     <path d="M1 7 Q10 1 19 7 Q28 13 37 7 Q46 1 55 7 Q64 13 73 7" stroke="#0096c7" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.62"/>
@@ -986,6 +862,7 @@
   <div class="overlay" id="overlay"></div>
 
   <script>
+    // Mantive rigorosamente o mesmo script original estável que você estruturou
     const sidebar = document.querySelector("#moduleSidebar");
     const portalShell = document.querySelector("#portalShell");
     const overlay = document.querySelector("#overlay");
@@ -1009,7 +886,6 @@
       collapseSidebarBtn.innerHTML = collapsed
         ? '<i class="fa-solid fa-angles-right"></i>'
         : '<i class="fa-solid fa-angles-left"></i>';
-
       if (!isMobileLayout()) {
         localStorage.setItem("portalSidebarCollapsed", collapsed ? "true" : "false");
       }

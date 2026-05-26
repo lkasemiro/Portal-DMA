@@ -12,510 +12,991 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <style>
-    /* ── Tokens ─────────────────────────────────────────────── */
-    :root {
-      --primary-blue:  #0b3d91;
-      --dark-blue:     #001d3d;
-      --accent-green:  #22c55e;
-      --accent-yellow: #facc15;
-      --white:         #ffffff;
-      --bg-canvas:     #cbd5e1;
-    }
+ <style>
 
-    /* ── Reset ───────────────────────────────────────────────── */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* =========================================================
+   TOKENS
+========================================================= */
 
-    body, html {
-      height: 100vh; width: 100vw;
-      overflow: hidden;
-      font-family: 'Inter', system-ui, sans-serif;
-      background-color: var(--bg-canvas);
-    }
+:root{
+  --primary-blue:#0b3d91;
+  --dark-blue:#071d49;
+  --accent-green:#22c55e;
+  --accent-yellow:#facc15;
 
-    /* ── Layout raiz ─────────────────────────────────────────── */
-    .viewport-wrapper {
-      height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 2.5vh 2.5vw;
-    }
+  --text:#0f172a;
+  --text-soft:#64748b;
 
-    .main-canvas {
-      width: 100%; height: 100%;
-      background: white;
-      border-radius: 1.5rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-      display: flex; flex-direction: column;
-      overflow: hidden;
-    }
+  --border:#dbe4f0;
+  --bg:#f1f5f9;
 
-    /* ── Topbar ──────────────────────────────────────────────── */
-    .aedes-topbar {
-      height: 9vh; min-height: 72px;
-      padding: 0 2vw;
-      display: flex; justify-content: space-between; align-items: center;
-      background: var(--white);
-      border-bottom: 1px solid #e2e8f0;
-      z-index: 10;
-      flex-shrink: 0;
-    }
+  --white:#ffffff;
 
-    .topbar-brand {
-      display: flex; align-items: center; gap: 12px;
-    }
+  --shadow:
+    0 20px 50px rgba(0,0,0,.18);
 
-    .topbar-badge {
-      background: var(--primary-blue);
-      color: white;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-weight: 900;
-      font-size: 0.78rem;
-      letter-spacing: 0.05em;
-    }
-
-    .topbar-title {
-      color: var(--dark-blue);
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .nav-group { display: flex; align-items: center; gap: 10px; }
-
-    .btn-nav {
-      padding: 9px 18px;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 0.75rem;
-      text-decoration: none;
-      display: flex; align-items: center; gap: 8px;
-      transition: transform 0.2s, filter 0.2s;
-      letter-spacing: 0.03em;
-    }
-
-    .btn-nav:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-    .btn-nav--green  { background: var(--accent-green);  color: white; box-shadow: 0 4px 12px rgba(34,197,94,0.25); }
-    .btn-nav--yellow { background: var(--accent-yellow);  color: var(--dark-blue); box-shadow: 0 4px 12px rgba(250,204,21,0.25); }
-
-    /* ── Conteúdo split ─────────────────────────────────────── */
-    .aedes-content {
-  display: flex;
-  flex-direction: column; /* FORÇA O VERTICAL */
-  overflow-y: auto;       /* PERMITE ROLAR PARA BAIXO */
-  height: 100%;           /* OCUPA A TELA TODA */
-  background: white;
+  --radius-xl:28px;
+  --radius-lg:22px;
+  --radius-md:16px;
 }
 
-.split-col {
-  width: 100%;            /* OCUPA A LARGURA TOTAL */
-  flex-shrink: 0;         /* IMPEDE QUE AS SEÇÕES SE ACHATEM */
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-    /* ── Lado esquerdo — visual ──────────────────────────────── */
-    .col-visual {
-      background: #f8fafc;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
+html,
+body{
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden;
 
-    /* Blob decorativo no fundo */
-    .col-visual::before {
-      content: "";
-      position: absolute;
-      width: 60%;
-      aspect-ratio: 1;
-      background: radial-gradient(circle, rgba(11,61,145,0.07) 0%, transparent 70%);
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-    .visual-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      height: 100%;
-      width: 100%;
-      z-index: 1;
-    }
+/* =========================================================
+   PAGE
+========================================================= */
 
-    .image-container {
-    width: 95%; /* Aumentado de 70% para 90% */
-    max-width: 450px; /* Aumentado de 280px para 450px para dar mais presença */
-    aspect-ratio: 1;
-    background-image: url('./assets/logo_pura_dengue.png');
-    background-size: contain; /* Garante que a imagem apareça inteira sem cortar */
-    background-repeat: no-repeat;
-    background-position: center;
-    
-    /* Filtro opcional para dar um leve destaque/sombra ao ícone */
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); 
+.aedes-page{
+  width:100%;
+  min-height:100vh;
+  position:relative;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero-aedes{
+  position:relative;
+
+  width:72%;
+  min-height:100vh;
+
+  overflow:hidden;
+
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+}
+
+/* =========================================================
+   VIDEO
+========================================================= */
+
+.hero-video-wrap{
+  position:absolute;
+  inset:0;
+  z-index:1;
+}
+
+.hero-video{
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  filter:
+    contrast(1.15)
+    brightness(.55)
+    saturate(1.08);
+}
+
+/* ESCURECE VIDEO */
+
+.hero-overlay{
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(7,29,73,.92) 0%
+      rgba(7,29,73,.20) 30%,
+      rgba(7,29,73,.18) 60%,
+      rgba(7,29,73,.10) 100%
+    );
+
+  z-index:2;
+}
+
+/* =========================================================
+   TEXTO HERO
+========================================================= */
+
+.hero-content{
+  position:relative;
+  z-index:5;
+
+  width:min(640px,42vw);
+
+  margin-left:5vw;
+  margin-top:10vh;
+
+  color:white;
+}
+
+/* TAG */
+
+.hero-tag{
+  display:inline-flex;
+  align-items:center;
+
+  padding:10px 18px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.14);
+
+  border:1px solid rgba(255,255,255,.18);
+
+  backdrop-filter:blur(14px);
+
+  font-size:.82rem;
+  font-weight:700;
+
+  margin-bottom:28px;
+}
+
+/* TITULO */
+
+.hero-content h1{
+  font-size:clamp(3rem,6vw,6.2rem);
+  line-height:.95;
+  font-weight:900;
+
+  letter-spacing:-3px;
+
+  margin-bottom:24px;
+
+  max-width:700px;
+}
+
+.hero-content h1 span{
+  color:var(--accent-yellow);
+}
+
+/* TEXTO */
+
+.hero-content p{
+  max-width:560px;
+
+  font-size:1.08rem;
+  line-height:1.8;
+
+  color:rgba(255,255,255,.92);
+
+  margin-bottom:34px;
+}
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+.hero-actions{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.btn-primary,
+.btn-secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  min-width:210px;
+  height:56px;
+
+  padding:0 28px;
+
+  border-radius:18px;
+
+  font-size:.92rem;
+  font-weight:800;
+
+  text-decoration:none;
+
+  transition:.25s;
+}
+
+.btn-primary{
+  background:var(--accent-yellow);
+  color:var(--dark-blue);
+}
+
+.btn-secondary{
+  background:rgba(255,255,255,.14);
+
+  border:1px solid rgba(255,255,255,.22);
+
+  backdrop-filter:blur(10px);
+
+  color:white;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover{
+  transform:translateY(-3px);
+}
+
+/* =========================================================
+   BLOCO "SUA UNIDADE PARTICIPA"
+========================================================= */
+
+.floating-certificate{
+  position:absolute;
+
+  top:1vh;
+  right:4vw;
+
+  z-index:10;
+
+  width:min(430px,28vw);
+}
+
+.certificate-content{
+  width:100%;
+}
+
+.certificate-text{
+  background:rgba(255,255,255,.94);
+
+  backdrop-filter:blur(16px);
+
+  border-radius:var(--radius-xl);
+
+  padding:30px;
+
+  border:1px solid rgba(255,255,255,.35);
+
+  box-shadow:var(--shadow);
+
+  margin-bottom:22px;
+}
+
+/* MINI */
+
+.section-mini{
+  display:inline-block;
+
+  margin-bottom:14px;
+
+  color:var(--primary-blue);
+
+  font-size:.78rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+/* TITULO */
+
+.certificate-text h2{
+  font-size:2rem;
+  line-height:1.1;
+
+  color:var(--dark-blue);
+
+  margin-bottom:16px;
+}
+
+/* TEXTO */
+
+.certificate-text p{
+  color:var(--text-soft);
+
+  font-size:.96rem;
+  line-height:1.7;
+
+  margin-bottom:24px;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats-row{
+  display:grid;
+
+  grid-template-columns:repeat(3,1fr);
+
+  gap:14px;
+}
+
+.stat-box{
+  background:#f8fafc;
+
+  border:1px solid var(--border);
+
+  border-radius:18px;
+
+  padding:18px 14px;
+}
+
+.stat-box strong{
+  display:block;
+
+  font-size:1.3rem;
+  font-weight:900;
+
+  color:var(--dark-blue);
+
+  margin-bottom:6px;
+}
+
+.stat-box span{
+  font-size:.78rem;
+  line-height:1.4;
+
+  color:var(--text-soft);
+}
+
+/* =========================================================
+   CARD CERTIFICADO
+========================================================= */
+
+.certificate-card{
+  width:100%;
+
+  background:rgba(255,255,255,.96);
+
+  backdrop-filter:blur(18px);
+
+  border-radius:var(--radius-xl);
+
+  padding:28px;
+
+  border:1px solid rgba(255,255,255,.4);
+
+  box-shadow:var(--shadow);
+}
+
+/* TOPO */
+
+.certificate-top{
+  display:flex;
+  align-items:center;
+  gap:1px;
+
+  margin-bottom:18px;
+
+  color:#16a34a;
+
+  font-size:.82rem;
+  font-weight:800;
+}
+
+.status-dot{
+  width:10px;
+  height:10px;
+
+  border-radius:50%;
+
+  background:#22c55e;
+}
+
+/* TITULO */
+
+.certificate-card h3{
+  font-size:2rem;
+  line-height:1.08;
+
+  color:var(--dark-blue);
+
+  margin-bottom:14px;
+}
+
+/* DESCRIÇÃO */
+
+.certificate-description{
+  color:var(--text-soft);
+
+  font-size:.95rem;
+  line-height:1.7;
+
+  margin-bottom:22px;
+}
+
+/* INFO */
+
+.certificate-info-box{
+  background:#ffffff;
+
+  border:1px solid var(--border);
+
+  border-radius:20px;
+
+  padding:18px;
+
+  margin-bottom:24px;
+}
+
+.certificate-info-box p{
+  font-size:.88rem;
+  line-height:1.8;
+
+  color:#475569;
+}
+
+.certificate-info-box i{
+  color:var(--accent-yellow);
+  margin-right:8px;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.field{
+  display:flex;
+  flex-direction:column;
+
+  margin-bottom:18px;
+}
+
+.field label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  margin-bottom:8px;
+
+  font-size:.78rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+
+  color:#334155;
+}
+
+.field label i{
+  color:#2563eb;
+}
+
+/* INPUT */
+
+.custom-input{
+  width:100%;
+  height:56px;
+
+  padding:0 16px;
+
+  border-radius:16px;
+
+  border:1px solid var(--border);
+
+  background:white;
+
+  font-size:.94rem;
+  font-weight:700;
+
+  color:var(--dark-blue);
+
+  outline:none;
+
+  transition:.2s;
+}
+
+.custom-input:focus{
+  border-color:#2563eb;
+
+  box-shadow:
+    0 0 0 4px rgba(37,99,235,.12);
+}
+
+/* LINHA */
+
+.row-2col{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:14px;
+}
+
+/* DIVIDER */
+
+.form-divider{
+  width:100%;
+  height:1px;
+
+  background:#e2e8f0;
+
+  margin:24px 0;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-bar{
+  display:none;
+
+  min-height:52px;
+
+  padding:14px 16px;
+
+  border-radius:16px;
+
+  margin-bottom:18px;
+
+  font-size:.88rem;
+  font-weight:700;
+}
+
+.status-bar.success{
+  display:flex;
+  align-items:center;
+
+  background:#ecfff2;
+
+  border:1px solid #b5ebc7;
+
+  color:#1c7f3c;
+}
+
+.status-bar.warning{
+  display:flex;
+  align-items:center;
+
+  background:#fff8e8;
+
+  border:1px solid #f0d88f;
+
+  color:#9f6a00;
+}
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+.btn-main{
+  width:100%;
+  height:58px;
+
+  border:none;
+
+  border-radius:18px;
+
+  font-size:.88rem;
+  font-weight:900;
+
+  cursor:pointer;
+
+  transition:.25s;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.btn-main:hover{
+  transform:translateY(-2px);
+}
+
+/* CONSULTA */
+
+.btn-verify{
+  background:var(--dark-blue);
+
+  color:white;
+
+  margin-bottom:12px;
+}
+
+.btn-verify:hover{
+  background:#0b2c6d;
+}
+
+/* DOWNLOAD */
+
+.btn-download{
+  background:var(--accent-yellow);
+
+  color:var(--dark-blue);
+}
+
+.btn-download:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width:1200px){
+
+  .floating-certificate{
+    width:min(420px,34vw);
   }
 
-    .visual-caption {
-      text-align: center;
-      max-width: 300px;
-    }
+  .hero-content{
+    width:50vw;
+  }
 
-    .visual-caption h2 {
-      font-size: 1.35rem;
-      font-weight: 900;
-      color: var(--dark-blue);
-      margin-bottom: 6px;
-      line-height: 1.2;
-    }
+}
 
-    .visual-caption p {
-      font-size: 0.82rem;
-      color: #64748b;
-      line-height: 1.55;
-    }
+@media (max-width:980px){
 
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: rgba(11,61,145,0.08);
-      color: var(--primary-blue);
-      font-size: 0.73rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
+  .hero-aedes{
+    min-height:auto;
+    padding-bottom:60px;
+  }
 
-    /* ── Lado direito — formulário ───────────────────────────── */
-    .col-form {
-      background: linear-gradient(145deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
-      color: white;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
+  .hero-content{
+    width:100%;
 
-    /* Padrão decorativo sutil no fundo */
-    .col-form::before {
-      content: "";
-      position: absolute;
-      width: 80%; /* Aumentado de 60% para 80% para cercar o ícone maior */
-      aspect-ratio: 1;
-      background: radial-gradient(circle, rgba(11,61,145,0.12) 0%, transparent 70%);
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
+    margin:
+      100px
+      28px
+      40px;
+  }
 
-    .glass-box {
-      position: relative;
-      z-index: 1;
-      width: 85%;
-      max-width: 420px;
-      padding: 36px 40px 40px;
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-    }
+  .floating-certificate{
+    position:relative;
 
-    .form-title {
-      font-size: 1.65rem;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
-      line-height: 1.15;
-    }
+    top:auto;
+    right:auto;
 
-    .form-subtitle {
-      font-size: 0.82rem;
-      opacity: 0.7;
-      margin-bottom: 28px;
-      line-height: 1.4;
-    }
+    width:calc(100% - 56px);
 
-    .field { margin-bottom: 18px; }
+    margin:
+      0 auto
+      40px;
+  }
 
-    .field label {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 7px;
-      color: #94a3b8;
-    }
+  .hero-overlay{
+    background:
+      linear-gradient(
+        180deg,
+        rgba(7,29,73,.82) 0%,
+        rgba(7,29,73,.60) 100%
+      );
+  }
 
-    .custom-input {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 10px;
-      border: 1.5px solid transparent;
-      background: white;
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 0.92rem;
-      color: var(--dark-blue);
-      transition: border-color 0.2s, box-shadow 0.2s;
-      appearance: none;
-      -webkit-appearance: none;
-      cursor: pointer;
-    }
+}
 
-    .custom-input:focus {
-      outline: none;
-      border-color: var(--accent-green);
-      box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
-    }
+@media (max-width:768px){
 
-    .row-2col {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 12px;
-    }
+  .hero-content h1{
+    font-size:3rem;
+    letter-spacing:-2px;
+  }
 
-    /* Divisor */
-    .form-divider {
-      height: 1px;
-      background: rgba(255,255,255,0.12);
-      margin: 22px 0;
-    }
+  .hero-content p{
+    font-size:.96rem;
+  }
 
-    /* Botões principais */
-    .btn-main {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      font-family: inherit;
-      font-weight: 800;
-      font-size: 0.83rem;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: transform 0.15s, filter 0.15s, opacity 0.2s, box-shadow 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+  .certificate-text,
+  .certificate-card{
+    padding:22px;
+  }
 
-    .btn-main:not(:disabled):hover {
-      transform: translateY(-2px);
-      filter: brightness(1.08);
-    }
+  .certificate-card h3{
+    font-size:1.7rem;
+  }
 
-    .btn-main:not(:disabled):active { transform: scale(0.98); }
+  .stats-row{
+    grid-template-columns:1fr;
+  }
 
-    .btn-main:disabled { cursor: default; }
+  .hero-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
 
-    .btn-verify {
-      background: var(--accent-green);
-      color: white;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 16px rgba(34,197,94,0.30);
-    }
+  .btn-primary,
+  .btn-secondary{
+    width:100%;
+  }
 
-    .btn-download {
-      background: white;
-      color: var(--primary-blue);
-      opacity: 0.45;
-    }
+}
 
-    /* Estado ativo do botão de download */
-    .btn-download.is-active {
-      opacity: 1;
-      background: var(--accent-yellow);
-      color: var(--dark-blue);
-      box-shadow: 0 4px 16px rgba(250,204,21,0.35);
-    }
-
-    /* ── Status feedback ─────────────────────────────────────── */
-    /* Animação de entrada */
-      @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      .status-bar {
-        display: none;
-        align-items: center;
-        gap: 12px;
-        padding: 16px;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-bottom: 20px;
-        animation: slideUp 0.4s ease forwards;
-        border: 1px solid transparent;
-      }
-
-      .status-bar.show { display: flex; }
-
-      /* Variação Sucesso - Elegível */
-      .status-bar.success {
-        background: rgba(34, 197, 94, 0.1);
-        border-color: rgba(34, 197, 94, 0.4);
-        color: #4ade80;
-        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
-      }
-
-      /* Variação Erro - Não Elegível */
-      .status-bar.error {
-        background: rgba(248, 113, 113, 0.1);
-        border-color: rgba(248, 113, 113, 0.4);
-        color: #f87171;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
-      }
-
-      .status-icon {
-        font-size: 1.2rem;
-      }
-    /* ── Responsivo ──────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .aedes-content { grid-template-columns: 1fr; overflow-y: auto; }
-      .col-visual { display: none; }
-      .glass-box { margin: 20px 0; width: 92%; padding: 28px 24px; }
-    }
+</style>
   </style>
 </head>
 <body>
-  <div class="viewport-wrapper">
-    <div class="main-canvas">
 
-      <header class="aedes-topbar">
-        <div class="topbar-brand">
-          <span class="topbar-badge">DMA</span>
-          <strong class="topbar-title">
-            Programa de Combate ao <em>Aedes aegypti</em>
-          </strong>
-        </div>
+<main class="aedes-page">
 
-        <nav class="nav-group">
-          <a href="./aedes-tecnico.html" class="btn-nav btn-nav--green">
-            <i class="fas fa-home"></i>
-            <span>ÁREA TÉCNICA</span>
-          </a>
-          
-        </nav>
-      </header>
-<div class="aedes-content" style="display: flex; flex-direction: column; overflow-y: auto; height:100%; background: white;">
-  <section style="padding: 16px 4%; border-bottom: 1px solid #e2e8f0;">
-    <div style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap;">
-      <div class="image-container" style="max-width: 280px; flex: none;">
-        </div>
-      
-      <div style="flex: 1.2; min-width: 320px; text-align: left;">
-        <h2 style="color: var(--primary-blue); font-weight: 900; font-size: 2.2rem; margin-bottom: 15px; letter-spacing: -1px;">
-          Bem-vindo, Focal!
-        </h2>
-        <p style="color: #475569; font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px;">
-          Esta é a nova interface de coleta de dados do Departamento de Meio Ambiente (DMA). Siga as orientações para realizar o relatório de controle semanal de vistoria, que tem por objetivo identificar e eliminar os potenciais criadouros do mosquito <i>Aedes aegypti</i>, nas dependências da CEDAE:
-        </p>
+  <!-- HERO -->
+  <section class="hero-aedes">
 
-        <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 35px;">
-          <div style="display: flex; align-items: flex-start; gap: 15px;">
-            <span style="background: var(--primary-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; box-shadow: 0 4px 10px rgba(11, 61, 145, 0.2);">1</span>
-            <p style="font-size: 1rem; color: #1e293b; margin: 0; padding-top: 4px;">Selecione seu nome e valide seu acesso com sua matrícula (<strong>0-000000-0</strong>).</p>
-          </div>
-          <div style="display: flex; align-items: flex-start; gap: 15px;">
-            <span style="background: var(--primary-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; box-shadow: 0 4px 10px rgba(11, 61, 145, 0.2);">2</span>
-            <p style="font-size: 1rem; color: #1e293b; margin: 0; padding-top: 4px;">Preencha a grade de vistoria semanal das unidades cadastradas.</p>
-          </div>
-        </div>
+    <!-- VIDEO -->
+    <div class="hero-video-wrap">
 
-        <a href="./aedes-focais.html" class="btn-main" style="background: var(--accent-yellow); color: var(--dark-blue); text-decoration: none; padding: 20px 40px; font-size: 1.1rem; border-radius: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(250, 204, 21, 0.4);">
-          <i class="fas fa-file-signature"></i> ENVIAR RELATÓRIO SEMANAL
-        </a>
-      </div>
+      <video
+        class="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+      >
+        <source src="./assets/elevador_aedes.mp4" type="video/mp4">
+      </video>
+
+      <!-- camada para reforçar contraste -->
+      <div class="hero-overlay"></div>
+
     </div>
-  </section>
+    <div class="certificate-card">
 
-  <section style="display: flex; flex: 1; flex-wrap: wrap; background: #f8fafc; padding-bottom: 100px;">
-    
-    <div style="flex: 1; min-width: 300px; padding: 12px 5%; display: flex; flex-direction: column; justify-content: center;">
-      <div style="max-width: 500px;">
-        <h3 style="color: var(--primary-blue); font-weight: 800; font-size: 1.5rem; margin-bottom: 20px;">
-          Certificação de Unidade Protegida
+        <div class="certificate-top">
+          <span class="status-dot"></span>
+          Certificação disponível
+        </div>
+
+        <h3>
+          Certificação de unidade protegida
         </h3>
-        <p style="color: #1e293b; font-size: 1.05rem; line-height: 1.7; margin-bottom: 15px;">
-          Faça a consulta online para verificar o status atual da sua unidade no mês atual e nos meses anteriores do ano de 2026.
+
+        <p>
+          Consulte abaixo o status da sua unidade no programa.
         </p>
-        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-          <p style="color: #475569; font-size: 0.95rem; margin: 0;">
-            <i class="fas fa-award" style="color: var(--accent-yellow); margin-right: 8px;"></i>
-            É possível emitir um <strong>certificado de unidade protegida</strong> caso tenha realizado <strong> todas as vistorias no mês</strong> e contando que os focos encontrados forem remediados.
-          </p>
-        </div>
-      </div>
-    </div>
 
-    <div style="flex: 1; min-width: 350px; padding: 20px 5%; display: flex; align-items: center; justify-content: center; background: #0b3d91;">
-      <div class="glass-box" style="width: 100%; max-width: 450px; background: white; border: 1px solid #cbd5e1; box-shadow: 0 15px 30px rgba(0,0,0,0.08);">
-        <h2 class="form-title" style="font-size: 1.4rem;">Consulta Online</h2>
-        
-        <div class="field">
-          <label for="certUnidade"><i class="fas fa-building" style="margin-right:5px;"></i>Unidade Operacional</label>
-          <select id="certUnidade" class="custom-input">
-            <option value="">Carregando unidades...</option>
-          </select>
-        </div>
+        <input
+          type="text"
+          placeholder="Digite o nome da unidade"
+        >
 
-         <!-- Mês + Ano -->
-            <div class="row-2col">
-              <div class="field">
-                <label for="certMes"><i class="fas fa-calendar-alt" style="margin-right:5px;"></i>Mês de Referência</label>
-                <select id="certMes" class="custom-input">
-                  <option value="1">Janeiro</option>
-                  <option value="2">Fevereiro</option>
-                  <option value="3">Março</option>
-                  <option value="4">Abril</option>
-                  <option value="5" selected>Maio</option>
-                  <option value="6">Junho</option>
-                  <option value="7">Julho</option>
-                  <option value="8">Agosto</option>
-                  <option value="9">Setembro</option>
-                  <option value="10">Outubro</option>
-                  <option value="11">Novembro</option>
-                  <option value="12">Dezembro</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="certAno"><i class="fas fa-calendar-check" style="margin-right:5px;"></i>Ano</label>
-                <select id="certAno" class="custom-input">
-                  <option value="2026" selected>2026</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-divider"></div>
-
-            <!-- Feedback de status (controlado pelo JS) -->
-            <div id="statusBar" class="status-bar" role="alert" aria-live="polite"></div>
-
-            <!-- Botões -->
-            <button id="checkCertificateBtn" class="btn-main btn-verify">
-              <i class="fas fa-search"></i> VERIFICAR STATUS
-            </button>
-
-            <button id="downloadCertificateBtn" class="btn-main btn-download" disabled>
-              <i class="fas fa-file-certificate"></i> BAIXAR CERTIFICADO
-            </button>
+        <button>
+          Consultar unidade
+        </button>
 
       </div>
-    </div>
 
-  </section>
+    <!-- CONTEÚDO -->
+    <!-- CONTEÚDO HERO -->
+<div class="hero-content">
+
+  <span class="hero-tag">
+    Programa Ambiental Corporativo
+  </span>
+
+  <h1>
+    Programa de Combate ao 
+    <span><i> Aedes aegypti</i></span>
+  </h1>
+
+  <div class="hero-actions">
+
+    <a href="./aedes-focais.html" class="btn-primary">
+      Envio de Relatório
+    </a>
+  </div>
 
 </div>
+
+</section>
+
+<!-- PAINEL LATERAL -->
+<div class="floating-certificate" id="certificado">
+
+  <div class="certificate-content">
+
+    <!-- BLOCO INSTITUCIONAL -->
+    <div class="certificate-text">
+
+      <span class="section-mini">
+        Certificação ambiental
+      </span>
+
+      <h2>
+        Sua unidade já participa?
+      </h2>
+
+      <p>
+        Conheça o programa de Combate ao <i>Aedes aegypti</i> da CEDAE e descubra como
+        sua unidade pode participar das ações de monitoramento
+        e combate à dengue nas unidades operacionais da companhia, promovendo ações contínuas
+        de vistoria, prevenção e conscientização ambiental,
+        fortalecendo a segurança sanitária e o controle preventivo
+        em ambientes corporativos.
+      </p>
+
+      <div class="stats-row">
+
+        <div class="stat-box">
+          <strong>100+</strong>
+          <span>Unidades vistoriadas</span>
+        </div>
+
+        <div class="stat-box">
+          <strong>2026</strong>
+          <span>Programa ativo</span>
+        </div>
+
+        <div class="stat-box">
+          <strong>DMA</strong>
+          <span>Gestão ambiental</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CARD CERTIFICAÇÃO -->
+    <div class="certificate-card">
+
+      <div class="certificate-top">
+        <span class="status-dot"></span>
+        Certificação disponível
+      </div>
+
+      <h3>
+        Certificação de unidade protegida
+      </h3>
+
+
+      <!-- INFO -->
+      <div class="certificate-info-box">
+
+        <p>
+          <i class="fas fa-award"></i>
+
+          É possível emitir um
+          <strong>certificado de unidade protegida</strong>
+          caso a unidade tenha realizado
+          <strong>todas as vistorias do mês</strong>
+          e os focos encontrados tenham sido remediados.
+        </p>
+
+      </div>
+ 
+
+      <!-- CARD CERTIFICAÇÃO -->
+<div class="certificate-card">
+
+
+  
+  <!-- UNIDADE -->
+  <div class="field">
+
+    <label for="certUnidade">
+
+      <i class="fas fa-building"></i>
+
+      Unidade Operacional
+
+    </label>
+
+    <select id="certUnidade" class="custom-input">
+
+      <option value="">
+        Carregando unidades...
+      </option>
+
+    </select>
+
+  </div>
+
+  <!-- LINHA MES + ANO -->
+  <div class="row-2col">
+
+    <!-- MES -->
+    <div class="field">
+
+      <label for="certMes">
+
+        <i class="fas fa-calendar-alt"></i>
+
+        Mês
+
+      </label>
+
+      <select id="certMes" class="custom-input">
+
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5" selected>Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+
+      </select>
+
+    </div>
+
+    <!-- ANO -->
+    <div class="field">
+
+      <label for="certAno">
+
+        <i class="fas fa-calendar-check"></i>
+
+        Ano
+
+      </label>
+
+      <select id="certAno" class="custom-input">
+
+        <option value="2026" selected>
+          2026
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+  <!-- DIVISOR -->
+  <div class="form-divider"></div>
+
+  <!-- STATUS -->
+  <div
+    id="statusBar"
+    class="status-bar"
+    role="alert"
+    aria-live="polite">
+  </div>
+
+  <!-- BOTAO CONSULTA -->
+  <button
+    id="checkCertificateBtn"
+    class="btn-main btn-verify">
+
+    <i class="fas fa-search"></i>
+
+    VERIFICAR STATUS
+
+  </button>
+
+  <!-- BOTAO DOWNLOAD -->
+  <button
+    id="downloadCertificateBtn"
+    class="btn-main btn-download"
+    disabled>
+
+    <i class="fas fa-file-certificate"></i>
+
+    BAIXAR CERTIFICADO
+
+  </button>
+
 </div>
-    </div>
-    </div>
+
+</main>
   <script src="./js/core/api-config.js"></script>
   <script type="module" src="./js/pages/aedes-publico.js"></script>
+
 </body>
 </html>

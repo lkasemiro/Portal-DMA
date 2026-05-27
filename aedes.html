@@ -12,38 +12,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 
- <style>
-
+<style>
 /* =========================================================
    TOKENS
 ========================================================= */
-
 :root{
   --primary-blue:#0b3d91;
   --dark-blue:#071d49;
-  --accent-green:#22c55e;
   --accent-yellow:#facc15;
-
   --text:#0f172a;
   --text-soft:#64748b;
-
   --border:#dbe4f0;
   --bg:#f1f5f9;
-
-  --white:#ffffff;
-
-  --shadow:
-    0 20px 50px rgba(0,0,0,.18);
-
+  --shadow: 0 20px 50px rgba(0,0,0,.18);
   --radius-xl:28px;
-  --radius-lg:22px;
-  --radius-md:16px;
 }
 
 /* =========================================================
    RESET
 ========================================================= */
-
 *{
   margin:0;
   padding:0;
@@ -55,7 +42,6 @@ body{
   width:100%;
   min-height:100%;
   overflow-x:hidden;
-
   font-family:'Inter',sans-serif;
   background:var(--bg);
   color:var(--text);
@@ -64,7 +50,6 @@ body{
 /* =========================================================
    PAGE
 ========================================================= */
-
 .aedes-page{
   width:100%;
   min-height:100vh;
@@ -74,15 +59,11 @@ body{
 /* =========================================================
    HERO
 ========================================================= */
-
 .hero-aedes{
   position:relative;
-
   width:72%;
   min-height:100vh;
-
   overflow:hidden;
-
   display:flex;
   align-items:flex-start;
   justify-content:flex-start;
@@ -91,7 +72,6 @@ body{
 /* =========================================================
    VIDEO
 ========================================================= */
-
 .hero-video-wrap{
   position:absolute;
   inset:0;
@@ -101,82 +81,54 @@ body{
 .hero-video{
   width:100%;
   height:100%;
-
   object-fit:cover;
-
-  filter:
-    contrast(1.15)
-    brightness(.55)
-    saturate(1.08);
+  filter: contrast(1.15) brightness(.55) saturate(1.08);
 }
-
-/* ESCURECE VIDEO */
 
 .hero-overlay{
   position:absolute;
   inset:0;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(7,29,73,.92) 0%
-      rgba(7,29,73,.20) 30%,
-      rgba(7,29,73,.18) 60%,
-      rgba(7,29,73,.10) 100%
-    );
-
+  background: linear-gradient(
+    90deg,
+    rgba(7,29,73,.92) 0%,
+    rgba(7,29,73,.20) 30%,
+    rgba(7,29,73,.18) 60%,
+    rgba(7,29,73,.10) 100%
+  );
   z-index:2;
 }
 
 /* =========================================================
    TEXTO HERO
 ========================================================= */
-
 .hero-content{
   position:relative;
   z-index:5;
-
   width:min(640px,42vw);
-
   margin-left:5vw;
   margin-top:10vh;
-
   color:white;
 }
-
-/* TAG */
 
 .hero-tag{
   display:inline-flex;
   align-items:center;
-
   padding:10px 18px;
-
   border-radius:999px;
-
   background:rgba(255,255,255,.14);
-
   border:1px solid rgba(255,255,255,.18);
-
   backdrop-filter:blur(14px);
-
   font-size:.82rem;
   font-weight:700;
-
   margin-bottom:28px;
 }
-
-/* TITULO */
 
 .hero-content h1{
   font-size:clamp(3rem,6vw,6.2rem);
   line-height:.95;
   font-weight:900;
-
   letter-spacing:-3px;
-
   margin-bottom:24px;
-
   max-width:700px;
 }
 
@@ -184,23 +136,17 @@ body{
   color:var(--accent-yellow);
 }
 
-/* TEXTO */
-
 .hero-content p{
   max-width:560px;
-
   font-size:1.08rem;
   line-height:1.8;
-
   color:rgba(255,255,255,.92);
-
   margin-bottom:34px;
 }
 
 /* =========================================================
    BOTÕES
 ========================================================= */
-
 .hero-actions{
   display:flex;
   align-items:center;
@@ -208,190 +154,124 @@ body{
   flex-wrap:wrap;
 }
 
-.btn-primary,
-.btn-secondary{
+.btn-primary{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-
   min-width:210px;
   height:56px;
-
   padding:0 28px;
-
   border-radius:18px;
-
   font-size:.92rem;
   font-weight:800;
-
   text-decoration:none;
-
   transition:.25s;
-}
-
-.btn-primary{
   background:var(--accent-yellow);
   color:var(--dark-blue);
 }
 
-.btn-secondary{
-  background:rgba(255,255,255,.14);
-
-  border:1px solid rgba(255,255,255,.22);
-
-  backdrop-filter:blur(10px);
-
-  color:white;
-}
-
 .btn-primary:hover,
-.btn-secondary:hover{
+.btn-main:hover{
   transform:translateY(-3px);
 }
 
 /* =========================================================
    BLOCO "SUA UNIDADE PARTICIPA"
 ========================================================= */
-
-.floating-certificate{
-  position:absolute;
-
-  top:1vh;
-  right:4vw;
-
-  z-index:10;
-
-  width:min(430px,28vw);
+.floating-certificate {
+  position: absolute;
+  top: 1vh;
+  right: 2vw;
+  z-index: 10;
+  width: min(360px, 24vw); /* Diminuído para reduzir a largura do bloco */
 }
-
 .certificate-content{
   width:100%;
 }
 
 .certificate-text{
   background:rgba(255,255,255,.94);
-
   backdrop-filter:blur(16px);
-
   border-radius:var(--radius-xl);
-
-  padding:30px;
-
+  padding:20px;
   border:1px solid rgba(255,255,255,.35);
-
   box-shadow:var(--shadow);
-
   margin-bottom:22px;
 }
 
-/* MINI */
-
 .section-mini{
   display:inline-block;
-
   margin-bottom:14px;
-
   color:var(--primary-blue);
-
   font-size:.78rem;
   font-weight:800;
   text-transform:uppercase;
   letter-spacing:.08em;
 }
 
-/* TITULO */
-
 .certificate-text h2{
   font-size:2rem;
   line-height:1.1;
-
   color:var(--dark-blue);
-
   margin-bottom:16px;
 }
 
-/* TEXTO */
-
 .certificate-text p{
   color:var(--text-soft);
-
   font-size:.96rem;
   line-height:1.7;
-
   margin-bottom:24px;
 }
 
 /* =========================================================
    STATS
 ========================================================= */
-
 .stats-row{
   display:grid;
-
   grid-template-columns:repeat(3,1fr);
-
   gap:14px;
 }
 
 .stat-box{
   background:#f8fafc;
-
   border:1px solid var(--border);
-
   border-radius:18px;
-
   padding:18px 14px;
 }
 
 .stat-box strong{
   display:block;
-
   font-size:1.3rem;
   font-weight:900;
-
   color:var(--dark-blue);
-
   margin-bottom:6px;
 }
 
 .stat-box span{
   font-size:.78rem;
   line-height:1.4;
-
   color:var(--text-soft);
 }
 
 /* =========================================================
    CARD CERTIFICADO
 ========================================================= */
-
 .certificate-card{
   width:100%;
-
   background:rgba(255,255,255,.96);
-
   backdrop-filter:blur(18px);
-
   border-radius:var(--radius-xl);
-
   padding:28px;
-
   border:1px solid rgba(255,255,255,.4);
-
   box-shadow:var(--shadow);
 }
-
-/* TOPO */
 
 .certificate-top{
   display:flex;
   align-items:center;
   gap:1px;
-
   margin-bottom:18px;
-
   color:#16a34a;
-
   font-size:.82rem;
   font-weight:800;
 }
@@ -399,52 +279,28 @@ body{
 .status-dot{
   width:10px;
   height:10px;
-
   border-radius:50%;
-
   background:#22c55e;
 }
-
-/* TITULO */
 
 .certificate-card h3{
   font-size:2rem;
   line-height:1.08;
-
   color:var(--dark-blue);
-
   margin-bottom:14px;
 }
 
-/* DESCRIÇÃO */
-
-.certificate-description{
-  color:var(--text-soft);
-
-  font-size:.95rem;
-  line-height:1.7;
-
-  margin-bottom:22px;
-}
-
-/* INFO */
-
 .certificate-info-box{
   background:#ffffff;
-
   border:1px solid var(--border);
-
   border-radius:20px;
-
   padding:18px;
-
   margin-bottom:24px;
 }
 
 .certificate-info-box p{
   font-size:.88rem;
   line-height:1.8;
-
   color:#475569;
 }
 
@@ -456,11 +312,9 @@ body{
 /* =========================================================
    FORM
 ========================================================= */
-
 .field{
   display:flex;
   flex-direction:column;
-
   margin-bottom:18px;
 }
 
@@ -468,14 +322,11 @@ body{
   display:flex;
   align-items:center;
   gap:8px;
-
   margin-bottom:8px;
-
   font-size:.78rem;
   font-weight:800;
   text-transform:uppercase;
   letter-spacing:.04em;
-
   color:#334155;
 }
 
@@ -483,73 +334,47 @@ body{
   color:#2563eb;
 }
 
-/* INPUT */
-
 .custom-input{
   width:100%;
   height:56px;
-
   padding:0 16px;
-
   border-radius:16px;
-
   border:1px solid var(--border);
-
   background:white;
-
   font-size:.94rem;
   font-weight:700;
-
   color:var(--dark-blue);
-
   outline:none;
-
   transition:.2s;
 }
 
 .custom-input:focus{
   border-color:#2563eb;
-
-  box-shadow:
-    0 0 0 4px rgba(37,99,235,.12);
+  box-shadow: 0 0 0 4px rgba(37,99,235,.12);
 }
-
-/* LINHA */
 
 .row-2col{
   display:grid;
-
   grid-template-columns:1fr 1fr;
-
   gap:14px;
 }
-
-/* DIVIDER */
 
 .form-divider{
   width:100%;
   height:1px;
-
   background:#e2e8f0;
-
   margin:24px 0;
 }
 
 /* =========================================================
    STATUS
 ========================================================= */
-
 .status-bar{
   display:none;
-
   min-height:52px;
-
   padding:14px 16px;
-
   border-radius:16px;
-
   margin-bottom:18px;
-
   font-size:.88rem;
   font-weight:700;
 }
@@ -557,61 +382,40 @@ body{
 .status-bar.success{
   display:flex;
   align-items:center;
-
   background:#ecfff2;
-
   border:1px solid #b5ebc7;
-
   color:#1c7f3c;
 }
 
 .status-bar.warning{
   display:flex;
   align-items:center;
-
   background:#fff8e8;
-
   border:1px solid #f0d88f;
-
   color:#9f6a00;
 }
 
 /* =========================================================
-   BOTÕES
+   BOTÕES FORM
 ========================================================= */
-
 .btn-main{
   width:100%;
   height:58px;
-
   border:none;
-
   border-radius:18px;
-
   font-size:.88rem;
   font-weight:900;
-
   cursor:pointer;
-
   transition:.25s;
-
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
 }
 
-.btn-main:hover{
-  transform:translateY(-2px);
-}
-
-/* CONSULTA */
-
 .btn-verify{
   background:var(--dark-blue);
-
   color:white;
-
   margin-bottom:12px;
 }
 
@@ -619,11 +423,8 @@ body{
   background:#0b2c6d;
 }
 
-/* DOWNLOAD */
-
 .btn-download{
   background:var(--accent-yellow);
-
   color:var(--dark-blue);
 }
 
@@ -635,368 +436,159 @@ body{
 /* =========================================================
    RESPONSIVO
 ========================================================= */
-
 @media (max-width:1200px){
-
-  .floating-certificate{
-    width:min(420px,34vw);
-  }
-
-  .hero-content{
-    width:50vw;
-  }
-
+  .floating-certificate{ width:min(420px,34vw); }
+  .hero-content{ width:50vw; }
 }
 
 @media (max-width:980px){
-
-  .hero-aedes{
-    min-height:auto;
-    padding-bottom:60px;
-  }
-
-  .hero-content{
-    width:100%;
-
-    margin:
-      100px
-      28px
-      40px;
-  }
-
+  .hero-aedes{ min-height:auto; padding-bottom:60px; }
+  .hero-content{ width:100%; margin: 100px 28px 40px; }
   .floating-certificate{
     position:relative;
-
     top:auto;
     right:auto;
-
     width:calc(100% - 56px);
-
-    margin:
-      0 auto
-      40px;
+    margin: 0 auto 40px;
   }
-
   .hero-overlay{
-    background:
-      linear-gradient(
+    background: linear-gradient(
         180deg,
         rgba(7,29,73,.82) 0%,
         rgba(7,29,73,.60) 100%
       );
   }
-
 }
 
 @media (max-width:768px){
-
-  .hero-content h1{
-    font-size:3rem;
-    letter-spacing:-2px;
-  }
-
-  .hero-content p{
-    font-size:.96rem;
-  }
-
-  .certificate-text,
-  .certificate-card{
-    padding:22px;
-  }
-
-  .certificate-card h3{
-    font-size:1.7rem;
-  }
-
-  .stats-row{
-    grid-template-columns:1fr;
-  }
-
-  .hero-actions{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .btn-primary,
-  .btn-secondary{
-    width:100%;
-  }
-
+  .hero-content h1{ font-size:3rem; letter-spacing:-2px; }
+  .hero-content p{ font-size:.96rem; }
+  .certificate-text, .certificate-card{ padding:22px; }
+  .certificate-card h3{ font-size:1.7rem; }
+  .stats-row{ grid-template-columns:1fr; }
+  .hero-actions{ flex-direction:column; align-items:stretch; }
+  .btn-primary{ width:100%; }
 }
-
 </style>
-  </style>
 </head>
 <body>
 
 <main class="aedes-page">
 
-  <!-- HERO -->
   <section class="hero-aedes">
 
-    <!-- VIDEO -->
     <div class="hero-video-wrap">
-
-      <video
-        class="hero-video"
-        autoplay
-        muted
-        loop
-        playsinline
-      >
+      <video class="hero-video" autoplay muted loop playsinline>
         <source src="./assets/elevador_aedes.mp4" type="video/mp4">
       </video>
-
-      <!-- camada para reforçar contraste -->
       <div class="hero-overlay"></div>
-
     </div>
-    <div class="certificate-card">
 
+    <div class="hero-content">
+      <span class="hero-tag">Programa Ambiental Corporativo</span>
+      <h1>Programa de Combate ao <span><i>Aedes aegypti</i></span></h1>
+      <div class="hero-actions">
+        <a href="./aedes-focais.html" class="btn-primary">Envio de Relatório</a>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="floating-certificate" id="certificado">
+    <div class="certificate-content">
+
+      <div class="certificate-text">
+        <span class="section-mini">Certificação ambiental</span>
+        <h2>Sua unidade já participa?</h2>
+        <p>
+          Conheça o programa de Combate ao <i>Aedes aegypti</i> da CEDAE e descubra como
+          sua unidade pode participar das ações de monitoramento e combate à dengue.
+        </p>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <strong>100+</strong>
+            <span>Unidades vistoriadas</span>
+          </div>
+          <div class="stat-box">
+            <strong>2026</strong>
+            <span>Programa ativo</span>
+          </div>
+          <div class="stat-box">
+            <strong>DMA</strong>
+            <span>Gestão ambiental</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="certificate-card">
         <div class="certificate-top">
-          <span class="status-dot"></span>
-          Certificação disponível
+          <span class="status-dot"></span>Certificação disponível
+        </div>
+        <h3>Certificação de unidade protegida</h3>
+
+        <div class="certificate-info-box">
+          <p>
+            <i class="fas fa-award"></i>
+            É possível emitir um <strong>certificado de unidade protegida</strong>...
+          </p>
         </div>
 
-        <h3>
-          Certificação de unidade protegida
-        </h3>
+        
+        <div class="field">
+          <label for="certUnidade"><i class="fas fa-building" style="margin-right:5px;"></i>Unidade Operacional</label>
+          <select id="certUnidade" class="custom-input">
+            <option value="">Carregando unidades...</option>
+          </select>
+        </div>
 
-        <p>
-          Consulte abaixo o status da sua unidade no programa.
-        </p>
+         <!-- Mês + Ano -->
+            <div class="row-2col">
+              <div class="field">
+                <label for="certMes"><i class="fas fa-calendar-alt" style="margin-right:5px;"></i>Mês de Referência</label>
+                <select id="certMes" class="custom-input">
+                  <option value="1">Janeiro</option>
+                  <option value="2">Fevereiro</option>
+                  <option value="3">Março</option>
+                  <option value="4">Abril</option>
+                  <option value="5" selected>Maio</option>
+                  <option value="6">Junho</option>
+                  <option value="7">Julho</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Setembro</option>
+                  <option value="10">Outubro</option>
+                  <option value="11">Novembro</option>
+                  <option value="12">Dezembro</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="certAno"><i class="fas fa-calendar-check" style="margin-right:5px;"></i>Ano</label>
+                <select id="certAno" class="custom-input">
+                  <option value="2026" selected>2026</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-divider"></div>
 
-        <input
-          type="text"
-          placeholder="Digite o nome da unidade"
-        >
+            <!-- Feedback de status (controlado pelo JS) -->
+            <div id="statusBar" class="status-bar" role="alert" aria-live="polite"></div>
 
-        <button>
-          Consultar unidade
-        </button>
+            <!-- Botões -->
+            <button id="checkCertificateBtn" class="btn-main btn-verify">
+              <i class="fas fa-search"></i> VERIFICAR STATUS
+            </button>
+
+            <button id="downloadCertificateBtn" class="btn-main btn-download" disabled>
+              <i class="fas fa-file-certificate"></i> BAIXAR CERTIFICADO
+            </button>
 
       </div>
-
-    <!-- CONTEÚDO -->
-    <!-- CONTEÚDO HERO -->
-<div class="hero-content">
-
-  <span class="hero-tag">
-    Programa Ambiental Corporativo
-  </span>
-
-  <h1>
-    Programa de Combate ao 
-    <span><i> Aedes aegypti</i></span>
-  </h1>
-
-  <div class="hero-actions">
-
-    <a href="./aedes-focais.html" class="btn-primary">
-      Envio de Relatório
-    </a>
-  </div>
-
-</div>
-
-</section>
-
-<!-- PAINEL LATERAL -->
-<div class="floating-certificate" id="certificado">
-
-  <div class="certificate-content">
-
-    <!-- BLOCO INSTITUCIONAL -->
-    <div class="certificate-text">
-
-      <span class="section-mini">
-        Certificação ambiental
-      </span>
-
-      <h2>
-        Sua unidade já participa?
-      </h2>
-
-      <p>
-        Conheça o programa de Combate ao <i>Aedes aegypti</i> da CEDAE e descubra como
-        sua unidade pode participar das ações de monitoramento
-        e combate à dengue nas unidades operacionais da companhia, promovendo ações contínuas
-        de vistoria, prevenção e conscientização ambiental,
-        fortalecendo a segurança sanitária e o controle preventivo
-        em ambientes corporativos.
-      </p>
-
-      <div class="stats-row">
-
-        <div class="stat-box">
-          <strong>100+</strong>
-          <span>Unidades vistoriadas</span>
-        </div>
-
-        <div class="stat-box">
-          <strong>2026</strong>
-          <span>Programa ativo</span>
-        </div>
-
-        <div class="stat-box">
-          <strong>DMA</strong>
-          <span>Gestão ambiental</span>
-        </div>
-
-      </div>
-
     </div>
-
-    <!-- CARD CERTIFICAÇÃO -->
-    <div class="certificate-card">
-
-      <div class="certificate-top">
-        <span class="status-dot"></span>
-        Certificação disponível
-      </div>
-
-      <h3>
-        Certificação de unidade protegida
-      </h3>
-
-
-      <!-- INFO -->
-      <div class="certificate-info-box">
-
-        <p>
-          <i class="fas fa-award"></i>
-
-          É possível emitir um
-          <strong>certificado de unidade protegida</strong>
-          caso a unidade tenha realizado
-          <strong>todas as vistorias do mês</strong>
-          e os focos encontrados tenham sido remediados.
-        </p>
-
-      </div>
- 
-
-      <!-- CARD CERTIFICAÇÃO -->
-<div class="certificate-card">
-
-
-  
-  <!-- UNIDADE -->
-  <div class="field">
-
-    <label for="certUnidade">
-
-      <i class="fas fa-building"></i>
-
-      Unidade Operacional
-
-    </label>
-
-    <select id="certUnidade" class="custom-input">
-
-      <option value="">
-        Carregando unidades...
-      </option>
-
-    </select>
-
-  </div>
-
-  <!-- LINHA MES + ANO -->
-  <div class="row-2col">
-
-    <!-- MES -->
-    <div class="field">
-
-      <label for="certMes">
-
-        <i class="fas fa-calendar-alt"></i>
-
-        Mês
-
-      </label>
-
-      <select id="certMes" class="custom-input">
-
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5" selected>Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
-
-      </select>
-
-    </div>
-
-    <!-- ANO -->
-    <div class="field">
-
-      <label for="certAno">
-
-        <i class="fas fa-calendar-check"></i>
-
-        Ano
-
-      </label>
-
-      <select id="certAno" class="custom-input">
-
-        <option value="2026" selected>
-          2026
-        </option>
-
-      </select>
-
-    </div>
-
-  </div>
-
-  <!-- DIVISOR -->
-  <div class="form-divider"></div>
-
-  <!-- STATUS -->
-  <div
-    id="statusBar"
-    class="status-bar"
-    role="alert"
-    aria-live="polite">
-  </div>
-
-  <!-- BOTAO CONSULTA -->
-  <button
-    id="checkCertificateBtn"
-    class="btn-main btn-verify">
-
-    <i class="fas fa-search"></i>
-
-    VERIFICAR STATUS
-
-  </button>
-
-  <!-- BOTAO DOWNLOAD -->
-  <button
-    id="downloadCertificateBtn"
-    class="btn-main btn-download"
-    disabled>
-
-    <i class="fas fa-file-certificate"></i>
-
-    BAIXAR CERTIFICADO
-
-  </button>
-
-</div>
 
 </main>
-  <script src="./js/core/api-config.js"></script>
-  <script type="module" src="./js/pages/aedes-publico.js"></script>
+
+<script src="./js/core/api-config.js"></script>
+<script type="module" src="./js/pages/aedes-publico.js"></script>
 
 </body>
 </html>

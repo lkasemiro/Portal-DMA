@@ -94,7 +94,21 @@
     .portal-shell.sidebar-collapsed {
       grid-template-columns: 76px 1fr;
     }
+    /*  --- BARRA SUPERIOR --- */
+    .gov-header { width: 100%; z-index: 1000; }
 
+    .top-utility-bar {
+      background: var(--gov-gray);
+      height: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10%;
+      font-size: 0.7rem;
+      color: #495057;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .top-utility-bar .links { display: flex; gap: 10px; }
     /* SIDEBAR */
 
     .module-sidebar {
@@ -232,7 +246,7 @@
 
       padding: 0 22px;
 
-      background: rgba(255,255,255,0.96);
+      background: #001d3d;
 
       border-bottom: 1px solid var(--line);
     }
@@ -264,7 +278,7 @@
     .stage-title strong {
       display: block;
       font-size: 0.95rem;
-      color: var(--primary-blue);
+      color: var( --bg-page);
     }
 
     .stage-title span {
@@ -538,6 +552,16 @@
 </head>
 
 <body>
+
+   <header class="gov-header">
+    <div class="top-utility-bar">
+      <div>Departamento de Meio Ambiente</div>
+      <div class="links">
+        <span>Comunicação</span>
+        <span>Relatórios</span>
+        <span>Indicadores</span>
+      </div>
+    </div>
 
   <div class="portal-shell" id="portalShell">
 

@@ -1,4 +1,4 @@
-
+// server/middleware/upload.js - Middleware de upload de arquivos para o Portal DMA
 import multer
 from "multer";
 

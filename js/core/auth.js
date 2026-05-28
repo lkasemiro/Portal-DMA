@@ -1,3 +1,4 @@
+//auth.js - Gerenciamento de autenticação para o Portal DMA
 const AUTH_STORAGE_KEY = "dma_session_v2";
 const AUTH_SESSION_MAX_AGE_MS = 12 * 60 * 60 * 1000; // 12 horas
 

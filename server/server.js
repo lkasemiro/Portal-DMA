@@ -100,7 +100,13 @@ app.use(
     path.join(__dirname, "..")
   )
 );
-
+// UPLOADS
+app.use(
+  "/uploads",
+  express.static(
+    path.join(__dirname, "uploads")
+  )
+);
 
 // =========================================================
 // API ROUTES

@@ -1,4 +1,4 @@
-
+// postsService.js - Serviços relacionados a posts para o Portal DMA
 export async function criarPost(
   formData
 ) {

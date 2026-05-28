@@ -1,14 +1,13 @@
+// server/services/uploadService.js - Serviço de upload de arquivos para o Portal DMA
+import 'dotenv/config'; // 💡 Isso força o carregamento do .env ANTES do createClient
+import { createClient } from "@supabase/supabase-js";
 
-import { createClient }
-from "@supabase/supabase-js";
+// Tenta pegar com SERVICE_KEY, se não achar, tenta com KEY
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
-const supabase =
-  createClient(
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
-    process.env.SUPABASE_URL,
-
-    process.env.SUPABASE_SERVICE_KEY
-  );
 
 export async function uploadArquivo(
   file

@@ -1,4 +1,4 @@
-
+// postController.js - Controladores para gerenciamento de posts no Portal DMA
 import { pool }
 from "../config/db.js";
 

@@ -1,5 +1,4 @@
-// vai deixar de existir: frontend nao deve acessar o banco diretamente
-
+// server/js/db.js - Vai deixar de existir (freont-end não deve acessar o banco diretamente, e sim via API)
 
 import pg from "pg";
 import dotenv from "dotenv";

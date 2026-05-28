@@ -1,11 +1,12 @@
-
+// area-tecnica-postagens.js
 import { carregarModulos }
 from "../services/modulosService.js";
 
 import { criarPost }
 from "../services/postsService.js";
 
-
+import { API_BASE }
+from "../core/api-config.js";
 /* =========================================================
    ELEMENTOS
 ========================================================= */
@@ -237,64 +238,43 @@ async function initModulos() {
 
 }
 
-
 /* =========================================================
    SUBMIT
 ========================================================= */
 
-async function handleSubmit(
-  event
-) {
+async function handleSubmit(event) {
 
   event.preventDefault();
-
-  mostrarFeedback(
-    "Publicando...",
-    "loading"
-  );
 
   try {
 
     const formData =
       new FormData(form);
 
+    const response =
+      await fetch(
+        `${API_BASE}/api/posts`,
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
     const data =
-      await criarPost(
-        formData
-      );
+      await response.json();
 
-
-    if (!data.ok) {
-
-      mostrarFeedback(
-        data.error ||
-        "Erro ao publicar",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    mostrarFeedback(
-      "Publicação criada com sucesso"
+    console.log(
+      "POST CRIADO:",
+      data
     );
-
-    form.reset();
-
-    previewContainer.innerHTML =
-      "";
 
   }
 
   catch (error) {
 
-    console.error(error);
-
-    mostrarFeedback(
-      "Erro interno",
-      "error"
+    console.error(
+      "ERRO AO PUBLICAR:",
+      error
     );
 
   }
@@ -306,24 +286,35 @@ async function handleSubmit(
    EVENTOS
 ========================================================= */
 
-fileInput.addEventListener(
-  "change",
-  (event) => {
+// INPUT DE ARQUIVO
+if (fileInput) {
 
-    const file =
-      event.target.files[0];
+  fileInput.addEventListener(
+    "change",
+    (event) => {
 
-    renderPreview(file);
+      const file =
+        event.target.files?.[0];
 
-  }
-);
+      if (!file) return;
+
+      renderPreview(file);
+
+    }
+  );
+
+}
 
 
-form.addEventListener(
-  "submit",
-  handleSubmit
-);
+// FORMULÁRIO
+if (form) {
 
+  form.addEventListener(
+    "submit",
+    handleSubmit
+  );
+
+}
 
 /* =========================================================
    INIT

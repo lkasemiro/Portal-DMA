@@ -1,4 +1,4 @@
-
+// server/routes/posts.js - Rotas relacionadas a posts para o Portal DMA
 import express from "express";
 
 import {

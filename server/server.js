@@ -1,21 +1,166 @@
 // server.js
+
+// =========================================================
+// IMPORTS
+// =========================================================
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { pool } from "./js/db.js";
+
+import path from "path";
+
+import {
+  fileURLToPath
+}
+from "url";
+
+
+// DATABASE
+import { pool }
+from "./js/db.js";
+
+
+// ROUTES
+import postsRoutes
+from "./routes/posts.js";
+
+import modulosRoutes
+from "./routes/modulos.js";
+
+
+// =========================================================
+// CONFIG
+// =========================================================
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
-// ─── Middlewares ─────────────────────────────────────────────────────────────
+const PORT =
+  process.env.PORT || 3001;
+
+
+// =========================================================
+// ESM PATH FIX
+// =========================================================
+
+const __filename =
+  fileURLToPath(import.meta.url);
+
+const __dirname =
+  path.dirname(__filename);
+
+
+// =========================================================
+// MIDDLEWARES
+// =========================================================
+
 app.use(cors({
-  origin: '*',
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+
+  origin: "*",
+
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS"
+  ],
+
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization"
+  ]
+
 }));
-app.use(express.json({ limit: "10mb" }));
+
+
+app.use(
+  express.json({
+    limit: "10mb"
+  })
+);
+
+
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
+
+
+// =========================================================
+// STATIC FILES
+// =========================================================
+
+// FRONTEND
+app.use(
+  express.static(
+    path.join(__dirname, "..")
+  )
+);
+
+
+// =========================================================
+// API ROUTES
+// =========================================================
+
+app.use(
+  "/api/posts",
+  postsRoutes
+);
+
+app.use(
+  "/api/modulos",
+  modulosRoutes
+);
+
+
+// =========================================================
+// HEALTHCHECK
+// =========================================================
+
+app.get(
+  "/api/health",
+  async (req, res) => {
+
+    try {
+
+      await pool.query(
+        "SELECT NOW()"
+      );
+
+      res.json({
+
+        ok: true,
+
+        database: "online",
+
+        server: "online"
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+
+        ok: false,
+
+        error: "database offline"
+
+      });
+
+    }
+
+  }
+);
+
+
 
 // ─── Inicialização do Banco ──────────────────────────────────────────────────
 async function initSchema() {

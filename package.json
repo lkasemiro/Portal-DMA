@@ -1,17 +1,21 @@
+
 {
-  "name": "dma-aedes-api",
+  "name": "portal-dma",
   "version": "1.0.0",
-  "description": "API do módulo Aedes - Portal DMA (Neon + Express)",
-  "main": "server.js",
   "type": "module",
+
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "dev": "node server/server.js",
+    "start": "node server/server.js"
   },
+
   "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^16.4.5",
-    "express": "^4.22.2",
-    "pg": "^8.20.0"
+    "@supabase/supabase-js": "^2.106.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
   }
 }
+

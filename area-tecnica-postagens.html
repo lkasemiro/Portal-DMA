@@ -1,31 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Area Tecnica | Postagens DMA</title>
-  <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    Área Técnica • Portal DMA
+  </title>
+
   <style>
-    :root {
-      --sidebar-width: 272px;
-      --bg-main: #04091e;
-      --bg-panel: #071330;
-      --bg-panel-soft: #0b1b3d;
-      --bg-input: #0d1f4a;
-      --line: rgba(255, 255, 255, 0.08);
-      --line-strong: rgba(56, 182, 255, 0.28);
-      --text-title: #e8f4ff;
-      --text-body: #a8c8e8;
-      --text-muted: #6e91b7;
-      --blue: #38b6ff;
-      --green: #10b981;
-      --red: #f43f5e;
-      --orange: #f59e0b;
-      --purple: #8b5cf6;
-      --brown: #b45309;
-      --shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
-    }
+
+    /* =========================================================
+       RESET
+    ========================================================= */
 
     * {
       margin: 0;
@@ -33,1206 +26,817 @@
       box-sizing: border-box;
     }
 
+    :root {
+
+      --bg:
+        #07141f;
+
+      --bg-secondary:
+        #0c2233;
+
+      --card:
+        rgba(14, 37, 52, 0.92);
+
+      --border:
+        rgba(130, 180, 210, 0.15);
+
+      --primary:
+        #1d8fff;
+
+      --primary-soft:
+        rgba(29, 143, 255, 0.12);
+
+      --green:
+        #29c47a;
+
+      --text:
+        #edf6fb;
+
+      --text-soft:
+        #8ea9bc;
+
+      --danger:
+        #ff5d5d;
+
+      --shadow:
+        0 12px 35px rgba(0, 0, 0, 0.35);
+
+      --radius:
+        22px;
+
+    }
+
     body {
-      min-height: 100vh;
-      display: flex;
-      overflow-x: hidden;
+
       background:
-        radial-gradient(circle at 82% 8%, rgba(56, 182, 255, 0.12), transparent 28%),
-        radial-gradient(circle at 15% 70%, rgba(16, 185, 129, 0.08), transparent 28%),
-        linear-gradient(160deg, #061528 0%, #041020 42%, #03081a 72%, #020510 100%);
-      color: var(--text-body);
-      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        linear-gradient(
+          180deg,
+          #07141f 0%,
+          #081a28 40%,
+          #0a2233 100%
+        );
+
+      color:
+        var(--text);
+
+      font-family:
+        "Segoe UI",
+        sans-serif;
+
+      min-height:
+        100vh;
+
+      padding:
+        40px;
+
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .hero {
+
+      width:
+        100%;
+
+      margin-bottom:
+        34px;
+
     }
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
+    .hero-top {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      gap:
+        20px;
+
+      flex-wrap:
+        wrap;
+
     }
 
-    .mobile-toggle {
-      display: none;
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 50;
-      width: 42px;
-      height: 42px;
-      border: 1px solid var(--line-strong);
-      border-radius: 8px;
-      background: var(--bg-panel);
-      color: var(--text-title);
-      cursor: pointer;
+    .hero-title {
+
+      font-size:
+        42px;
+
+      font-weight:
+        700;
+
+      line-height:
+        1.1;
+
+      letter-spacing:
+        -1px;
+
     }
 
-    .sidebar {
-      width: var(--sidebar-width);
-      min-height: 100vh;
-      position: fixed;
-      inset: 0 auto 0 0;
-      padding: 24px 16px;
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid var(--line);
-      background: rgba(7, 19, 48, 0.96);
-      backdrop-filter: blur(14px);
-      z-index: 20;
+    .hero-subtitle {
+
+      margin-top:
+        10px;
+
+      color:
+        var(--text-soft);
+
+      max-width:
+        720px;
+
+      line-height:
+        1.7;
+
+      font-size:
+        15px;
+
     }
 
-    .sidebar-brand {
-      display: grid;
-      grid-template-columns: 46px 1fr;
-      gap: 12px;
-      align-items: center;
-      padding: 0 8px 22px;
-      border-bottom: 1px solid var(--line);
+    .status-badge {
+
+      padding:
+        10px 18px;
+
+      border-radius:
+        999px;
+
+      background:
+        rgba(41, 196, 122, 0.15);
+
+      color:
+        #7ef0b5;
+
+      border:
+        1px solid rgba(41, 196, 122, 0.25);
+
+      font-size:
+        13px;
+
+      font-weight:
+        600;
+
+      backdrop-filter:
+        blur(10px);
+
     }
 
-    .brand-mark {
-      width: 46px;
-      height: 46px;
-      border: 1px solid rgba(56, 182, 255, 0.24);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(56, 182, 255, 0.2), rgba(16, 185, 129, 0.12));
-      color: var(--text-title);
-      font-weight: 900;
+    /* =========================================================
+       LAYOUT
+    ========================================================= */
+
+    .layout {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        400px 1fr;
+
+      gap:
+        28px;
+
+      align-items:
+        start;
+
     }
 
-    .sidebar-brand b {
-      display: block;
-      color: var(--text-title);
-      font-size: 1.05rem;
-      line-height: 1.1;
+    @media (max-width: 1100px) {
+
+      .layout {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
     }
 
-    .sidebar-brand span {
-      display: block;
-      margin-top: 4px;
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    /* =========================================================
+       CARD
+    ========================================================= */
+
+    .card {
+
+      background:
+        var(--card);
+
+      border:
+        1px solid var(--border);
+
+      border-radius:
+        var(--radius);
+
+      padding:
+        28px;
+
+      box-shadow:
+        var(--shadow);
+
+      backdrop-filter:
+        blur(12px);
+
     }
 
-    .menu-label {
-      margin: 22px 8px 8px;
-      color: var(--text-muted);
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .card-title {
+
+      font-size:
+        22px;
+
+      font-weight:
+        700;
+
+      margin-bottom:
+        8px;
+
     }
 
-    .nav-list {
-      display: grid;
-      gap: 6px;
+    .card-subtitle {
+
+      color:
+        var(--text-soft);
+
+      font-size:
+        14px;
+
+      line-height:
+        1.6;
+
+      margin-bottom:
+        28px;
+
     }
 
-    .nav-item {
-      min-height: 42px;
-      padding: 0 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--text-body);
-      font-size: 0.88rem;
-      font-weight: 700;
-      transition: background 0.2s ease, color 0.2s ease;
+    /* =========================================================
+       FORM
+    ========================================================= */
+
+    .form-group {
+
+      margin-bottom:
+        18px;
+
     }
 
-    .nav-item:hover,
-    .nav-item.active {
-      background: rgba(56, 182, 255, 0.1);
-      color: var(--text-title);
+    .form-label {
+
+      display:
+        block;
+
+      margin-bottom:
+        8px;
+
+      font-size:
+        13px;
+
+      color:
+        var(--text-soft);
+
+      font-weight:
+        600;
+
+      text-transform:
+        uppercase;
+
+      letter-spacing:
+        0.5px;
+
     }
 
-    .nav-item.active i {
-      color: var(--blue);
+    .input,
+    .textarea,
+    .select {
+
+      width:
+        100%;
+
+      background:
+        rgba(255,255,255,0.03);
+
+      border:
+        1px solid rgba(255,255,255,0.08);
+
+      border-radius:
+        14px;
+
+      padding:
+        14px 16px;
+
+      color:
+        white;
+
+      outline:
+        none;
+
+      font-size:
+        15px;
+
+      transition:
+        0.2s ease;
+
     }
 
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 16px 8px 0;
-      border-top: 1px solid var(--line);
+    .input:focus,
+    .textarea:focus,
+    .select:focus {
+
+      border-color:
+        var(--primary);
+
+      background:
+        rgba(255,255,255,0.05);
+
+      box-shadow:
+        0 0 0 4px rgba(29,143,255,0.15);
+
     }
 
-    .user-card {
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.03);
+    .textarea {
+
+      resize:
+        vertical;
+
+      min-height:
+        130px;
+
     }
 
-    .user-card b {
-      display: block;
-      color: var(--text-title);
-      font-size: 0.86rem;
-      margin-bottom: 4px;
-    }
+    .file-input {
 
-    .user-card span {
-      color: var(--text-muted);
-      font-size: 0.74rem;
-      line-height: 1.35;
-    }
+      padding:
+        18px;
 
-    .main-shell {
-      width: calc(100% - var(--sidebar-width));
-      margin-left: var(--sidebar-width);
-      padding: 32px;
-    }
+      border:
+        1px dashed rgba(255,255,255,0.2);
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 28px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--line);
-    }
+      border-radius:
+        16px;
 
-    .page-title span {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      color: var(--blue);
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+      background:
+        rgba(255,255,255,0.03);
 
-    .page-title h1 {
-      color: var(--text-title);
-      font-size: clamp(1.7rem, 3vw, 2.55rem);
-      letter-spacing: 0;
-      line-height: 1.08;
-    }
+      color:
+        var(--text-soft);
 
-    .page-title p {
-      max-width: 680px;
-      margin-top: 10px;
-      color: var(--text-muted);
-      line-height: 1.55;
-      font-size: 0.93rem;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
     }
 
     .btn {
-      min-height: 42px;
-      padding: 0 15px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-title);
-      cursor: pointer;
-      font-size: 0.86rem;
-      font-weight: 800;
-      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-    }
 
-    .btn:hover {
-      transform: translateY(-1px);
-      border-color: var(--line-strong);
+      width:
+        100%;
+
+      border:
+        none;
+
+      cursor:
+        pointer;
+
+      border-radius:
+        16px;
+
+      padding:
+        16px;
+
+      font-size:
+        15px;
+
+      font-weight:
+        700;
+
+      transition:
+        0.25s ease;
+
     }
 
     .btn-primary {
-      border-color: rgba(56, 182, 255, 0.45);
-      background: var(--blue);
-      color: #031229;
+
+      background:
+        linear-gradient(
+          135deg,
+          #157dff,
+          #35a2ff
+        );
+
+      color:
+        white;
+
+      box-shadow:
+        0 10px 30px rgba(21,125,255,0.25);
+
     }
 
-    .workspace-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) 360px;
-      gap: 22px;
-      align-items: start;
+    .btn-primary:hover {
+
+      transform:
+        translateY(-2px);
+
+      filter:
+        brightness(1.05);
+
     }
 
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(7, 19, 48, 0.82);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+    /* =========================================================
+       POSTS
+    ========================================================= */
+
+    .posts-header {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      gap:
+        20px;
+
+      margin-bottom:
+        24px;
+
+      flex-wrap:
+        wrap;
+
     }
 
-    .panel-header {
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: center;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.025);
-    }
+    .posts-grid {
 
-    .panel-header h2 {
-      color: var(--text-title);
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+      display:
+        grid;
 
-    .panel-header span {
-      color: var(--text-muted);
-      font-size: 0.76rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
+      grid-template-columns:
+        repeat(auto-fill, minmax(320px, 1fr));
 
-    .composer {
-      padding: 20px;
-      display: grid;
-      gap: 16px;
-    }
+      gap:
+        22px;
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .field {
-      display: grid;
-      gap: 8px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
-      color: var(--text-title);
-      font-size: 0.78rem;
-      font-weight: 800;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      min-height: 42px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--bg-input);
-      color: var(--text-title);
-      outline: none;
-      padding: 0 12px;
-    }
-
-    .field textarea {
-      min-height: 118px;
-      padding: 12px;
-      line-height: 1.5;
-      resize: vertical;
-    }
-
-    .field input::placeholder,
-    .field textarea::placeholder {
-      color: rgba(168, 200, 232, 0.44);
-    }
-
-    .dropzone {
-      min-height: 132px;
-      border: 1px dashed rgba(56, 182, 255, 0.38);
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      gap: 8px;
-      padding: 18px;
-      text-align: center;
-      background: rgba(56, 182, 255, 0.045);
-      cursor: pointer;
-    }
-
-    .dropzone i {
-      color: var(--blue);
-      font-size: 1.55rem;
-    }
-
-    .dropzone b {
-      display: block;
-      color: var(--text-title);
-      font-size: 0.92rem;
-      margin-bottom: 4px;
-    }
-
-    .dropzone span {
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      line-height: 1.45;
-    }
-
-    .dropzone input {
-      display: none;
-    }
-
-    .composer-actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      padding-top: 4px;
-    }
-
-    .feed-panel {
-      margin-top: 22px;
-    }
-
-    .filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      min-height: 34px;
-      padding: 0 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-body);
-      cursor: pointer;
-      font-size: 0.78rem;
-      font-weight: 800;
-    }
-
-    .filter-btn.active {
-      border-color: var(--line-strong);
-      background: rgba(56, 182, 255, 0.12);
-      color: var(--text-title);
-    }
-
-    .feed-list {
-      padding: 18px;
-      display: grid;
-      gap: 14px;
     }
 
     .post-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.035);
-      overflow: hidden;
-    }
 
-    .post-card-header {
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .post-card h3 {
-      color: var(--text-title);
-      font-size: 1rem;
-      line-height: 1.35;
-      margin-bottom: 8px;
-    }
-
-    .post-card p {
-      color: var(--text-muted);
-      font-size: 0.84rem;
-      line-height: 1.55;
-    }
-
-    .post-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .pill {
-      min-height: 26px;
-      padding: 0 9px;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.055);
-      color: var(--text-body);
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .status-pending { color: var(--orange); }
-    .status-draft { color: var(--text-muted); }
-    .status-approved { color: var(--green); }
-
-    .post-actions {
-      min-width: max-content;
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.035);
-      color: var(--text-body);
-      cursor: pointer;
-    }
-
-    .post-preview {
-      padding: 16px;
-      display: grid;
-      grid-template-columns: 112px 1fr;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .preview-box {
-      height: 78px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background:
-        linear-gradient(135deg, rgba(56, 182, 255, 0.13), rgba(16, 185, 129, 0.08)),
-        var(--bg-panel-soft);
-      color: var(--blue);
-      font-size: 1.35rem;
+        rgba(255,255,255,0.03);
+
+      border:
+        1px solid rgba(255,255,255,0.06);
+
+      border-radius:
+        22px;
+
+      padding:
+        24px;
+
+      transition:
+        0.25s ease;
+
+      position:
+        relative;
+
+      overflow:
+        hidden;
+
     }
 
-    .right-column {
-      display: grid;
-      gap: 18px;
+    .post-card:hover {
+
+      transform:
+        translateY(-4px);
+
+      border-color:
+        rgba(29,143,255,0.3);
+
     }
 
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      padding: 18px;
+    .post-tag {
+
+      display:
+        inline-flex;
+
+      align-items:
+        center;
+
+      gap:
+        8px;
+
+      padding:
+        8px 14px;
+
+      border-radius:
+        999px;
+
+      background:
+        var(--primary-soft);
+
+      color:
+        #85c5ff;
+
+      font-size:
+        12px;
+
+      font-weight:
+        700;
+
+      margin-bottom:
+        18px;
+
     }
 
-    .stat-card {
-      min-height: 96px;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.035);
+    .post-title {
+
+      font-size:
+        21px;
+
+      font-weight:
+        700;
+
+      margin-bottom:
+        12px;
+
+      line-height:
+        1.3;
+
     }
 
-    .stat-card span {
-      display: block;
-      color: var(--text-muted);
-      font-size: 0.68rem;
-      font-weight: 900;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    .post-resumo {
+
+      color:
+        var(--text-soft);
+
+      line-height:
+        1.7;
+
+      font-size:
+        14px;
+
+      margin-bottom:
+        22px;
+
     }
 
-    .stat-card b {
-      display: block;
-      margin-top: 8px;
-      color: var(--text-title);
-      font-size: 1.75rem;
+    .post-footer {
+
+      display:
+        flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      gap:
+        12px;
+
+      flex-wrap:
+        wrap;
+
     }
 
-    .approval-list {
-      padding: 16px;
-      display: grid;
-      gap: 12px;
+    .post-author {
+
+      color:
+        var(--text-soft);
+
+      font-size:
+        13px;
+
     }
 
-    .approval-item {
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.035);
+    .post-link {
+
+      text-decoration:
+        none;
+
+      color:
+        #8cc8ff;
+
+      font-weight:
+        600;
+
+      font-size:
+        14px;
+
     }
 
-    .approval-item strong {
-      display: block;
-      color: var(--text-title);
-      font-size: 0.9rem;
-      line-height: 1.35;
-      margin-bottom: 8px;
+    .empty-state {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      min-height:
+        300px;
+
+      border:
+        1px dashed rgba(255,255,255,0.1);
+
+      border-radius:
+        24px;
+
+      color:
+        var(--text-soft);
+
+      text-align:
+        center;
+
+      padding:
+        40px;
+
+      line-height:
+        1.7;
+
     }
 
-    .approval-item span {
-      color: var(--text-muted);
-      font-size: 0.76rem;
-      line-height: 1.4;
-    }
-
-    .approval-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .small-btn {
-      min-height: 32px;
-      padding: 0 10px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.035);
-      color: var(--text-title);
-      cursor: pointer;
-      font-size: 0.75rem;
-      font-weight: 900;
-    }
-
-    .small-btn.approve {
-      border-color: rgba(16, 185, 129, 0.32);
-      color: var(--green);
-    }
-
-    .small-btn.reject {
-      border-color: rgba(244, 63, 94, 0.32);
-      color: var(--red);
-    }
-
-    .module-map {
-      padding: 16px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .module-row {
-      display: grid;
-      grid-template-columns: 10px 1fr auto;
-      gap: 10px;
-      align-items: center;
-      color: var(--text-body);
-      font-size: 0.8rem;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 99px;
-      background: var(--blue);
-    }
-
-    .module-row small {
-      color: var(--text-muted);
-      font-weight: 800;
-    }
-
-    .toast {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 60;
-      width: min(360px, calc(100vw - 48px));
-      padding: 14px 16px;
-      border: 1px solid rgba(16, 185, 129, 0.32);
-      border-radius: 8px;
-      background: #05291f;
-      color: var(--text-title);
-      box-shadow: var(--shadow);
-      display: none;
-      line-height: 1.45;
-      font-size: 0.86rem;
-    }
-
-    .toast.show {
-      display: block;
-    }
-
-    @media (max-width: 1120px) {
-      .workspace-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 780px) {
-      .mobile-toggle {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.24s ease;
-      }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .main-shell {
-        width: 100%;
-        margin-left: 0;
-        padding: 64px 14px 22px;
-      }
-
-      .topbar,
-      .post-card-header,
-      .composer-actions {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .form-grid,
-      .post-preview {
-        grid-template-columns: 1fr;
-      }
-
-      .stat-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .page-title h1 {
-        font-size: 1.55rem;
-      }
-
-      .page-title p {
-        font-size: 0.82rem;
-      }
-
-      .composer,
-      .feed-list,
-      .approval-list,
-      .module-map,
-      .stat-grid {
-        padding: 14px;
-      }
-
-      .panel-header {
-        padding: 14px;
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .dropzone {
-        min-height: 112px;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .stat-grid {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
+
 </head>
+
 <body>
-  <button class="mobile-toggle" id="mobileToggle" aria-label="Abrir menu">
-    <i class="fa-solid fa-bars"></i>
-  </button>
 
-  <aside class="sidebar" id="sidebar">
-    <a class="sidebar-brand" href="./index.html" aria-label="Voltar ao Portal DMA">
-      <div class="brand-mark">DMA</div>
+  <section class="hero">
+
+    <div class="hero-top">
+
       <div>
-        <b>Area Tecnica</b>
-        <span>Conteudo e Dados</span>
-      </div>
-    </a>
 
-    <div class="menu-label">Operacao</div>
-    <nav class="nav-list">
-      <a class="nav-item active" href="./area-tecnica-postagens.html">
-        <i class="fa-solid fa-newspaper"></i>
-        Postagens
-      </a>
-      <a class="nav-item" href="./area-tecnica.html">
-        <i class="fa-solid fa-chart-line"></i>
-        Auditoria e hub
-      </a>
-      <a class="nav-item" href="./aedes-tecnico.html">
-        <i class="fa-solid fa-bug"></i>
-        Modulo Aedes
-      </a>
-      <a class="nav-item" href="./recicla-tecnico.html">
-        <i class="fa-solid fa-recycle"></i>
-        Modulo Recicla
-      </a>
-    </nav>
+        <h1 class="hero-title">
+          Área Técnica
+        </h1>
 
-    <div class="menu-label">Publicacao</div>
-    <nav class="nav-list">
-      <a class="nav-item" href="#composer">
-        <i class="fa-solid fa-pen-to-square"></i>
-        Nova postagem
-      </a>
-      <a class="nav-item" href="#aprovacao">
-        <i class="fa-solid fa-stamp"></i>
-        Aprovacao
-      </a>
-      <a class="nav-item" href="./residuos-solidos-como-descartar.html">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        Ver superficie
-      </a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="user-card">
-        <b>Modo preview aberto</b>
-        <span>Sem login por enquanto. Depois esta area entra com usuario tecnico, role e setor.</span>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main-shell">
-    <header class="topbar">
-      <div class="page-title">
-        <span><i class="fa-solid fa-water"></i> Fundo técnico do portal</span>
-        <h1>Postagens da Área Tecnica</h1>
-        <p>
-          Feed interno para criar conteudos, anexar materiais, escolher o modulo e enviar para aprovacao.
-          A superficie clara exibe apenas o que foi aprovado.
+        <p class="hero-subtitle">
+          Ecossistema interno de gestão documental,
+          publicações técnicas e circulação de conteúdo
+          ambiental do Portal DMA.
         </p>
+
       </div>
 
-      <div class="top-actions">
-        <a class="btn" href="./index.html">
-          <i class="fa-solid fa-house"></i>
-          Portal
-        </a>
-        <a class="btn" href="./residuos-solidos-como-descartar.html">
-          <i class="fa-solid fa-dumpster"></i>
-          Residuos
-        </a>
-        <a class="btn btn-primary" href="#composer">
-          <i class="fa-solid fa-plus"></i>
-          Criar post
-        </a>
-      </div>
-    </header>
-
-    <section class="workspace-grid">
-      <div>
-        <section class="panel" id="composer">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-pen-nib"></i> Nova postagem</h2>
-            <span>Rascunho tecnico</span>
-          </div>
-
-          <form class="composer" id="postForm">
-            <div class="form-grid">
-              <div class="field">
-                <label for="module">Modulo</label>
-                <select id="module" name="module">
-                  <option value="residuos_como_descartar">Residuos solidos: como descartar</option>
-                  <option value="recicla">Programa Recicla CEDAE</option>
-                  <option value="aedes">Programa Combate a Dengue</option>
-                  <option value="quantitativo_residuos">Quantitativo de geracao e destinacao</option>
-                  <option value="placas_sinalizacoes">Placas e sinalizacoes ambientais</option>
-                  <option value="pgrs">PGRS elaborados</option>
-                  <option value="agenda_eventos">Agendas e programacoes ambientais</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="type">Tipo de conteudo</label>
-                <select id="type" name="type">
-                  <option value="guia">Guia pratico</option>
-                  <option value="noticia">Noticia</option>
-                  <option value="slide">Canva / slide / PDF</option>
-                  <option value="evento">Evento</option>
-                  <option value="comunicado">Comunicado</option>
-                </select>
-              </div>
-
-              <div class="field full">
-                <label for="title">Titulo</label>
-                <input id="title" name="title" placeholder="Ex.: Guia rapido para descarte de lampadas" required />
-              </div>
-
-              <div class="field full">
-                <label for="summary">Resumo para o feed</label>
-                <textarea id="summary" name="summary" placeholder="Escreva uma descricao curta para aparecer no feed tecnico e, depois da aprovacao, na pagina publica."></textarea>
-              </div>
-
-              <div class="field">
-                <label for="author">Autor ou equipe</label>
-                <input id="author" name="author" placeholder="Ex.: Nucleo Tecnico DMA" />
-              </div>
-
-              <div class="field">
-                <label for="reviewer">Enviar para aprovacao</label>
-                <select id="reviewer" name="reviewer">
-                  <option value="assessoria">Assessoria DMA</option>
-                  <option value="chefia">Chefia de Departamento</option>
-                  <option value="coordenacao">Coordenacao</option>
-                </select>
-              </div>
-
-              <label class="dropzone field full" for="fileUpload">
-                <input id="fileUpload" name="fileUpload" type="file" accept=".pdf,.png,.jpg,.jpeg,.ppt,.pptx" />
-                <div>
-                  <i class="fa-solid fa-cloud-arrow-up"></i>
-                  <b id="uploadLabel">Anexar Canva, slide, imagem ou PDF</b>
-                  <span>Para o MVP, o arquivo fica simulado na interface. Depois salvamos em upload local, storage ou bucket.</span>
-                </div>
-              </label>
-            </div>
-
-            <div class="composer-actions">
-              <button class="btn" type="button" id="saveDraft">
-                <i class="fa-solid fa-floppy-disk"></i>
-                Salvar rascunho
-              </button>
-              <button class="btn btn-primary" type="submit">
-                <i class="fa-solid fa-paper-plane"></i>
-                Enviar para aprovacao
-              </button>
-            </div>
-          </form>
-        </section>
-
-        <section class="panel feed-panel">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-rss"></i> Feed interno</h2>
-            <div class="filters" id="filters">
-              <button class="filter-btn active" type="button" data-filter="todos">Todos</button>
-              <button class="filter-btn" type="button" data-filter="rascunho">Rascunhos</button>
-              <button class="filter-btn" type="button" data-filter="aprovacao">Em aprovacao</button>
-              <button class="filter-btn" type="button" data-filter="publicado">Publicados</button>
-            </div>
-          </div>
-          <div class="feed-list" id="feedList"></div>
-        </section>
+      <div class="status-badge">
+        ● Ambiente Restrito
       </div>
 
-      <aside class="right-column">
-        <section class="panel">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-gauge-high"></i> Status</h2>
-            <span>Preview</span>
-          </div>
-          <div class="stat-grid">
-            <div class="stat-card">
-              <span>Rascunhos</span>
-              <b id="statDraft">0</b>
-            </div>
-            <div class="stat-card">
-              <span>Aprovacao</span>
-              <b id="statPending">0</b>
-            </div>
-            <div class="stat-card">
-              <span>Publicados</span>
-              <b id="statPublished">0</b>
-            </div>
-            <div class="stat-card">
-              <span>Modulos</span>
-              <b>7</b>
-            </div>
-          </div>
-        </section>
+    </div>
 
-        <section class="panel" id="aprovacao">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-stamp"></i> Fila de aprovacao</h2>
-            <span>Assessor / chefe / coordenador</span>
-          </div>
-          <div class="approval-list" id="approvalList"></div>
-        </section>
+  </section>
 
-        <section class="panel">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-diagram-project"></i> Modulos</h2>
-            <span>Destino do post</span>
-          </div>
-          <div class="module-map">
-            <div class="module-row"><i class="dot" style="background:#ef4444"></i><span>Aedes</span><small>producao</small></div>
-            <div class="module-row"><i class="dot" style="background:#22c55e"></i><span>Recicla</span><small>dev</small></div>
-            <div class="module-row"><i class="dot" style="background:#14532d"></i><span>Quantitativo de residuos</span><small>mvp</small></div>
-            <div class="module-row"><i class="dot" style="background:#1e40af"></i><span>Placas e sinalizacoes</span><small>mvp</small></div>
-            <div class="module-row"><i class="dot" style="background:#c2410c"></i><span>PGRS elaborados</span><small>mvp</small></div>
-            <div class="module-row"><i class="dot" style="background:#8b5cf6"></i><span>Agendas e eventos</span><small>mvp</small></div>
-            <div class="module-row"><i class="dot" style="background:#b45309"></i><span>Como descartar</span><small>agora</small></div>
-          </div>
-        </section>
-      </aside>
-    </section>
-  </main>
 
-  <div class="toast" id="toast"></div>
+  <section class="layout">
 
-  <script>
-    const modules = {
-      residuos_como_descartar: "Residuos solidos: como descartar",
-      recicla: "Programa Recicla CEDAE",
-      aedes: "Programa Combate a Dengue",
-      quantitativo_residuos: "Quantitativo de geracao e destinacao",
-      placas_sinalizacoes: "Placas e sinalizacoes ambientais",
-      pgrs: "PGRS elaborados",
-      agenda_eventos: "Agendas e programacoes ambientais"
-    };
+    <!-- FORMULÁRIO -->
 
-    const statusLabels = {
-      rascunho: "Rascunho",
-      aprovacao: "Em aprovacao",
-      publicado: "Publicado"
-    };
+    <aside class="card">
 
-    const statusClasses = {
-      rascunho: "status-draft",
-      aprovacao: "status-pending",
-      publicado: "status-approved"
-    };
+      <h2 class="card-title">
+        Nova Publicação
+      </h2>
 
-    let posts = [
-      {
-        id: 1,
-        module: "residuos_como_descartar",
-        type: "guia",
-        title: "Guia visual de descarte nas unidades",
-        summary: "Material inicial para explicar separacao, armazenamento e encaminhamento correto dos residuos.",
-        author: "Equipe tecnica DMA",
-        reviewer: "Assessoria DMA",
-        status: "publicado",
-        fileName: "guia-descarte.pdf",
-        createdAt: "24/05/2026"
-      },
-      {
-        id: 2,
-        module: "agenda_eventos",
-        type: "evento",
-        title: "Calendario de acoes ambientais",
-        summary: "Programacao preliminar de campanhas, visitas e eventos de educacao ambiental.",
-        author: "Assessoria DMA",
-        reviewer: "Coordenacao",
-        status: "aprovacao",
-        fileName: "agenda-canva.png",
-        createdAt: "24/05/2026"
-      },
-      {
-        id: 3,
-        module: "recicla",
-        type: "noticia",
-        title: "Recicla Predio Sede 2026",
-        summary: "Atualizacao do plano piloto e proximas etapas de comunicacao com os setores.",
-        author: "Programa Recicla",
-        reviewer: "Chefia de Departamento",
-        status: "rascunho",
-        fileName: "",
-        createdAt: "23/05/2026"
-      }
-    ];
+      <p class="card-subtitle">
+        Compartilhe documentos, pareceres,
+        comunicados, relatórios e conteúdos
+        técnicos para o ecossistema DMA.
+      </p>
 
-    const feedList = document.querySelector("#feedList");
-    const approvalList = document.querySelector("#approvalList");
-    const toast = document.querySelector("#toast");
-    const form = document.querySelector("#postForm");
-    const fileUpload = document.querySelector("#fileUpload");
-    const uploadLabel = document.querySelector("#uploadLabel");
-    const mobileToggle = document.querySelector("#mobileToggle");
-    const sidebar = document.querySelector("#sidebar");
-    let activeFilter = "todos";
+      <form id="form-post">
 
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3200);
-    }
+        <div class="form-group">
 
-    function getStatusIcon(status) {
-      if (status === "publicado") return "fa-circle-check";
-      if (status === "aprovacao") return "fa-clock";
-      return "fa-file";
-    }
+          <label class="form-label">
+            Título
+          </label>
 
-    function renderStats() {
-      document.querySelector("#statDraft").textContent = posts.filter((post) => post.status === "rascunho").length;
-      document.querySelector("#statPending").textContent = posts.filter((post) => post.status === "aprovacao").length;
-      document.querySelector("#statPublished").textContent = posts.filter((post) => post.status === "publicado").length;
-    }
+          <input
+            type="text"
+            class="input"
+            id="titulo"
+            required
+          />
 
-    function renderFeed() {
-      const visiblePosts = activeFilter === "todos"
-        ? posts
-        : posts.filter((post) => post.status === activeFilter);
+        </div>
 
-      feedList.innerHTML = "";
+        <div class="form-group">
 
-      if (!visiblePosts.length) {
-        feedList.innerHTML = '<div class="post-card"><div class="post-card-header"><p>Nenhuma postagem neste filtro.</p></div></div>';
-        return;
-      }
+          <label class="form-label">
+            Resumo
+          </label>
 
-      visiblePosts.forEach((post) => {
-        const card = document.createElement("article");
-        card.className = "post-card";
-        card.innerHTML = `
-          <div class="post-card-header">
-            <div>
-              <h3>${post.title}</h3>
-              <p>${post.summary || "Sem resumo preenchido."}</p>
-              <div class="post-meta">
-                <span class="pill"><i class="fa-solid fa-layer-group"></i>${modules[post.module]}</span>
-                <span class="pill"><i class="fa-solid fa-file-lines"></i>${post.type}</span>
-                <span class="pill ${statusClasses[post.status]}"><i class="fa-solid ${getStatusIcon(post.status)}"></i>${statusLabels[post.status]}</span>
-              </div>
-            </div>
-            <div class="post-actions">
-              <button class="icon-btn" type="button" title="Editar"><i class="fa-solid fa-pen"></i></button>
-              <button class="icon-btn" type="button" title="Visualizar"><i class="fa-solid fa-eye"></i></button>
-            </div>
-          </div>
-          <div class="post-preview">
-            <div class="preview-box"><i class="fa-solid ${post.fileName ? "fa-file-arrow-up" : "fa-newspaper"}"></i></div>
-            <div>
-              <p><strong style="color:var(--text-title)">Autor:</strong> ${post.author || "Nao informado"}</p>
-              <p><strong style="color:var(--text-title)">Revisor:</strong> ${post.reviewer || "Nao definido"} | <strong style="color:var(--text-title)">Data:</strong> ${post.createdAt}</p>
-              <p><strong style="color:var(--text-title)">Arquivo:</strong> ${post.fileName || "sem anexo"}</p>
-            </div>
-          </div>
-        `;
-        feedList.appendChild(card);
-      });
-    }
+          <textarea
+            class="textarea"
+            id="resumo"
+          ></textarea>
 
-    function renderApprovalQueue() {
-      const pendingPosts = posts.filter((post) => post.status === "aprovacao");
-      approvalList.innerHTML = "";
+        </div>
 
-      if (!pendingPosts.length) {
-        approvalList.innerHTML = '<div class="approval-item"><strong>Fila vazia</strong><span>Nenhuma postagem aguardando aprovacao agora.</span></div>';
-        return;
-      }
+        <div class="form-group">
 
-      pendingPosts.forEach((post) => {
-        const item = document.createElement("div");
-        item.className = "approval-item";
-        item.innerHTML = `
-          <strong>${post.title}</strong>
-          <span>${modules[post.module]} | enviado para ${post.reviewer}</span>
-          <div class="approval-actions">
-            <button class="small-btn approve" type="button" data-action="approve" data-id="${post.id}">Aprovar</button>
-            <button class="small-btn reject" type="button" data-action="reject" data-id="${post.id}">Devolver</button>
-          </div>
-        `;
-        approvalList.appendChild(item);
-      });
-    }
+          <label class="form-label">
+            Módulo
+          </label>
 
-    function renderAll() {
-      renderStats();
-      renderFeed();
-      renderApprovalQueue();
-    }
+          <select
+            class="select"
+            id="modulo"
+          >
+            <option value="aedes">
+              Aedes
+            </option>
 
-    document.querySelector("#filters").addEventListener("click", (event) => {
-      const button = event.target.closest(".filter-btn");
-      if (!button) return;
-      activeFilter = button.dataset.filter;
-      document.querySelectorAll(".filter-btn").forEach((item) => item.classList.remove("active"));
-      button.classList.add("active");
-      renderFeed();
-    });
+            <option value="recicla">
+              Recicla
+            </option>
 
-    approvalList.addEventListener("click", (event) => {
-      const button = event.target.closest("button[data-action]");
-      if (!button) return;
+            <option value="agenda">
+              Agenda Ambiental
+            </option>
 
-      const post = posts.find((item) => item.id === Number(button.dataset.id));
-      if (!post) return;
+            <option value="peat">
+              PEAT
+            </option>
 
-      if (button.dataset.action === "approve") {
-        post.status = "publicado";
-        showToast("Postagem aprovada. Na versao com API, ela aparece automaticamente na superficie clara.");
-      } else {
-        post.status = "rascunho";
-        showToast("Postagem devolvida para ajustes.");
-      }
+          </select>
 
-      renderAll();
-    });
+        </div>
 
-    fileUpload.addEventListener("change", () => {
-      const file = fileUpload.files[0];
-      uploadLabel.textContent = file ? file.name : "Anexar Canva, slide, imagem ou PDF";
-    });
+        <div class="form-group">
 
-    document.querySelector("#saveDraft").addEventListener("click", () => {
-      createPost("rascunho");
-    });
+          <label class="form-label">
+            Arquivo
+          </label>
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      createPost("aprovacao");
-    });
+          <input
+            type="file"
+            class="file-input"
+            id="arquivo"
+          />
 
-    function createPost(status) {
-      const formData = new FormData(form);
-      const title = String(formData.get("title") || "").trim();
+        </div>
 
-      if (!title) {
-        showToast("Preencha um titulo antes de salvar.");
-        return;
-      }
+        <button
+          type="submit"
+          class="btn btn-primary"
+        >
+          Publicar Conteúdo
+        </button>
 
-      const reviewerValue = String(formData.get("reviewer") || "");
-      const reviewerNames = {
-        assessoria: "Assessoria DMA",
-        chefia: "Chefia de Departamento",
-        coordenacao: "Coordenacao"
-      };
+      </form>
 
-      posts = [
-        {
-          id: Date.now(),
-          module: String(formData.get("module")),
-          type: String(formData.get("type")),
-          title,
-          summary: String(formData.get("summary") || "").trim(),
-          author: String(formData.get("author") || "Equipe tecnica DMA").trim(),
-          reviewer: reviewerNames[reviewerValue] || "Assessoria DMA",
-          status,
-          fileName: fileUpload.files[0] ? fileUpload.files[0].name : "",
-          createdAt: new Date().toLocaleDateString("pt-BR")
-        },
-        ...posts
-      ];
+    </aside>
 
-      form.reset();
-      uploadLabel.textContent = "Anexar Canva, slide, imagem ou PDF";
-      activeFilter = "todos";
-      document.querySelectorAll(".filter-btn").forEach((item) => item.classList.toggle("active", item.dataset.filter === "todos"));
-      renderAll();
-      showToast(status === "rascunho" ? "Rascunho salvo no feed tecnico." : "Postagem enviada para aprovacao.");
-    }
 
-    mobileToggle.addEventListener("click", () => {
-      sidebar.classList.toggle("open");
-    });
+    <!-- POSTS -->
 
-    renderAll();
-  </script>
+    <main class="card">
+
+      <div class="posts-header">
+
+        <div>
+
+          <h2 class="card-title">
+            Publicações Técnicas
+          </h2>
+
+          <p class="card-subtitle">
+            Fluxo interno de documentos,
+            relatórios e conteúdos estratégicos.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div
+        id="posts-container"
+        class="posts-grid"
+      >
+
+        <div class="empty-state">
+
+          Nenhuma publicação encontrada.<br>
+          O ecossistema técnico ainda não possui conteúdos publicados.
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </section>
+
+
+  <script type="module" src="/js/pages/area-tecnica-postagens.js"></script>
+
 </body>
+
 </html>

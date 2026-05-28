@@ -1,3 +1,6 @@
+// vai deixar de existir: frontend nao deve acessar o banco diretamente
+
+
 import pg from "pg";
 import dotenv from "dotenv";
 

@@ -2,99 +2,23 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-
-  <title>Portal Ambiental</title>
-
-  <link
-    rel="icon"
-    type="image/png"
-    href="./assets/logo-cedae-transparente.png"
-  />
-
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap"
-    rel="stylesheet"
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Ambiental | Gestão Ambiental</title>
+  <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     :root {
-      --sidebar-width: 292px;
-      --topbar-height: 70px;
-
       --primary-blue: #001d3d;
       --accent-blue: #0056b3;
+      --gov-gray: #e9ecef;
       --accent-green: #22c55e;
-      --accent-red: #ef4444;
-
-      --bg-page: #f8fafc;
-      --text-main: #0f2747;
-      --text-muted: #64748b;
-      --line: #dbe4ee;
       --white: #ffffff;
-
-      --shadow: 0 12px 28px rgba(0, 29, 61, 0.08);
-
-      --card-bg-green: #ecfdf3;
-      --card-bg-red: #fef2f2;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f7fa; min-height: 100vh; overflow-x: hidden; }
 
-    html,
-    body {
-      height: 100%;
-    }
-
-    body {
-      overflow: hidden;
-      background: var(--bg-page);
-      color: var(--text-main);
-      font-family:
-        "DM Sans",
-        "Segoe UI",
-        system-ui,
-        sans-serif;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button {
-      font: inherit;
-      border: none;
-      background: none;
-    }
-
-    .portal-shell {
-      height: 100vh;
-      display: grid;
-      grid-template-columns: var(--sidebar-width) 1fr;
-      overflow: hidden;
-      transition: grid-template-columns 0.25s ease;
-    }
-
-    .portal-shell.sidebar-collapsed {
-      grid-template-columns: 76px 1fr;
-    }
-    /*  --- BARRA SUPERIOR --- */
+    /* --- BARRA SUPERIOR --- */
     .gov-header { width: 100%; z-index: 1000; }
 
     .top-utility-bar {
@@ -108,957 +32,190 @@
       color: #495057;
       border-bottom: 1px solid #dee2e6;
     }
-    .top-utility-bar .links { display: flex; gap: 10px; }
-    /* SIDEBAR */
+    .top-utility-bar .links { display: flex; gap: 20px; }
 
-    .module-sidebar {
+    .main-nav {
       background: var(--primary-blue);
-      color: white;
-      padding: 18px 16px;
+      height: 85px;
       display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      border-right: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .brand-block {
-      display: grid;
-      grid-template-columns: 46px 1fr;
-      gap: 12px;
-      align-items: center;
-
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .brand-logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 10px;
-      background: white;
-      padding: 5px;
-      object-fit: contain;
-    }
-
-    .brand-block b {
-      display: block;
-      font-size: 1rem;
-    }
-
-    .brand-block span {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.65);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .sidebar-section {
-      margin-top: 20px;
-    }
-
-    .sidebar-label {
-      margin-bottom: 10px;
-      color: rgba(255,255,255,0.45);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-
-    .nav-list {
-      display: grid;
-      gap: 8px;
-    }
-
-    .module-link {
-      width: 100%;
-      min-height: 48px;
-
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 12px;
-      align-items: center;
-
-      padding: 10px 12px;
-
-      border-radius: 10px;
-      cursor: pointer;
-
-      color: rgba(255,255,255,0.75);
-
-      transition: 0.2s ease;
-    }
-
-    .module-link:hover,
-    .module-link.active {
-      background: rgba(255,255,255,0.08);
-      color: white;
-    }
-
-    .module-link i {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      background: rgba(255,255,255,0.12);
-    }
-
-    .module-link strong {
-      display: block;
-      font-size: 0.84rem;
-    }
-
-    .module-link small {
-      font-size: 0.68rem;
-      color: rgba(255,255,255,0.5);
-    }
-
-    .recicla i { background: #16a34a; }
-    .aedes i { background: #ef4444; }
-    .geracao i { background: #14532d; }
-    .placas i { background: #1e40af; }
-    .pgrs i { background: #c2410c; }
-    .agenda i { background: #581c87; }
-    .descarte i { background: #7c2d12; }
-    .tecnica i {
-      background: #38b6ff;
-      color: #031229;
-    }
-
-    /* MAIN */
-
-    .main-stage {
-      display: grid;
-      grid-template-rows: var(--topbar-height) 1fr;
-      overflow: hidden;
-    }
-
-    .stage-topbar {
-      height: var(--topbar-height);
-
-      display: flex;
-      align-items: center;
       justify-content: space-between;
-
-      padding: 0 22px;
-
-      background: #001d3d;
-
-      border-bottom: 1px solid var(--line);
-    }
-
-    .topbar-left {
-      display: flex;
       align-items: center;
-      gap: 12px;
-      min-width: 0;
+      padding: 0 10%;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
-    .collapse-sidebar-btn {
-      width: 40px;
-      height: 40px;
-
+    .brand-section { display: flex; align-items: center; gap: 15px; }
+    .logo-dma-header {
+      width: 45px; height: 45px;
+      background: linear-gradient(135deg, var(--accent-green), #16a34a);
       border-radius: 10px;
-      border: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.2rem; color: white;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .brand-text b { font-size: 1.4rem; display: block; letter-spacing: -0.5px; }
+    .brand-text span { font-size: 0.75rem; color: rgba(255,255,255,0.7); text-transform: uppercase; }
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      cursor: pointer;
-
-      background: white;
-      color: var(--primary-blue);
+    .nav-links { display: flex; align-items: center; gap: 30px; font-weight: 600; font-size: 0.9rem; }
+    .nav-links a { color: white; text-decoration: none; }
+    .btn-area-tecnica {
+      background: var(--accent-blue);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 800;
+      color: white !important;
     }
 
-    .stage-title strong {
-      display: block;
-      font-size: 0.95rem;
-      color: var( --bg-page);
-    }
-
-    .stage-title span {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-    }
-
-    /* CONTENT */
-
-    .stage-frame-wrap {
-      position: relative;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .welcome-screen {
-      height: 100%;
-      overflow-y: auto;
-
-      background:
-        var(--bg-page);
-    }
-
+    /* --- CONTAINER DOS CARDS (SUBIDOS NA TELA) --- */
     .container-hub {
       max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 30px 60px;
+      margin: 150px auto; /* Reduzido de 60px para subir os cards */
+      padding: 0 40px;
     }
 
-    .section-title {
-      margin-bottom: 20px;
-
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      color: #64748b;
-
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-
-      font-size: 0.9rem;
-      font-weight: 800;
-    }
-
-    /* HERO CARDS */
-
-    .programs-main-grid {
+    .showcase-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-
-      margin-bottom: 50px;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 450px));
+      gap: 30px;
+      justify-content: center;
     }
 
-    .program-card-premium {
+    .program-card {
+      height: 380px;
       position: relative;
-
-      min-height: 260px;
-
-      padding: 34px;
-
-      border-radius: 22px;
-
+      border-radius: 24px;
       overflow: hidden;
-
-      cursor: pointer;
-
-      transition: 0.25s ease;
-
-      text-align: left;
-    }
-
-    .program-card-premium:hover {
-      transform: translateY(-4px);
-    }
-
-    .card-recicla {
-      background:
-        linear-gradient(
-          180deg,
-          #ffffff 40%,
-          var(--card-bg-green) 100%
-        );
-
-      border: 1px solid rgba(34,197,94,0.16);
-    }
-
-    .card-aedes {
-      background:
-        linear-gradient(
-          180deg,
-          #ffffff 40%,
-          var(--card-bg-red) 100%
-        );
-
-      border: 1px solid rgba(239,68,68,0.12);
-    }
-
-    .bg-img-premium {
-      position: absolute;
-      top: 24px;
-      right: 28px;
-
-      width: 110px;
-      height: 110px;
-
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    .card-info-premium {
-      position: relative;
-      z-index: 2;
-      max-width: 75%;
-    }
-
-    .tag-premium {
-      display: inline-block;
-
-      padding: 6px 14px;
-
-      border-radius: 8px;
-
-      color: white;
-
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .card-info-premium h2 {
-      margin-top: 12px;
-      margin-bottom: 10px;
-
-      font-size: 1.7rem;
-      color: var(--primary-blue);
-    }
-
-    .card-info-premium p {
-      color: #475569;
-      line-height: 1.5;
-      font-size: 0.9rem;
-    }
-
-    /* TOOLS */
-
-    .tools-management-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .tool-box {
-      min-height: 160px;
-
-      background: white;
-
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-
-      padding: 24px;
-
+      text-decoration: none;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-
-      cursor: pointer;
-
-      transition: 0.2s ease;
-
-      position: relative;
-      overflow: hidden;
-
-      text-align: left;
+      justify-content: flex-end;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      transition: all 0.4s ease;
     }
 
-    .tool-box:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
+    .program-card:hover { transform: translateY(-10px); }
+
+    .bg-img {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-size: 60%; 
+      background-repeat: no-repeat;
+      background-position: center 25%;
+      z-index: 1;
     }
 
-    .tool-box i {
-      font-size: 1.15rem;
-      margin-bottom: 12px;
+    .overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(0deg, rgba(0,29,61,0.9) 20%, rgba(0,29,61,0) 60%);
+      z-index: 2;
     }
 
-    .tool-box p {
-      font-weight: 700;
-      line-height: 1.4;
-      color: #334155;
+    .card-info { position: relative; z-index: 3; color: white; text-align: left; }
+    .card-info h2 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 800; }
+    .card-info p { font-size: 0.9rem; opacity: 0.9; line-height: 1.4; }
+    
+    .tag {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 0.65rem; font-weight: 900; margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 1px;
     }
 
-    .tool-box span {
-      margin-top: 10px;
-      color: #64748b;
-      font-size: 0.76rem;
-    }
-
-    .tool-box::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-
-      width: 100%;
-      height: 4px;
-    }
-
-    .dot-green::after { background: #14532d; }
-    .dot-blue::after { background: #1e40af; }
-    .dot-orange::after { background: #c2410c; }
-    .dot-purple::after { background: #581c87; }
-    .dot-brown::after { background: #7c2d12; }
-
-    /* IFRAME */
-
-    .content-frame {
-      width: 100%;
-      height: 100%;
-      border: 0;
-
-      display: none;
-
-      background: white;
-    }
-
-    .content-frame.active {
-      display: block;
-    }
-
-    /* RESPONSIVO */
-
-    @media (max-width: 980px) {
-      .programs-main-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .tools-management-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 680px) {
-      .portal-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .module-sidebar {
-        display: none;
-      }
-
-      .container-hub {
-        padding: 24px 18px 60px;
-      }
-
-      .tools-management-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .card-info-premium {
-        max-width: 100%;
-      }
-
-      .program-card-premium {
-        min-height: 220px;
-      }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .showcase-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
 
-   <header class="gov-header">
+  <header class="gov-header">
     <div class="top-utility-bar">
-      <div>Departamento de Meio Ambiente</div>
-      <div class="links">
+      <div> · Diretoria de Sustentabilidade · Assessoria de Gestão Ambiental · Departamento de Meio Ambiente </div>
+      <!--<div class="links">
         <span>Comunicação</span>
         <span>Relatórios</span>
         <span>Indicadores</span>
-      </div>
+      </div> -->
     </div>
 
-  <div class="portal-shell" id="portalShell">
+   <nav class="main-nav">
+      <div class="brand-section">
+        <img src="./assets/logo-cedae-transparente.png" alt="Logo Cedae" style="height: 60px; width: auto; margin-right: 20px;">
+        
+        <div style="width: 5px; height: 40px; background: rgba(255,255,255,0.2); margin-right: 20px;"></div>
 
-    <!-- SIDEBAR -->
-
-    <aside class="module-sidebar">
-
-      <a class="brand-block" href="#" id="homeBtn">
-        <img
-          class="brand-logo"
-          src="./assets/logo-cedae-transparente.png"
-          alt="Logo"
-        />
-
-        <div>
+  
+        <div class="brand-text">
           <b>Portal Ambiental</b>
-          <span>Assessoria de Meio Ambiente</span>
+          <span>Sistema de Gestão Ambiental</span>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <!--<a href="#">Início</a>
+        <a href="#">Programas</a> -->
+        <a href="./area-tecnica.html" class="btn-area-tecnica">Área técnica</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container-hub">
+    <div class="showcase-grid">
+      
+      <a href="./aedes.html" class="program-card" style="background: linear-gradient(to bottom, #ffffff 0%, #fff1f1 100%);">
+        <div class="bg-img" style="background-image: url('./assets/logo_pura_dengue.png');"></div>
+        <div class="overlay"></div>
+        <div class="card-info">
+          <span class="tag" style="background: #4aef44;">Ativo</span>
+          <p>Monitoramento preventivo e controle de vetores nas unidades operacionais.</p>
         </div>
       </a>
 
-      <!-- PROGRAMAS -->
-
-      <section class="sidebar-section">
-
-        <div class="sidebar-label">
-          Programas ambientais
+       <a href="recicla-fase1.html" class="program-card" style="background: linear-gradient(to bottom, #ffffff 0%, #f1fdf4 100%);">
+         <div class="bg-img" style="background-image: url('./assets/logo-recicla-cedae-removebg-preview.png'); background-size: 65%;"></div>
+        <div class="overlay"></div>
+        <div class="card-info">
+          <span class="tag" style="background:  #fa1515;">ENCERRADO</span>
+         <h2>Programa Recicla CEDAE 2025</h2>
+         <h3> Prédio Sede</h3>
+        </div
+      </a>
+      
+         <a href="recicla-fase2.html" class="program-card" style="background: linear-gradient(to bottom, #ffffff 0%, #f1fdf4 100%);">
+        <div class="bg-img" style="background-image: url('./assets/logo-recicla-cedae-removebg-preview.png'); background-size: 65%;"></div>
+        <div class="overlay"></div>
+        <div class="card-info">
+            <span class="tag" style="background: #e6d92f;">PROGRAMADO</span>
+            <h2>Programa Recicla CEDAE 2026</h2>
+            <h3> Prédio Sede e Laranjal </h3>
         </div>
-
-        <nav class="nav-list">
-
-          <button
-            class="module-link recicla"
-            data-src="./recicla-fase1.html"
-            data-title="Programa Recicla CEDAE"
-            data-subtitle="Plano piloto e indicadores"
-          >
-            <i class="fa-solid fa-recycle"></i>
-
-            <span>
-              <strong>Programa Recicla CEDAE</strong>
-              <small>2025</small>
-            </span>
-          </button>
-
-          <button
-            class="module-link recicla"
-            data-src="./recicla-fase2.html"
-            data-title="Recicla CEDAE 2026"
-            data-subtitle="Prédio Sede e Laranjal"
-          >
-            <i class="fa-solid fa-recycle"></i>
-
-            <span>
-              <strong>Programa Recicla CEDAE</strong>
-              <small>2026</small>
-            </span>
-          </button>
-
-          <button
-            class="module-link aedes"
-            data-src="./aedes.html"
-            data-title="Programa Combate a Dengue"
-            data-subtitle="Monitoramento preventivo"
-          >
-            <i class="fa-solid fa-bug"></i>
-
-            <span>
-              <strong>Combate a Dengue</strong>
-              <small>Ativo</small>
-            </span>
-          </button>
-
-           <button
-            class="module-link aedes"
-            data-src="./o_que_fazer.html"
-            data-title="Residuos sólidos: Como descartar"
-            data-subtitle="Material educativo para colaboradores"
-          >
-           <i class="fa-solid fa-recycle"></i>
-
-            <span>
-              <strong>Resíduos Sólidos: Como Descartar</strong>
-              <small>Ativo</small>
-            </span>
-          </button>
-
-        </nav>
-      </section>
-
-      <!-- GESTÃO -->
-
-      <section class="sidebar-section">
-
-        <div class="sidebar-label">
-          Gestão e resíduos
+      </a>
+      <a href="agenda.html" class="program-card" style="background: #f1fdf4;">
+        <div class="bg-img" style="display: none;"></div>
+        <div class="overlay"></div>
+        <div class="card-info">
+          <h2>agenda</h2>
         </div>
-
-        <nav class="nav-list">
-
-          <button
-            class="module-link geracao"
-            data-src="./quantitativo-residuos.html"
-            data-title="Quantitativo de resíduos"
-            data-subtitle="Inventário operacional"
-          >
-            <i class="fa-solid fa-boxes-stacked"></i>
-
-            <span>
-              <strong>Quantitativo de resíduos</strong>
-              <small>Inventário</small>
-            </span>
-          </button>
-
-          <button
-            class="module-link placas"
-            data-src="./placas-sinalizacoes.html"
-            data-title="Placas e sinalizações"
-            data-subtitle="Modelos e orientações"
-          >
-            <i class="fa-solid fa-triangle-exclamation"></i>
-
-            <span>
-              <strong>Placas e sinalizações</strong>
-              <small>Modelos</small>
-            </span>
-          </button>
-
-          <button
-            class="module-link pgrs"
-            data-src="./pgrs-elaborados.html"
-            data-title="PGRS elaborados"
-            data-subtitle="Consulta de planos"
-          >
-            <i class="fa-solid fa-solidLarge fa-recycle">‌</i>
-
-            <span>
-              <strong>PGRS elaborados</strong>
-              <small>Consultar</small>
-            </span>
-          </button>
-
-           <button
-            class="module-link pgrs"
-            data-src="./agenda.html"
-            data-title="Agenda Ambiental"
-            data-subtitle="Eventos e compromissos"
-          >
-            <i class="fa-solid fa-calendar-days"></i>
-
-            <span>
-              <strong>Agenda Ambiental</strong>
-              <small>Consultar</small>
-            </span>
-          </button>
-
-          <button
-            class="module-link pgrs"
-            data-src="./area-tecnica-postagens.html"
-            data-title="Área Técnica"
-            data-subtitle="Postagens e atualizações"
-          >
-            <i class="fa-solid fa-user-gear"></i>
-
-            <span>
-              <strong>Área Técnica</strong>
-              <small>Postagens e atualizações</small>
-            </span>
-          </button>
-
-          <button
-            class="module-link pgrs"
-            data-src="./gerenciador-portal.html"
-            data-title="Área Técnica"
-            data-subtitle="Postagens e atualizações"
-          >
-            <i class="fa-solid fa-user-gear"></i>
-
-            <span>
-              <strong>gerenciador teste</strong>
-              <small>Postagens e atualizações</small>
-            </span>
-          </button>
-
-
-        </nav>
-      </section>
-
-    </aside>
-
-    <!-- MAIN -->
-
-    <main class="main-stage">
-
-      <header class="stage-topbar">
-
-        <div class="topbar-left">
-
-          <button
-            class="collapse-sidebar-btn"
-            id="collapseSidebarBtn"
-          >
-            <i class="fa-solid fa-angles-left"></i>
-          </button>
-
-          <div class="stage-title">
-            <strong id="stageTitle">Início</strong>
-
-            <span id="stageSubtitle">
-              Selecione um módulo na barra lateral.
-            </span>
-          </div>
-
-        </div>
-
-      </header>
-
-      <!-- CONTENT -->
-
-      <div class="stage-frame-wrap">
-
-        <!-- HOME -->
-
-        <section
-          class="welcome-screen"
-          id="welcomeScreen"
-        >
-
-          <main class="container-hub">
-
-            <div class="section-title">
-              <i class="fa-solid fa-layer-group"></i>
-              Programas Ambientais
-            </div>
-
-            <div class="programs-main-grid">
-
-              <button
-                class="program-card-premium card-recicla"
-                data-shortcut="./recicla-fase2.html"
-              >
-
-                <div
-                  class="bg-img-premium"
-                  style="background-image:url('./assets/logo-recicla-cedae-removebg-preview.png');"
-                ></div>
-
-                <div class="card-info-premium">
-
-                  <span
-                    class="tag-premium"
-                    style="background:var(--accent-green)"
-                  >
-                    Em desenvolvimento
-                  </span>
-
-                  <h2>Programa Recicla CEDAE</h2>
-
-                  <p>
-                    Plataforma unificada para o acompanhamento
-                    do plano piloto.
-                  </p>
-
-                </div>
-
-              </button>
-
-              <button
-                class="program-card-premium card-aedes"
-                data-shortcut="./aedes.html"
-              >
-
-                <div
-                  class="bg-img-premium"
-                  style="background-image:url('./assets/logo_pura_dengue.png');"
-                ></div>
-
-                <div class="card-info-premium">
-
-                  <span
-                    class="tag-premium"
-                    style="background:var(--accent-red)"
-                  >
-                    Ativo
-                  </span>
-
-                  <h2>Programa Combate à Dengue</h2>
-
-                  <p>
-                    Monitoramento preventivo e controle de vetores.
-                  </p>
-
-                </div>
-
-              </button>
-
-            </div>
-
-            <div class="section-title">
-              <i class="fa-solid fa-chart-pie"></i>
-              Gestão Operacional
-            </div>
-
-            <div class="tools-management-grid">
-
-              <button
-                class="tool-box dot-green"
-                data-shortcut="./quantitativo-residuos.html"
-              >
-                <i class="fa-solid fa-boxes-stacked"></i>
-
-                <p>
-                  Quantitativo de geração de resíduos
-                </p>
-
-                <span>
-                  Acessar inventário
-                </span>
-              </button>
-
-              <button
-                class="tool-box dot-blue"
-                data-shortcut="./placas-sinalizacoes.html"
-              >
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                <p>
-                  Placas e sinalizações ambientais
-                </p>
-
-                <span>
-                  Ver modelos
-                </span>
-              </button>
-
-              <button
-                class="tool-box dot-orange"
-                data-shortcut="./pgrs-elaborados.html"
-              >
-                <i class="fa-solid fa-file-shield"></i>
-
-                <p>
-                  PGRS elaborados
-                </p>
-
-                <span>
-                  Consultar planos
-                </span>
-              </button>
-
-            </div>
-
-          </main>
-
-        </section>
-
-        <!-- IFRAME -->
-
-        <iframe
-          id="contentFrame"
-          class="content-frame"
-          title="Conteudo do modulo"
-        ></iframe>
-
-      </div>
-
-    </main>
-
-  </div>
-
-  <script>
-    const portalShell =
-      document.querySelector("#portalShell");
-
-    const collapseSidebarBtn =
-      document.querySelector("#collapseSidebarBtn");
-
-    const frame =
-      document.querySelector("#contentFrame");
-
-    const welcomeScreen =
-      document.querySelector("#welcomeScreen");
-
-    const stageTitle =
-      document.querySelector("#stageTitle");
-
-    const stageSubtitle =
-      document.querySelector("#stageSubtitle");
-
-    function openModule(src, title, subtitle) {
-
-      frame.src = src;
-
-      frame.classList.add("active");
-
-      welcomeScreen.style.display = "none";
-
-      stageTitle.textContent =
-        title || "Modulo";
-
-      stageSubtitle.textContent =
-        subtitle || src;
-
-      document
-        .querySelectorAll(".module-link")
-        .forEach((item) => {
-
-          item.classList.toggle(
-            "active",
-            item.dataset.src === src
-          );
-
-        });
-    }
-
-    function showHome() {
-
-      frame.classList.remove("active");
-
-      frame.removeAttribute("src");
-
-      welcomeScreen.style.display = "block";
-
-      stageTitle.textContent = "Início";
-
-      stageSubtitle.textContent =
-        "Selecione um módulo na barra lateral.";
-
-      document
-        .querySelectorAll(".module-link")
-        .forEach((item) =>
-          item.classList.remove("active")
-        );
-    }
-
-    document
-      .querySelectorAll(".module-link")
-      .forEach((button) => {
-
-        button.addEventListener("click", () => {
-
-          openModule(
-            button.dataset.src,
-            button.dataset.title,
-            button.dataset.subtitle
-          );
-
-        });
-
-      });
-
-    document
-      .querySelectorAll("[data-shortcut]")
-      .forEach((button) => {
-
-        button.addEventListener("click", () => {
-
-          const src =
-            button.dataset.shortcut;
-
-          const target =
-            document.querySelector(
-              `.module-link[data-src="${src}"]`
-            );
-
-          if (target) {
-
-            openModule(
-              target.dataset.src,
-              target.dataset.title,
-              target.dataset.subtitle
-            );
-
-          }
-
-        });
-
-      });
-
-    document
-      .querySelector("#homeBtn")
-      .addEventListener("click", (event) => {
-
-        event.preventDefault();
-
-        showHome();
-
-      });
-
-    collapseSidebarBtn.addEventListener("click", () => {
-
-      portalShell.classList.toggle(
-        "sidebar-collapsed"
-      );
-
-    });
-  </script>
-
-    <script type="module" src="./js/core/api-config.js"></script>
+      </a>
+    </div>
+
+    </div>
+  </main>
+    <script src="./js/core/auth.js"></script>
+
+      <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js') 
+              .then((registration) => {
+                console.log('Service Worker registrado com sucesso:', registration.scope);
+              })
+              .catch((error) => {
+                console.error('Falha ao registrar o Service Worker:', error);
+              });
+          });
+        }
+      </script>
 </body>
 </html>

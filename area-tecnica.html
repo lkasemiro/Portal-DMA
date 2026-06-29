@@ -3,316 +3,154 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Área Técnica | Portal DMA</title>
-  <link rel="icon" type="image/png" href="./assets/logo-cedae-transparente.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <title>Área Técnica | Hub de Gestão</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     :root {
-      --primary-blue: #001d3d;
-      --deep-blue: #04091e;
-      --panel: #071330;
-      --panel-soft: #0b1b3d;
-      --line: rgba(255, 255, 255, 0.09);
-      --line-light: #dbe4ee;
-      --text-title: #e8f4ff;
-      --text-body: #a8c8e8;
-      --text-muted: #6e91b7;
-      --blue: #38b6ff;
-      --green: #10b981;
-      --red: #f43f5e;
-      --orange: #f59e0b;
-      --purple: #8b5cf6;
+      --sidebar-width: 260px;
+      --kpi-column-width: 280px;
+      --primary-blue: #0b3d91;
+      --dark-blue: #001d3d;
+      --accent-green: #22c55e;
+      --warning-orange: #f59e0b;
+      --danger-red: #ef4444;
+      --bg-gray: #f4f7fa;
       --white: #ffffff;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-gray); display: flex; }
+
+    /* --- SIDEBAR ORIGINAL --- */
+    .sidebar { width: var(--sidebar-width); background: var(--dark-blue); color: white; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+    .sidebar__header { padding: 25px 20px; background: rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; }
+    .logo-dma-estilizado { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; letter-spacing: -1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); }
+    .brand-name { display: flex; flex-direction: column; }
+    .brand-name b { font-size: 1.1rem; letter-spacing: 1px; color: white; }
+    .brand-name span { font-size: 0.65rem; color: var(--accent-green); text-transform: uppercase; font-weight: bold; }
+    .sidebar__nav { flex: 1; padding: 20px 0; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
+    .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); border-left: 4px solid var(--accent-green); }
+
+    /* --- ESTRUTURA DE COLUNAS --- */
+    .main-wrapper {
+        margin-left: var(--sidebar-width);
+        display: flex;
+        width: calc(100% - var(--sidebar-width));
+        padding: 35px;
+        gap: 25px;
+        align-items: flex-start;
     }
 
-    body {
-      background: var(--deep-blue);
-      color: var(--text-body);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
+    .center-column { flex: 1; display: flex; flex-direction: column; gap: 25px; }
+    
+    .kpi-column {
+        width: var(--kpi-column-width);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        position: sticky;
+        top: 35px;
     }
 
-    /* Layout focado estritamente no conteúdo para rodar fluido no iframe */
-    .content-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px;
-    }
+    /* --- COMPONENTES --- */
+    .content-header { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+    
+    .kpi-card:hover { transform: translateX(-5px); }
+    
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 24px;
-      align-items: start;
-    }
+    .card { background: white; border-radius: 12px; border: 1px solid #eef2f6; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .card-header { padding: 20px; background: #fcfdfe; border-bottom: 1px solid #f1f5f9; font-weight: bold; color: var(--dark-blue); display: flex; align-items: center; gap: 10px; }
+    
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f8fafc; padding: 15px; text-align: left; color: #64748b; font-size: 0.8rem; text-transform: uppercase; }
+    td { padding: 15px; border-bottom: 1px solid #f8fafc; font-size: 0.9rem; }
 
-    @media (max-width: 960px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+    .kpi-card {
+  background: white;
+  border: 1px solid #e8ecf0;
+  border-radius: 10px;
+  padding: 20px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.kpi-card h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+.kpi-card span {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
-    .main-stack, .side-stack {
-      display: grid;
-      gap: 24px;
-    }
-
-    /* Cards e Painéis */
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .panel-header h2 {
-      font-size: 1.15rem;
-      color: var(--text-title);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .panel-header span {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-    }
-
-    /* Status Grid */
-    .status-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 16px;
-    }
-
-    .status-card {
-      background: var(--panel-soft);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .status-card span {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .status-card strong {
-      display: block;
-      font-size: 1.4rem;
-      color: var(--text-title);
-    }
-
-    /* Tabelas Responsivas */
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.88rem;
-    }
-
-    th, td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    th {
-      color: var(--text-title);
-      font-weight: 600;
-      background: var(--panel-soft);
-    }
-
-    tr:hover td {
-      background: rgba(255,255,255,0.02);
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--green);
-    }
-
-    /* Feed de Postagens */
-    .feed-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .feed-item {
-      display: block;
-      background: var(--panel-soft);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 14px;
-      text-decoration: none;
-      transition: border-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .feed-item:hover {
-      border-color: var(--blue);
-      transform: translateY(-2px);
-    }
-
-    .feed-item strong {
-      display: block;
-      color: var(--text-title);
-      font-size: 0.9rem;
-      margin-bottom: 4px;
-    }
-
-    .feed-item span {
-      display: block;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      line-height: 1.4;
-    }
   </style>
 </head>
 <body>
 
-  <div class="content-container">
-    <section class="dashboard-grid">
-      
-      <div class="main-stack">
-        
-        <section class="panel">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-chart-pie"></i> Visão geral técnica</h2>
-            <span>Métricas gerais</span>
-          </div>
-          <div class="status-grid">
-            <div class="status-card">
-              <span>Programas ativos</span>
-              <strong>7</strong>
-            </div>
-            <div class="status-card">
-              <span>PGRS validados</span>
-              <strong>14</strong>
-            </div>
-            <div class="status-card">
-              <span>Módulos em dev</span>
-              <strong>2</strong>
-            </div>
-          </div>
-        </section>
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <div class="logo-dma-estilizado">DMA</div>
+      <div class="brand-name">
+          <span>DEPARTAMENTO DE</span>
+          <b>MEIO AMBIENTE</b>
+          <span>SISTEMA DE GESTÃO</span>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="#" class="nav-item active"><i class="fas fa-shield-alt"></i> Histórico de Registros</a>
+      <a href="./aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> DENGUE</a>
+      <a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase  1 </a>
+      <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase  2 </a>
+      <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> Sair</a>
+    </nav>
+  </aside>
 
-        <section class="panel">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-layer-group"></i> Status de integração dos módulos</h2>
-            <span>Validação de rotas</span>
-          </div>
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>Módulo</th>
-                  <th>Escopo do dado</th>
-                  <th>Status atual</th>
-                  <th>Tipo</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Recicla CEDAE</td>
-                  <td>Fase 2 - Piloto</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
-                  <td>Módulo</td>
-                </tr>
-                <tr>
-                  <td>Combate à Dengue</td>
-                  <td>Casos e vistorias</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
-                  <td>Módulo</td>
-                </tr>
-                <tr>
-                  <td>Resíduos</td>
-                  <td>Inventário estático</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
-                  <td>Módulo</td>
-                </tr>
-                <tr>
-                  <td>Sinalizações</td>
-                  <td>Modelos e placas</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
-                  <td>Módulo</td>
-                </tr>
-                <tr>
-                  <td>PGRS</td>
-                  <td>Planos elaborados</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
-                  <td>Módulo</td>
-                </tr>
-                <tr>
-                  <td>Agenda</td>
-                  <td>Eventos ambientais</td>
-                  <td><span class="status-pill"><i class="fa-solid fa-circle-check"></i> Visual</span></td>
-                  <td>Módulo</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+  <div class="main-wrapper">
+    <div class="center-column">
+      <header class="content-header">
+        <h1 style="color:var(--dark-blue); font-weight: 800;">Painel de Auditoria</h1>
+        <p style="color:#64748b;">Monitoramento centralizado filtrado a partir de 14/05/2026.</p>
+      </header>
+
+      <section class="card">
+        <div class="card-header"><i class="fas fa-list-ul"></i> Últimos Registros Processados</div>
+        <div id="mainDataTable"></div>
+      </section>
+    </div>
+
+    <aside class="kpi-column">
+      <div class="kpi-card" style="border-left-color: #3b82f6">
+        <span>Vistorias Realizadas</span>
+        <h2 id="kpi-vistorias-sim">--</h2>
       </div>
 
-      <aside class="side-stack">
-        <section class="panel">
-          <div class="panel-header">
-            <h2><i class="fa-solid fa-rss"></i> Feed técnico</h2>
-            <span>Resumo</span>
-          </div>
-          <div class="feed-list">
-            <a class="feed-item" href="./area-tecnica-postagens.html">
-              <strong>Central de postagens criada</strong>
-              <span>Fluxo de rascunho, aprovação e publicação preparado para virar API.</span>
-            </a>
-            <a class="feed-item" href="./residuos-solidos.html">
-              <strong>PDF de resíduos em destaque</strong>
-              <span>Página clara agora exibe material aprovado como protagonista.</span>
-            </a>
-            <a class="feed-item" href="./agenda.html">
-              <strong>Agenda enquadrada no shell</strong>
-              <span>Módulo visual sem cabeçalho duplicado dentro do portal.</span>
-            </a>
-          </div>
-        </section>
-      </aside>
+      <div class="kpi-card" style="border-left-color: var(--danger-red)">
+        <span>Vistorias Não Realizadas</span>
+        <h2 id="kpi-vistorias-nao">--</h2>
+      </div>
 
-    </section>
+      <div class="kpi-card" style="border-left-color: var(--warning-orange)">
+        <span>Focos Encontrados</span>
+        <h2 id="kpi-focos">--</h2>
+      </div>
+
+      <div class="kpi-card" style="border-left-color: var(--accent-green)">
+        <span>Focos Remediados</span>
+        <h2 id="kpi-remediados">--</h2>
+      </div>
+
+    </aside>
   </div>
 
+  <script src="./js/core/api-config.js"></script>
+  <script src="./js/core/auth.js"></script>
+  <script>requireAuth("./login.html");</script>
   <script type="module" src="./js/pages/area-tecnica.js"></script>
 </body>
 </html>

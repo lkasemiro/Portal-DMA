@@ -18,7 +18,7 @@ from "url";
 
 // DATABASE
 import { pool }
-from "./js/db.js";
+from "./infra/db.js";
 
 
 // ROUTES

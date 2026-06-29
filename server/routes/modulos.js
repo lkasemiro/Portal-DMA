@@ -2,7 +2,7 @@
 // server/routes/modulos.js
 
 import express from "express";
-import { pool } from "../js/db.js";
+import { pool } from "../infra/db.js";
 
 const router = express.Router();
 

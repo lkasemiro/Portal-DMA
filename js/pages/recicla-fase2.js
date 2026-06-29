@@ -1,10 +1,13 @@
-const BR_NUMBER = new Intl.NumberFormat("pt-BR", {
-  maximumFractionDigits: 2
-});
+/**
+ * ==========================================================================
+ * RECICLA CEDAE FASE 2 - MOTOR DE CRÉDITOS, RANKINGS E DASHBOARDS R
+ * Coordenação de Resíduos Sólidos · CEDAE · CRS 2026
+ * ==========================================================================
+ */
 
-const BR_INTEGER = new Intl.NumberFormat("pt-BR", {
-  maximumFractionDigits: 0
-});
+const state = { registros: [], kpis: {}, dadosReciclados: null };
+const BR_NUMBER = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
+const BR_INTEGER = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
 
 const PREMIOS = [
   { premio_id: "broche", nome: "Broche", custo_pontos: 10, estoque_inicial: 80, ativo: true },
@@ -13,429 +16,365 @@ const PREMIOS = [
   { premio_id: "composto", nome: "Composto orgânico", custo_pontos: 0, estoque_inicial: 200, ativo: true }
 ];
 
-const MATERIAIS_ACEITOS = [
-  "Papel e papelão limpos e secos",
-  "Garrafas e embalagens plásticas vazias",
-  "Latas de alumínio",
-  "Embalagens metálicas leves",
-  "Frascos plásticos de produtos de limpeza vazios",
-  "Materiais recicláveis secos compatíveis com a coleta do programa"
-];
-
-const MATERIAIS_NAO_ACEITOS = [
-  "Resíduos orgânicos",
-  "Papéis engordurados ou contaminados",
-  "Materiais com resto de alimento",
-  "Resíduos sanitários",
-  "Itens contaminados por produtos químicos ou biológicos",
-  "Materiais fora do escopo operacional do programa"
-];
-
-/*
-  Este bloco substitui a antiga seção de educação ambiental.
-  A área agora funciona como espaço de comunicação institucional
-  e reserva para artes / folders do programa.
-*/
-const TEXTOS_COMUNICACAO = [
-  {
-    titulo: "Arte institucional em preparação",
-    texto:
-      "Este espaço será ocupado por peças visuais do Recicla CEDAE, com identidade própria para divulgação da Fase 2, materiais aceitos, orientações de participação e reforço da mobilização interna."
-  },
-  {
-    titulo: "Campanha vinculada à meta institucional",
-    texto:
-      "A comunicação da nova fase será alinhada ao compromisso da companhia com a melhoria da gestão de resíduos e com o avanço em práticas aderentes à certificação Lixo Zero."
-  },
-  {
-    titulo: "Mobilização contínua das equipes",
-    texto:
-      "Além dos resultados acumulados, a nova etapa reforça o papel da comunicação visual como apoio ao engajamento, à adesão das diretorias e à consolidação de hábitos institucionais mais sustentáveis."
-  }
-];
-
-const state = {
-  registros: [],
-  kpis: {}
-};
+const CORES_GRAFICO = { Metal: "#2ec4b6", Papel: "#e67e22", Plastico: "#4361ee", Vidro: "#ff006e" };
 
 const els = {
   fase2DbStatus: document.getElementById("fase2DbStatus"),
-
-  publicKpiSemanas: document.getElementById("publicKpiSemanas"),
   publicKpiParticipantes: document.getElementById("publicKpiParticipantes"),
   publicKpiPesoTotal: document.getElementById("publicKpiPesoTotal"),
-  publicKpiDiretorias: document.getElementById("publicKpiDiretorias"),
-
   awardCatalog: document.getElementById("awardCatalog"),
-
-  publicEducationGrid: document.getElementById("publicEducationGrid"),
-  acceptedMaterialsList: document.getElementById("acceptedMaterialsList"),
-  rejectedMaterialsList: document.getElementById("rejectedMaterialsList"),
-
-  historicTop20Body: document.getElementById("historicTop20Body"),
-  historicTop20Count: document.getElementById("historicTop20Count"),
-  historicTop20Highlight: document.getElementById("historicTop20Highlight"),
-
+  historicTop5Body: document.getElementById("historicTop5Body"),
+  historicTop5Count: document.getElementById("historicTop5Count"),
+  historicTop5Highlight: document.getElementById("historicTop5Highlight"),
   consultaForm: document.getElementById("consultaForm"),
   consultaId: document.getElementById("consultaId"),
-  consultaResultado: document.getElementById("consultaResultado")
+  consultaResultado: document.getElementById("consultaResultado"),
+  grafico2024: document.getElementById("graficoRadial2024"),
+  grafico2025: document.getElementById("graficoRadial2025")
 };
 
-function formatNumber(value) {
-  return BR_NUMBER.format(Number(value || 0));
-}
-
-function formatInteger(value) {
-  return BR_INTEGER.format(Number(value || 0));
-}
-
-function escapeHtml(text) {
-  return String(text ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function uniqueSorted(values) {
-  return [...new Set(values.filter((v) => v !== null && v !== undefined && v !== ""))]
-    .sort((a, b) => String(a).localeCompare(String(b), "pt-BR"));
-}
-
-function normalizeRegistro(item) {
-  return {
-    posicao: Number(item.posicao || 0),
-    n_id: item.n_id ?? item.id ?? item.participante_id ?? null,
-    nome: item.nome ?? "",
-    diretoria: item.diretoria ?? "",
-    somatorio: Number(item.somatorio || item.peso_total || item.total || 0),
-    status_broche: item.status_broche ?? item.broche ?? "Nao informado",
-    status_mochila: item.status_mochila ?? item.mochila ?? "Nao informado",
-    quantidade_retirada_sacos_de_composto_organico: Number(
-      item.quantidade_retirada_sacos_de_composto_organico || 0
-    )
-  };
-}
+function formatNumber(value) { return BR_NUMBER.format(Number(value || 0)); }
+function formatInteger(value) { return BR_INTEGER.format(Number(value || 0)); }
+function escapeHtml(t) { return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
 
 function extractRecords(json) {
   if (!json) return [];
-
   if (Array.isArray(json)) return json;
   if (Array.isArray(json.registros)) return json.registros;
-  if (Array.isArray(json.ranking_geral)) return json.ranking_geral;
-  if (Array.isArray(json.participantes)) return json.participantes;
-  if (Array.isArray(json.dados)) return json.dados;
-  if (Array.isArray(json.items)) return json.items;
-  if (Array.isArray(json.rows)) return json.rows;
-  if (Array.isArray(json.top_20)) return json.top_20;
-  if (Array.isArray(json.ranking_top_20)) return json.ranking_top_20;
-
   return [];
 }
 
-function extractKpis(json, registros) {
-  if (json && json.kpis && typeof json.kpis === "object") {
-    return json.kpis;
-  }
-
-  const totalParticipantes = registros.length;
-  const totalDiretorias = uniqueSorted(registros.map((item) => item.diretoria)).length;
-  const somatorioTotal = registros.reduce((acc, item) => acc + Number(item.somatorio || 0), 0);
-
-  return {
-    total_participantes: totalParticipantes,
-    total_diretorias: totalDiretorias,
-    somatorio_total: somatorioTotal
-  };
-}
-
-function calculateSemanasPrograma(registros) {
-  const datas = registros
-    .map((item) => new Date(item.data))
-    .filter((d) => !Number.isNaN(d.getTime()))
-    .sort((a, b) => a - b);
-
-  if (!datas.length) return 0;
-
-  const primeira = datas[0];
-  const ultima = datas[datas.length - 1];
-  const diffMs = ultima - primeira;
-  const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  return Math.max(1, Math.ceil((diffDias + 1) / 7));
-}
-
-function getParticipanteById(id) {
-  const normalizedId = String(id || "").trim();
-  if (!normalizedId) return null;
-
-  return state.registros.find((item) => String(item.n_id) === normalizedId) || null;
-}
-
-function getPremiosDisponiveis(somatorio) {
-  const pontos = Number(somatorio || 0);
-
-  return PREMIOS.filter((premio) => {
-    if (!premio.ativo) return false;
-    if (premio.premio_id === "composto") return pontos >= 10;
-    return pontos >= Number(premio.custo_pontos || 0);
+// Agrupa as pesagens individuais por participante para gerar o Ranking e os KPIs globais
+function processarRegistrosDoConsolidado(dados) {
+  let agrupado = {};
+  
+  dados.forEach(item => {
+    const id = String(item.n_id || item.id);
+    const diretoria = String(item.diretoria || "DMA / CRS");
+    const quantidade = Number(item.Quantidade || 0);
+    
+    if (!agrupado[id]) {
+      agrupado[id] = { n_id: id, diretoria: diretoria, somatorio: 0 };
+    }
+    agrupado[id].somatorio += quantidade;
   });
+  
+  return Object.values(agrupado);
 }
 
-function renderCommunicationSection() {
-  if (els.publicEducationGrid) {
-    els.publicEducationGrid.innerHTML = TEXTOS_COMUNICACAO.map(
-      (item) => `
-        <article class="education-card">
-          <h3>${escapeHtml(item.titulo)}</h3>
-          <p>${escapeHtml(item.texto)}</p>
-        </article>
-      `
-    ).join("");
-  }
-}
-
-function renderMaterialsSection() {
-  if (els.acceptedMaterialsList) {
-    els.acceptedMaterialsList.innerHTML = MATERIAIS_ACEITOS.map(
-      (item) => `<li>${escapeHtml(item)}</li>`
-    ).join("");
-  }
-
-  if (els.rejectedMaterialsList) {
-    els.rejectedMaterialsList.innerHTML = MATERIAIS_NAO_ACEITOS.map(
-      (item) => `<li>${escapeHtml(item)}</li>`
-    ).join("");
-  }
+function extractKpis(regs, dadosBrutos) {
+  const totalPeso = dadosBrutos.reduce((a, b) => a + Number(b.Quantidade || 0), 0);
+  return { total_participantes: regs.length, somatorio_total: totalPeso };
 }
 
 function renderAwardCatalog() {
   if (!els.awardCatalog) return;
-
-  els.awardCatalog.innerHTML = PREMIOS
-    .filter((premio) => premio.ativo)
-    .map((premio) => `
-      <article class="award-item">
-        <span>${escapeHtml(premio.nome)}</span>
-        <strong>${
-          premio.premio_id === "composto"
-            ? "10 kg = 1 pacote"
-            : `${formatInteger(premio.custo_pontos)} pontos`
-        }</strong>
-        <p>
-          ${
-            premio.premio_id === "composto"
-              ? "Benefício ambiental associado ao acúmulo de material reciclável, com retirada conforme regra operacional do programa."
-              : "Reconhecimento vinculado à participação no programa, condicionado à pontuação acumulada e à disponibilidade de estoque."
-          }
-        </p>
-        <div class="award-item__meta">
-          <span class="award-pill">Estoque de referência: ${formatInteger(premio.estoque_inicial)}</span>
-        </div>
-      </article>
-    `)
-    .join("");
+  els.awardCatalog.innerHTML = PREMIOS.filter(p => p.ativo).map(p => `
+    <div style="padding: 12px; background: rgba(0,0,0,0.01); border-radius: 8px; border: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center;">
+      <div style="background: rgba(0, 86, 179, 0.08); color: var(--azul-cedae); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+        <i class="fa-solid ${p.premio_id === 'composto' ? 'fa-seedling' : 'fa-award'}"></i>
+      </div>
+      <div>
+        <strong style="color: var(--azul-escuro); display: block; font-size: 0.85rem;">${escapeHtml(p.nome)}</strong>
+        <span style="font-size: 0.72rem; color: var(--verde-sustentavel); font-weight: 700;">
+          Requisito: ${p.premio_id === "composto" ? "10 kg = 1 pacote" : `${formatInteger(p.custo_pontos)} pontos`}
+        </span>
+      </div>
+    </div>
+  `).join("");
 }
 
 function renderKpis() {
-  const kpis = state.kpis;
-  const semanasPrograma = calculateSemanasPrograma(state.registros);
-
-  if (els.publicKpiSemanas) {
-    els.publicKpiSemanas.textContent = formatInteger(semanasPrograma);
-  }
-
-  if (els.publicKpiParticipantes) {
-    els.publicKpiParticipantes.textContent = formatInteger(
-      kpis.total_participantes ?? state.registros.length
-    );
-  }
-
-  if (els.publicKpiPesoTotal) {
-    els.publicKpiPesoTotal.textContent = `${formatNumber(
-      kpis.somatorio_total ?? 0
-    )} kg`;
-  }
-
-  if (els.publicKpiDiretorias) {
-    els.publicKpiDiretorias.textContent = formatInteger(
-      kpis.total_diretorias ?? uniqueSorted(state.registros.map((item) => item.diretoria)).length
-    );
-  }
+  if (els.publicKpiParticipantes) els.publicKpiParticipantes.textContent = formatInteger(state.kpis.total_participantes ?? 0);
+  if (els.publicKpiPesoTotal) els.publicKpiPesoTotal.textContent = `${formatNumber(state.kpis.somatorio_total ?? 0)} kg`;
 }
 
-function renderHistoricTop20() {
-  if (!els.historicTop20Body) return;
+function renderHistoricTop5() {
+  if (!els.historicTop5Body || !state.dadosDiretorias) return;
+  
+  // 1. Ordena as diretorias pelo maior peso total coletado
+  const rankingDiretorias = [...state.dadosDiretorias]
+    .sort((a, b) => b.pesoTotal - a.pesoTotal);
+  
+  // Pega o maior peso para servir de base (100%) para a barra de progresso visual
+  const maxPesoElemento = rankingDiretorias[0]?.pesoTotal || 1;
 
-  if (!state.registros.length) {
-    els.historicTop20Body.innerHTML = `
+  // 2. Renderiza as linhas focando em Diretoria, Qtd de Pessoas e Peso
+  els.historicTop5Body.innerHTML = rankingDiretorias.map((dir, idx) => {
+    let posicao = idx + 1;
+    let medalhaOuPosicao = posicao === 1 ? "🥇" : posicao === 2 ? "🥈" : posicao === 3 ? "🥉" : `${posicao}º`;
+    
+    // Calcula a porcentagem da barra de preenchimento proporcional
+    let pctBarra = (dir.pesoTotal / maxPesoElemento) * 100;
+
+    return `
       <tr>
-        <td colspan="4">Sem dados disponíveis no momento.</td>
+        <td style="font-weight: 800; text-align: center; font-size: 1.1rem; width: 50px;">${medalhaOuPosicao}</td>
+        <td style="vertical-align: middle;">
+          <div style="font-weight: 800; color: #0f172a; font-size: 0.9rem; letter-spacing: 0.5px;">
+            DIRETORIA ${escapeHtml(dir.diretoria)}
+          </div>
+          <div style="width: 100%; background: #f1f5f9; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden;">
+            <div style="width: ${pctBarra}%; background: var(--azul-cedae); height: 100%; border-radius: 3px; transition: width 0.5s ease;"></div>
+          </div>
+        </td>
+        <td style="vertical-align: middle; text-align: center;">
+          <span style="background: rgba(15, 23, 42, 0.06); color: #334155; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: inline-block;">
+            <i class="fa-solid fa-users" style="font-size:0.65rem; margin-right:4px;"></i> ${dir.totalParticipantes} ${dir.totalParticipantes === 1 ? 'colaborador' : 'colaboradores'}
+          </span>
+        </td>
+        <td style="text-align: right; font-weight: 800; color: var(--verde-sustentavel); font-size: 0.95rem; vertical-align: middle;">
+          ${formatNumber(dir.pesoTotal)} kg
+        </td>
       </tr>
     `;
+  }).join("");
 
-    if (els.historicTop20Count) {
-      els.historicTop20Count.textContent = "0 registros";
-    }
-
-    if (els.historicTop20Highlight) {
-      els.historicTop20Highlight.textContent = "Classificação pública indisponível.";
-    }
-
-    return;
+  // 3. Atualiza os cabeçalhos e destaques textuais superiores do bloco
+  if (els.historicTop5Count) {
+    els.historicTop5Count.textContent = `${state.dadosDiretorias.length} diretorias disputando`;
   }
-
-  const ranking = [...state.registros]
-    .sort((a, b) => Number(b.somatorio || 0) - Number(a.somatorio || 0))
-    .slice(0, 20)
-    .map((item, index) => ({
-      ...item,
-      posicao: index + 1
-    }));
-
-  els.historicTop20Body.innerHTML = ranking
-    .map(
-      (item) => `
-        <tr>
-          <td>${formatInteger(item.posicao)}</td>
-          <td>${escapeHtml(`ID ${item.n_id}`)}</td>
-          <td>${escapeHtml(item.diretoria || "-")}</td>
-          <td>${formatNumber(item.somatorio || 0)}</td>
-        </tr>
-      `
-    )
-    .join("");
-
-  if (els.historicTop20Count) {
-    els.historicTop20Count.textContent = `${formatInteger(ranking.length)} registros`;
-  }
-
-  if (els.historicTop20Highlight) {
-    const lider = ranking[0];
-    els.historicTop20Highlight.textContent = lider
-      ? `ID ${lider.n_id} ocupa a primeira colocação atual, com ${formatNumber(lider.somatorio)} kg acumulados.`
-      : "Classificação pública indisponível.";
+  
+  if (els.historicTop5Highlight && rankingDiretorias[0]) {
+    els.historicTop5Highlight.innerHTML = `
+      <i class="fa-solid fa-chart-line" style="color: #0284c7; margin-right: 4px;"></i> 
+      <strong>Gincana Interna:</strong> A <strong>DIRETORIA ${escapeHtml(rankingDiretorias[0].diretoria)}</strong> 
+      <span style="color: #64748b;">lidera o engajamento institucional com uma força operacional de</span> 
+      <strong>${rankingDiretorias[0].totalParticipantes} pessoas</strong>!
+      `;
   }
 }
 
-function renderConsultaResultado(participante) {
-  if (!els.consultaResultado) return;
 
-  if (!participante) {
-    els.consultaResultado.innerHTML = `
-      <div class="empty-state">Nenhum participante localizado para o ID informado.</div>
-    `;
-    return;
-  }
-
-  const premiosDisponiveis = getPremiosDisponiveis(participante.somatorio);
-
-  els.consultaResultado.innerHTML = `
-    <div class="result-card">
-      <h3>Consulta do participante · ID ${escapeHtml(participante.n_id)}</h3>
-
-      <div class="result-grid">
-        <div class="result-box">
-          <span>Diretoria</span>
-          <strong>${escapeHtml(participante.diretoria || "-")}</strong>
-        </div>
-
-        <div class="result-box">
-          <span>Total acumulado</span>
-          <strong>${formatNumber(participante.somatorio || 0)} kg</strong>
-        </div>
-
-        <div class="result-box">
-          <span>Status do broche</span>
-          <strong>${escapeHtml(participante.status_broche || "Não informado")}</strong>
-        </div>
-
-        <div class="result-box">
-          <span>Status da mochila</span>
-          <strong>${escapeHtml(participante.status_mochila || "Não informado")}</strong>
-        </div>
-
-        <div class="result-box">
-          <span>Composto retirado</span>
-          <strong>${formatInteger(
-            participante.quantidade_retirada_sacos_de_composto_organico || 0
-          )}</strong>
-        </div>
-
-        <div class="result-box">
-          <span>Prêmios disponíveis</span>
-          <strong>${
-            premiosDisponiveis.length
-              ? escapeHtml(premiosDisponiveis.map((item) => item.nome).join(", "))
-              : "Nenhum no momento"
-          }</strong>
-        </div>
-      </div>
-    </div>
-  `;
-}
 
 function bindConsulta() {
   if (!els.consultaForm) return;
-
-  els.consultaForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
+  els.consultaForm.addEventListener("submit", (e) => {
+    e.preventDefault();
     const id = String(els.consultaId?.value || "").trim();
-    const participante = getParticipanteById(id);
-
-    renderConsultaResultado(participante);
-  });
-}
-
-function renderAll() {
-  renderKpis();
-  renderAwardCatalog();
-  renderCommunicationSection();
-  renderMaterialsSection();
-  renderHistoricTop20();
-}
-
-async function loadData() {
-  if (els.fase2DbStatus) {
-    els.fase2DbStatus.textContent = "Lendo base pública do Recicla CEDAE...";
-  }
-
-  const response = await fetch("./data/recicla-pagina.json", {
-    cache: "no-store"
-  });
-
-  if (!response.ok) {
-    throw new Error("Não foi possível carregar data/recicla-pagina.json");
-  }
-
-  const json = await response.json();
-  const rawRecords = extractRecords(json);
-
-  state.registros = rawRecords.map(normalizeRegistro);
-  state.kpis = extractKpis(json, state.registros);
-
-  renderAll();
-
-  if (els.fase2DbStatus) {
-    els.fase2DbStatus.textContent =
-      `Base pública carregada com ${formatInteger(state.registros.length)} participantes.`;
-  }
-}
-
-async function bootstrap() {
-  try {
-    bindConsulta();
-    await loadData();
-  } catch (error) {
-    console.error(error);
-
-    if (els.fase2DbStatus) {
-      els.fase2DbStatus.textContent = "Erro ao carregar a página pública do Recicla CEDAE.";
+    const part = state.registros.find(r => String(r.n_id) === id);
+    
+    if (!els.consultaResultado) return;
+    if (!part) {
+      els.consultaResultado.innerHTML = `<div style="background: rgba(239, 68, 68, 0.08); border: 1px solid #ef4444; border-radius: 8px; padding: 14px; color: #ef4444; font-size: 0.8rem; text-align: center;"><strong>ID não localizado!</strong> Verifique os dados ou contate a CRS.</div>`;
+      return;
     }
+    
+    els.consultaResultado.innerHTML = `
+      <div style="background: rgba(255,255,255,0.15); border: 1px solid var(--verde-sustentavel); border-radius: 8px; padding: 14px; color: #fff;">
+        <strong style="font-size: 0.95rem; color: var(--verde-sustentavel); display:block; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">ID Homologado: ${escapeHtml(part.n_id)}</strong>
+        <p style="margin: 4px 0; font-size: 0.8rem;"><strong>Lotação:</strong> ${escapeHtml(part.diretoria)}</p>
+        <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.85rem;">Volume Acumulado:</span>
+          <strong style="font-size: 1.2rem; color: var(--verde-sustentavel);">${formatNumber(part.somatorio)} kg</strong>
+        </div>
+      </div>`;
+  });
+}
+
+function prepararDadosOrigemR(dados, sufixoAno) {
+  // Inicializa o acumulador zerado para os 4 materiais da CRS
+  let totaisMaterial = { Papel: 0, Plastico: 0, Metal: 0, Vidro: 0 };
+  let totalAno = 0;
+
+  dados.forEach(r => {
+    const dataCamp = String(r.Data || "");
+    const matCamp = String(r.Material || "Papel");
+    const qtdCamp = Number(r.Quantidade || 0);
+
+    // Filtra pelo sufixo do ano correspondente (ex: "24" ou "25")
+    if (dataCamp.endsWith(sufixoAno)) {
+      if (/papel/i.test(matCamp)) totaisMaterial.Papel += qtdCamp;
+      else if (/plastico|pl[aá]stico/i.test(matCamp)) totaisMaterial.Plastico += qtdCamp;
+      else if (/metal/i.test(matCamp)) totaisMaterial.Metal += qtdCamp;
+      else if (/vidro/i.test(matCamp)) totaisMaterial.Vidro += qtdCamp;
+      
+      totalAno += qtdCamp;
+    }
+  });
+
+  // Lista fixa de materiais ( corrigido para 'categorias' )
+  const categorias = ['Papel', 'Plastico', 'Metal', 'Vidro'];
+  
+  // Calcula as porcentagens com base no total do respectivo ano
+  let porcentagensRelativas = categorias.map(mat => {
+    if (totalAno === 0) return 0;
+    return (totaisMaterial[mat] / totalAno) * 100;
+  });
+
+  // CORRIGIDO: alterado de categories.map para categorias.map
+  let valoresReais = categorias.map(mat => totaisMaterial[mat]);
+
+  return {
+    porcentagensRelativas: porcentagensRelativas, // Tamanho visual do arco (%)
+    valoresReais: valoresReais,                   // Valor real em kg
+    labels: categorias,                           // Apenas os 4 materiais fixos
+    totalAno: totalAno
+  };
+}
+
+function renderCharts() {
+  if (!els.grafico2024 || !els.grafico2025 || !state.dadosReciclados) return;
+  els.grafico2024.innerHTML = ""; els.grafico2025.innerHTML = "";
+
+  const dataset2024 = prepararDadosOrigemR(state.dadosReciclados, "24");
+  const dataset2025 = prepararDadosOrigemR(state.dadosReciclados, "25");
+
+  const obterBlueprintR = (dataset, tituloAno) => {
+    return {
+      chart: { type: 'radialBar', height: 350 },
+      colors: [CORES_GRAFICO.Papel, CORES_GRAFICO.Plastico, CORES_GRAFICO.Metal, CORES_GRAFICO.Vidro],
+      series: dataset.porcentagensRelativas, 
+      labels: dataset.labels, 
+      plotOptions: {
+        radialBar: {
+          // Diminui o buraco central de 50% para 20%, aproximando os arcos do centro
+          hollow: { size: '20%' },
+          track: {
+            background: 'rgba(0, 0, 0, 0.04)',
+            strokeWidth: '100%', // Usa a espessura máxima disponível para cada arco
+            margin: 2            // Reduz a distância de 4px para apenas 2px entre as pistas
+          },
+          dataLabels: {
+            name: { show: true, fontSize: '13px', fontWeight: 700, color: '#0f172a' },
+            value: {
+              fontSize: '12px',
+              color: '#475569',
+              formatter: (val, opts) => {
+                const idx = opts.seriesIndex;
+                const kgMat = dataset.valoresReais[idx] || 0;
+                return `${formatNumber(kgMat)} kg (${formatNumber(val)}%)`;
+              }
+            },
+            total: {
+              show: true,
+              label: `TOTAL ${tituloAno}`,
+              color: '#1d3557',
+              fontSize: '13px',
+              fontWeight: 800,
+              formatter: () => `${formatNumber(dataset.totalAno)} kg`
+            }
+          }
+        }
+      },
+      legend: { show: false }
+    };
+  };
+
+  if (dataset2024.totalAno > 0) {
+    new ApexCharts(els.grafico2024, obterBlueprintR(dataset2024, "2024")).render();
+  } else {
+    els.grafico2024.innerHTML = "<div style='text-align:center; padding:40px; color:#64748b;'>Sem registros em 2024</div>";
+  }
+
+  if (dataset2025.totalAno > 0) {
+    new ApexCharts(els.grafico2025, obterBlueprintR(dataset2025, "2025")).render();
+  } else {
+    els.grafico2025.innerHTML = "<div style='text-align:center; padding:40px; color:#64748b;'>Sem registros em 2025</div>";
+  }
+
+  adicionarCaptionEstilizado();
+}
+function adicionarCaptionEstilizado() {
+  const containerId = "dashboardInsightCaption";
+  let capEl = document.getElementById(containerId);
+  if (!capEl && els.grafico2024) {
+    capEl = document.createElement("div");
+    capEl.id = containerId;
+    capEl.style.cssText = "margin-top: 24px; padding: 16px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; width: 100%; grid-column: span 2;";
+    const gridGraficos = els.grafico2024.parentElement;
+    gridGraficos.appendChild(capEl);
+  }
+  
+  if(capEl) {
+    capEl.innerHTML = `
+      <h5 style="margin: 0 0 4px 0; color: #1d3557; font-size: 0.9rem; font-weight: 700;">📊 EVOLUÇÃO HISTÓRICA DA COLETA SELETIVA</h5>
+      <p style="margin: 0; font-size: 0.75rem; color: #4a4e69; font-style: italic; font-weight: 600;">Análise comparativa da composição de materiais reciclados (Período 2024 - 2025)</p>
+      <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 0.75rem; color: #1d3557; font-weight: 700; line-height: 1.3;">
+        💡 INSIGHT CHAVE: Em 2024, a operação era sustentada quase exclusivamente por Papel. Já em 2025, nota-se um amadurecimento 
+        relevante da diversidade da coleta a partir de agosto, marcado pela entrada massiva de Vidro e Plástico nas métricas.
+      </div>
+    `;
+  }
+}
+function processarRegistrosDoConsolidado(dados) {
+  let agrupadoParticipantes = {};
+  let agrupadoDiretorias = {};
+  
+  dados.forEach(item => {
+    const id = String(item.n_id || item.id || "");
+    if (!id) return;
+
+    // Normaliza a diretoria (ex: "DFI", "DSG")
+    const diretoria = String(item.diretoria || "DMA / CRS").toUpperCase().trim();
+    const quantidade = Number(item.Quantidade || 0);
+    const nome = item["Nome do Participante:"] || item.nome || `Participante ${id}`;
+    
+    // 1. Agrupamento por Participante (Para uso na busca de crachá se necessário)
+    if (!agrupadoParticipantes[id]) {
+      agrupadoParticipantes[id] = { n_id: id, nome: nome, diretoria: diretoria, somatorio: 0 };
+    }
+    agrupadoParticipantes[id].somatorio += quantidade;
+
+    // 2. Agrupamento por Diretoria (Métrica Solicitada)
+    if (!agrupadoDiretorias[diretoria]) {
+      agrupadoDiretorias[diretoria] = {
+        nomeDiretoria: diretoria,
+        pesoTotal: 0,
+        participantesUnicos: new Set() // Armazena IDs únicos para contar o tamanho da equipe
+      };
+    }
+    agrupadoDiretorias[diretoria].pesoTotal += quantidade;
+    agrupadoDiretorias[diretoria].participantesUnicos.add(id);
+  });
+  
+  // Guardamos a lista de diretorias processada no state para o render do ranking usar
+  state.dadosDiretorias = Object.values(agrupadoDiretorias).map(d => ({
+    diretoria: d.nomeDiretoria,
+    pesoTotal: d.pesoTotal,
+    totalParticipantes: d.participantesUnicos.size
+  }));
+
+  return Object.values(agrupadoParticipantes);
+}
+async function loadData() {
+  try {
+    // Executa as duas requisições em paralelo para máxima performance
+    const [resConsolidado, resPesagens] = await Promise.all([
+      fetch("data/dados_reciclados.json"),
+      fetch("data/dados_pesagens.json")
+    ]);
+
+    if (!resConsolidado.ok) throw new Error("Falha ao ler dados_reciclados.json");
+    if (!resPesagens.ok) throw new Error("Falha ao ler pesagens.json");
+
+    // 1. Carrega os dados históricos para os Gráficos Radiais do R
+    const jsonConsolidado = extractRecords(await resConsolidado.json());
+    state.dadosReciclados = jsonConsolidado;
+
+    // 2. Carrega as pesagens individuais para os Rankings e KPIs de engajamento
+    const jsonPesagens = extractRecords(await resPesagens.json());
+    
+    // Processa os participantes e pesos agregados com base no arquivo de pesagens
+    state.registros = processarRegistrosDoConsolidado(jsonPesagens);
+    state.kpis = extractKpis(state.registros, jsonPesagens);
+
+    // Feedback de sucesso na tela
+    if (els.fase2DbStatus) {
+      els.fase2DbStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sincronismo estável (Múltiplas Fontes) · CRS 2026`;
+    }
+    
+    // Dispara as renderizações isoladas por contexto de dados
+    renderKpis(); 
+    renderAwardCatalog(); 
+    renderHistoricTop5(); 
+    renderCharts(); // Renderiza os gráficos usando state.dadosReciclados
+  } catch (err) {
+    if (els.fase2DbStatus) {
+      els.fase2DbStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Erro de Sincronismo: ${err.message}`;
+    }
+    console.error(err);
   }
 }
 
-bootstrap();
+document.addEventListener("DOMContentLoaded", () => { loadData(); bindConsulta(); });

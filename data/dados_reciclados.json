@@ -1,0 +1,666 @@
+[
+  {
+    "data": "2024-01-01",
+    "Data_fpa": "2024-01-01",
+    "Data": "jan/24",
+    "Material": "Papel",
+    "Quantidade": 931.126
+  },
+  {
+    "data": "2024-01-01",
+    "Data_fpa": "2024-01-01",
+    "Data": "jan/24",
+    "Material": "Plastico",
+    "Quantidade": 94.165
+  },
+  {
+    "data": "2024-01-01",
+    "Data_fpa": "2024-01-01",
+    "Data": "jan/24",
+    "Material": "Metal",
+    "Quantidade": 35.36
+  },
+  {
+    "data": "2024-01-01",
+    "Data_fpa": "2024-01-01",
+    "Data": "jan/24",
+    "Material": "Vidro",
+    "Quantidade": 12.52
+  },
+  {
+    "data": "2024-02-01",
+    "Data_fpa": "2024-02-01",
+    "Data": "fev/24",
+    "Material": "Papel",
+    "Quantidade": 700.988
+  },
+  {
+    "data": "2024-02-01",
+    "Data_fpa": "2024-02-01",
+    "Data": "fev/24",
+    "Material": "Plastico",
+    "Quantidade": 76.125
+  },
+  {
+    "data": "2024-02-01",
+    "Data_fpa": "2024-02-01",
+    "Data": "fev/24",
+    "Material": "Metal",
+    "Quantidade": 32.775
+  },
+  {
+    "data": "2024-02-01",
+    "Data_fpa": "2024-02-01",
+    "Data": "fev/24",
+    "Material": "Vidro",
+    "Quantidade": 0
+  },
+  {
+    "data": "2024-03-01",
+    "Data_fpa": "2024-03-01",
+    "Data": "mar/24",
+    "Material": "Papel",
+    "Quantidade": 367.669
+  },
+  {
+    "data": "2024-03-01",
+    "Data_fpa": "2024-03-01",
+    "Data": "mar/24",
+    "Material": "Plastico",
+    "Quantidade": 48.459
+  },
+  {
+    "data": "2024-03-01",
+    "Data_fpa": "2024-03-01",
+    "Data": "mar/24",
+    "Material": "Metal",
+    "Quantidade": 5.225
+  },
+  {
+    "data": "2024-03-01",
+    "Data_fpa": "2024-03-01",
+    "Data": "mar/24",
+    "Material": "Vidro",
+    "Quantidade": 0
+  },
+  {
+    "data": "2024-04-01",
+    "Data_fpa": "2024-04-01",
+    "Data": "abr/24",
+    "Material": "Papel",
+    "Quantidade": 383.597
+  },
+  {
+    "data": "2024-04-01",
+    "Data_fpa": "2024-04-01",
+    "Data": "abr/24",
+    "Material": "Plastico",
+    "Quantidade": 31.075
+  },
+  {
+    "data": "2024-04-01",
+    "Data_fpa": "2024-04-01",
+    "Data": "abr/24",
+    "Material": "Metal",
+    "Quantidade": 1.64
+  },
+  {
+    "data": "2024-04-01",
+    "Data_fpa": "2024-04-01",
+    "Data": "abr/24",
+    "Material": "Vidro",
+    "Quantidade": 0
+  },
+  {
+    "data": "2024-05-01",
+    "Data_fpa": "2024-05-01",
+    "Data": "mai/24",
+    "Material": "Papel",
+    "Quantidade": 871.071
+  },
+  {
+    "data": "2024-05-01",
+    "Data_fpa": "2024-05-01",
+    "Data": "mai/24",
+    "Material": "Plastico",
+    "Quantidade": 95.81
+  },
+  {
+    "data": "2024-05-01",
+    "Data_fpa": "2024-05-01",
+    "Data": "mai/24",
+    "Material": "Metal",
+    "Quantidade": 11.435
+  },
+  {
+    "data": "2024-05-01",
+    "Data_fpa": "2024-05-01",
+    "Data": "mai/24",
+    "Material": "Vidro",
+    "Quantidade": 51.39
+  },
+  {
+    "data": "2024-06-01",
+    "Data_fpa": "2024-06-01",
+    "Data": "jun/24",
+    "Material": "Papel",
+    "Quantidade": 788.271
+  },
+  {
+    "data": "2024-06-01",
+    "Data_fpa": "2024-06-01",
+    "Data": "jun/24",
+    "Material": "Plastico",
+    "Quantidade": 61.457
+  },
+  {
+    "data": "2024-06-01",
+    "Data_fpa": "2024-06-01",
+    "Data": "jun/24",
+    "Material": "Metal",
+    "Quantidade": 0
+  },
+  {
+    "data": "2024-06-01",
+    "Data_fpa": "2024-06-01",
+    "Data": "jun/24",
+    "Material": "Vidro",
+    "Quantidade": 0
+  },
+  {
+    "data": "2024-07-01",
+    "Data_fpa": "2024-07-01",
+    "Data": "jul/24",
+    "Material": "Papel",
+    "Quantidade": 880.736
+  },
+  {
+    "data": "2024-07-01",
+    "Data_fpa": "2024-07-01",
+    "Data": "jul/24",
+    "Material": "Plastico",
+    "Quantidade": 104.905
+  },
+  {
+    "data": "2024-07-01",
+    "Data_fpa": "2024-07-01",
+    "Data": "jul/24",
+    "Material": "Metal",
+    "Quantidade": 19.98
+  },
+  {
+    "data": "2024-07-01",
+    "Data_fpa": "2024-07-01",
+    "Data": "jul/24",
+    "Material": "Vidro",
+    "Quantidade": 84.625
+  },
+  {
+    "data": "2024-08-01",
+    "Data_fpa": "2024-08-01",
+    "Data": "ago/24",
+    "Material": "Papel",
+    "Quantidade": 503.388
+  },
+  {
+    "data": "2024-08-01",
+    "Data_fpa": "2024-08-01",
+    "Data": "ago/24",
+    "Material": "Plastico",
+    "Quantidade": 50.94
+  },
+  {
+    "data": "2024-08-01",
+    "Data_fpa": "2024-08-01",
+    "Data": "ago/24",
+    "Material": "Metal",
+    "Quantidade": 4.905
+  },
+  {
+    "data": "2024-08-01",
+    "Data_fpa": "2024-08-01",
+    "Data": "ago/24",
+    "Material": "Vidro",
+    "Quantidade": 8.9
+  },
+  {
+    "data": "2024-09-01",
+    "Data_fpa": "2024-09-01",
+    "Data": "set/24",
+    "Material": "Papel",
+    "Quantidade": 618.69
+  },
+  {
+    "data": "2024-09-01",
+    "Data_fpa": "2024-09-01",
+    "Data": "set/24",
+    "Material": "Plastico",
+    "Quantidade": 186.4
+  },
+  {
+    "data": "2024-09-01",
+    "Data_fpa": "2024-09-01",
+    "Data": "set/24",
+    "Material": "Metal",
+    "Quantidade": 17.3
+  },
+  {
+    "data": "2024-09-01",
+    "Data_fpa": "2024-09-01",
+    "Data": "set/24",
+    "Material": "Vidro",
+    "Quantidade": 17.8
+  },
+  {
+    "data": "2024-10-01",
+    "Data_fpa": "2024-10-01",
+    "Data": "out/24",
+    "Material": "Papel",
+    "Quantidade": 525.3
+  },
+  {
+    "data": "2024-10-01",
+    "Data_fpa": "2024-10-01",
+    "Data": "out/24",
+    "Material": "Plastico",
+    "Quantidade": 166
+  },
+  {
+    "data": "2024-10-01",
+    "Data_fpa": "2024-10-01",
+    "Data": "out/24",
+    "Material": "Metal",
+    "Quantidade": 9.2
+  },
+  {
+    "data": "2024-10-01",
+    "Data_fpa": "2024-10-01",
+    "Data": "out/24",
+    "Material": "Vidro",
+    "Quantidade": 4.5
+  },
+  {
+    "data": "2024-11-01",
+    "Data_fpa": "2024-11-01",
+    "Data": "nov/24",
+    "Material": "Papel",
+    "Quantidade": 415.5
+  },
+  {
+    "data": "2024-11-01",
+    "Data_fpa": "2024-11-01",
+    "Data": "nov/24",
+    "Material": "Plastico",
+    "Quantidade": 138.2
+  },
+  {
+    "data": "2024-11-01",
+    "Data_fpa": "2024-11-01",
+    "Data": "nov/24",
+    "Material": "Metal",
+    "Quantidade": 2.1
+  },
+  {
+    "data": "2024-11-01",
+    "Data_fpa": "2024-11-01",
+    "Data": "nov/24",
+    "Material": "Vidro",
+    "Quantidade": 9.1
+  },
+  {
+    "data": "2024-12-01",
+    "Data_fpa": "2024-12-01",
+    "Data": "dez/24",
+    "Material": "Papel",
+    "Quantidade": 276.81
+  },
+  {
+    "data": "2024-12-01",
+    "Data_fpa": "2024-12-01",
+    "Data": "dez/24",
+    "Material": "Plastico",
+    "Quantidade": 82.38
+  },
+  {
+    "data": "2024-12-01",
+    "Data_fpa": "2024-12-01",
+    "Data": "dez/24",
+    "Material": "Metal",
+    "Quantidade": 6.2
+  },
+  {
+    "data": "2024-12-01",
+    "Data_fpa": "2024-12-01",
+    "Data": "dez/24",
+    "Material": "Vidro",
+    "Quantidade": 32.4
+  },
+  {
+    "data": "2025-01-01",
+    "Data_fpa": "2025-01-01",
+    "Data": "jan/25",
+    "Material": "Papel",
+    "Quantidade": 594.3
+  },
+  {
+    "data": "2025-01-01",
+    "Data_fpa": "2025-01-01",
+    "Data": "jan/25",
+    "Material": "Plastico",
+    "Quantidade": 64.3
+  },
+  {
+    "data": "2025-01-01",
+    "Data_fpa": "2025-01-01",
+    "Data": "jan/25",
+    "Material": "Metal",
+    "Quantidade": 27
+  },
+  {
+    "data": "2025-01-01",
+    "Data_fpa": "2025-01-01",
+    "Data": "jan/25",
+    "Material": "Vidro",
+    "Quantidade": 9.2
+  },
+  {
+    "data": "2025-02-01",
+    "Data_fpa": "2025-02-01",
+    "Data": "fev/25",
+    "Material": "Papel",
+    "Quantidade": 3357.86
+  },
+  {
+    "data": "2025-02-01",
+    "Data_fpa": "2025-02-01",
+    "Data": "fev/25",
+    "Material": "Plastico",
+    "Quantidade": 194.7
+  },
+  {
+    "data": "2025-02-01",
+    "Data_fpa": "2025-02-01",
+    "Data": "fev/25",
+    "Material": "Metal",
+    "Quantidade": 2.9
+  },
+  {
+    "data": "2025-02-01",
+    "Data_fpa": "2025-02-01",
+    "Data": "fev/25",
+    "Material": "Vidro",
+    "Quantidade": 0
+  },
+  {
+    "data": "2025-03-01",
+    "Data_fpa": "2025-03-01",
+    "Data": "mar/25",
+    "Material": "Papel",
+    "Quantidade": 230.9
+  },
+  {
+    "data": "2025-03-01",
+    "Data_fpa": "2025-03-01",
+    "Data": "mar/25",
+    "Material": "Plastico",
+    "Quantidade": 82.15
+  },
+  {
+    "data": "2025-03-01",
+    "Data_fpa": "2025-03-01",
+    "Data": "mar/25",
+    "Material": "Metal",
+    "Quantidade": 4.6
+  },
+  {
+    "data": "2025-03-01",
+    "Data_fpa": "2025-03-01",
+    "Data": "mar/25",
+    "Material": "Vidro",
+    "Quantidade": 10.15
+  },
+  {
+    "data": "2025-04-01",
+    "Data_fpa": "2025-04-01",
+    "Data": "abr/25",
+    "Material": "Papel",
+    "Quantidade": 442.2
+  },
+  {
+    "data": "2025-04-01",
+    "Data_fpa": "2025-04-01",
+    "Data": "abr/25",
+    "Material": "Plastico",
+    "Quantidade": 79.25
+  },
+  {
+    "data": "2025-04-01",
+    "Data_fpa": "2025-04-01",
+    "Data": "abr/25",
+    "Material": "Metal",
+    "Quantidade": 8.3
+  },
+  {
+    "data": "2025-04-01",
+    "Data_fpa": "2025-04-01",
+    "Data": "abr/25",
+    "Material": "Vidro",
+    "Quantidade": 71.1
+  },
+  {
+    "data": "2025-05-01",
+    "Data_fpa": "2025-05-01",
+    "Data": "mai/25",
+    "Material": "Papel",
+    "Quantidade": 422.8
+  },
+  {
+    "data": "2025-05-01",
+    "Data_fpa": "2025-05-01",
+    "Data": "mai/25",
+    "Material": "Plastico",
+    "Quantidade": 73.5
+  },
+  {
+    "data": "2025-05-01",
+    "Data_fpa": "2025-05-01",
+    "Data": "mai/25",
+    "Material": "Metal",
+    "Quantidade": 0
+  },
+  {
+    "data": "2025-05-01",
+    "Data_fpa": "2025-05-01",
+    "Data": "mai/25",
+    "Material": "Vidro",
+    "Quantidade": 0
+  },
+  {
+    "data": "2025-06-01",
+    "Data_fpa": "2025-06-01",
+    "Data": "jun/25",
+    "Material": "Papel",
+    "Quantidade": 442.3
+  },
+  {
+    "data": "2025-06-01",
+    "Data_fpa": "2025-06-01",
+    "Data": "jun/25",
+    "Material": "Plastico",
+    "Quantidade": 112
+  },
+  {
+    "data": "2025-06-01",
+    "Data_fpa": "2025-06-01",
+    "Data": "jun/25",
+    "Material": "Metal",
+    "Quantidade": 20.2
+  },
+  {
+    "data": "2025-06-01",
+    "Data_fpa": "2025-06-01",
+    "Data": "jun/25",
+    "Material": "Vidro",
+    "Quantidade": 194.8
+  },
+  {
+    "data": "2025-07-01",
+    "Data_fpa": "2025-07-01",
+    "Data": "jul/25",
+    "Material": "Papel",
+    "Quantidade": 845.2
+  },
+  {
+    "data": "2025-07-01",
+    "Data_fpa": "2025-07-01",
+    "Data": "jul/25",
+    "Material": "Plastico",
+    "Quantidade": 177.36
+  },
+  {
+    "data": "2025-07-01",
+    "Data_fpa": "2025-07-01",
+    "Data": "jul/25",
+    "Material": "Metal",
+    "Quantidade": 22
+  },
+  {
+    "data": "2025-07-01",
+    "Data_fpa": "2025-07-01",
+    "Data": "jul/25",
+    "Material": "Vidro",
+    "Quantidade": 659.8
+  },
+  {
+    "data": "2025-08-01",
+    "Data_fpa": "2025-08-01",
+    "Data": "ago/25",
+    "Material": "Papel",
+    "Quantidade": 1149.9
+  },
+  {
+    "data": "2025-08-01",
+    "Data_fpa": "2025-08-01",
+    "Data": "ago/25",
+    "Material": "Plastico",
+    "Quantidade": 234.05
+  },
+  {
+    "data": "2025-08-01",
+    "Data_fpa": "2025-08-01",
+    "Data": "ago/25",
+    "Material": "Metal",
+    "Quantidade": 44.3
+  },
+  {
+    "data": "2025-08-01",
+    "Data_fpa": "2025-08-01",
+    "Data": "ago/25",
+    "Material": "Vidro",
+    "Quantidade": 1000.1
+  },
+  {
+    "data": "2025-09-01",
+    "Data_fpa": "2025-09-01",
+    "Data": "set/25",
+    "Material": "Papel",
+    "Quantidade": 1025.9
+  },
+  {
+    "data": "2025-09-01",
+    "Data_fpa": "2025-09-01",
+    "Data": "set/25",
+    "Material": "Plastico",
+    "Quantidade": 251.1
+  },
+  {
+    "data": "2025-09-01",
+    "Data_fpa": "2025-09-01",
+    "Data": "set/25",
+    "Material": "Metal",
+    "Quantidade": 129
+  },
+  {
+    "data": "2025-09-01",
+    "Data_fpa": "2025-09-01",
+    "Data": "set/25",
+    "Material": "Vidro",
+    "Quantidade": 1312.1
+  },
+  {
+    "data": "2025-10-01",
+    "Data_fpa": "2025-10-01",
+    "Data": "out/25",
+    "Material": "Papel",
+    "Quantidade": 137.6
+  },
+  {
+    "data": "2025-10-01",
+    "Data_fpa": "2025-10-01",
+    "Data": "out/25",
+    "Material": "Plastico",
+    "Quantidade": 73.7
+  },
+  {
+    "data": "2025-10-01",
+    "Data_fpa": "2025-10-01",
+    "Data": "out/25",
+    "Material": "Metal",
+    "Quantidade": 7.2
+  },
+  {
+    "data": "2025-10-01",
+    "Data_fpa": "2025-10-01",
+    "Data": "out/25",
+    "Material": "Vidro",
+    "Quantidade": 480.6
+  },
+  {
+    "data": "2025-11-01",
+    "Data_fpa": "2025-11-01",
+    "Data": "nov/25",
+    "Material": "Papel"
+  },
+  {
+    "data": "2025-11-01",
+    "Data_fpa": "2025-11-01",
+    "Data": "nov/25",
+    "Material": "Plastico"
+  },
+  {
+    "data": "2025-11-01",
+    "Data_fpa": "2025-11-01",
+    "Data": "nov/25",
+    "Material": "Metal"
+  },
+  {
+    "data": "2025-11-01",
+    "Data_fpa": "2025-11-01",
+    "Data": "nov/25",
+    "Material": "Vidro"
+  },
+  {
+    "data": "2025-12-01",
+    "Data_fpa": "2025-12-01",
+    "Data": "dez/25",
+    "Material": "Papel"
+  },
+  {
+    "data": "2025-12-01",
+    "Data_fpa": "2025-12-01",
+    "Data": "dez/25",
+    "Material": "Plastico"
+  },
+  {
+    "data": "2025-12-01",
+    "Data_fpa": "2025-12-01",
+    "Data": "dez/25",
+    "Material": "Metal"
+  },
+  {
+    "data": "2025-12-01",
+    "Data_fpa": "2025-12-01",
+    "Data": "dez/25",
+    "Material": "Vidro"
+  }
+]

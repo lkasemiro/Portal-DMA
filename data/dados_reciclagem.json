@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "titulo": "Análise de Resíduos Sólidos e Reciclagem (2024 - 2025)",
+    "unidade": "kg",
+    "fonte": "Dados internos de gestão de resíduos",
+    "observacao_2025": "Total 2025 considera os meses preenchidos na planilha (jan a out)."
+  },
+  "dados_macro": [
+    {
+      "Ano": "2024",
+      "Tipo": "Rejeito",
+      "Total": 10582.07,
+      "Pct": 0.4661
+    },
+    {
+      "Ano": "2024",
+      "Tipo": "Organico",
+      "Total": 3354.92,
+      "Pct": 0.1478
+    },
+    {
+      "Ano": "2024",
+      "Tipo": "Reciclavel",
+      "Total": 8766.42,
+      "Pct": 0.3861
+    },
+    {
+      "Ano": "2025",
+      "Tipo": "Rejeito",
+      "Total": 26948.13,
+      "Pct": 0.5954
+    },
+    {
+      "Ano": "2025",
+      "Tipo": "Organico",
+      "Total": 4316.09,
+      "Pct": 0.0954
+    },
+    {
+      "Ano": "2025",
+      "Tipo": "Reciclavel",
+      "Total": 13994.42,
+      "Pct": 0.3092
+    }
+  ],
+  "dados_sub": [
+    {
+      "Ano": "2024",
+      "Tipo": "Papel",
+      "Total": 7263.15,
+      "Pct": 0.8285
+    },
+    {
+      "Ano": "2024",
+      "Tipo": "Plastico",
+      "Total": 1135.92,
+      "Pct": 0.1296
+    },
+    {
+      "Ano": "2024",
+      "Tipo": "Metal",
+      "Total": 146.12,
+      "Pct": 0.0167
+    },
+    {
+      "Ano": "2024",
+      "Tipo": "Vidro",
+      "Total": 221.24,
+      "Pct": 0.0252
+    },
+    {
+      "Ano": "2025",
+      "Tipo": "Papel",
+      "Total": 8648.96,
+      "Pct": 0.618
+    },
+    {
+      "Ano": "2025",
+      "Tipo": "Plastico",
+      "Total": 1342.11,
+      "Pct": 0.0959
+    },
+    {
+      "Ano": "2025",
+      "Tipo": "Metal",
+      "Total": 265.5,
+      "Pct": 0.019
+    },
+    {
+      "Ano": "2025",
+      "Tipo": "Vidro",
+      "Total": 3737.85,
+      "Pct": 0.2671
+    }
+  ]
+}

@@ -1,20 +1,14 @@
 // postController.js - Controladores para gerenciamento de posts no Portal DMA
-import { pool }
-from "../config/db.js";
+import { pool } from "../infra/db.js";
 
-
-import { uploadArquivo }
-from "../services/uploadService.js";
-
+// Correção: Adicionada a extensão .js obrigatória para o ES Modules do Node
+import { uploadArquivo } from "../services/uploadService.js";
 
 /* =========================================================
    CRIAR POST
 ========================================================= */
-
 export async function criarPost(req, res) {
-
   try {
-
     const {
       titulo,
       resumo,
@@ -31,11 +25,11 @@ export async function criarPost(req, res) {
       data_evento
     } = req.body;
 
-    const arquivo_url =
-      req.file
-         ? await uploadArquivo(req.file)
-         : null;
+    const arquivo_url = req.file
+      ? await uploadArquivo(req.file)
+      : null;
 
+    // Correção: Alinhados os 14 campos da tabela aos 14 marcadores de valores ($1 até $14)
     const result = await pool.query(
       `
       INSERT INTO portal.posts (
@@ -54,13 +48,11 @@ export async function criarPost(req, res) {
         data_evento,
         arquivo_url
       )
-
       VALUES (
-        $1,$2,$3,$4,$5,
-        $6,$7,$8,$9,$10,
-        $11,$12,$13,$14
+        $1, $2, $3, $4, $5,
+        $6, $7, $8, $9, $10,
+        $11, $12, $13, $14
       )
-
       RETURNING *
       `,
       [
@@ -74,46 +66,32 @@ export async function criarPost(req, res) {
         setor,
         status || "rascunho",
         link_externo,
-        destaque === "true",
-        fixado === "true",
+        destaque === "true" || destaque === true,
+        fixado === "true" || fixado === true,
         data_evento || null,
         arquivo_url
       ]
     );
-
 
     res.status(201).json({
       ok: true,
       post: result.rows[0]
     });
 
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.error(error);
-
     res.status(500).json({
       ok: false,
       error: "Erro ao criar postagem"
     });
-
   }
-
 }
-
 
 /* =========================================================
    LISTAR POSTS PUBLICADOS
 ========================================================= */
-
-export async function listarPostsPublicados(
-  req,
-  res
-) {
-
+export async function listarPostsPublicados(req, res) {
   try {
-
     const result = await pool.query(`
       SELECT *
       FROM portal.posts
@@ -128,33 +106,20 @@ export async function listarPostsPublicados(
       posts: result.rows
     });
 
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.error(error);
-
     res.status(500).json({
       ok: false,
       error: "Erro ao buscar posts"
     });
-
   }
-
 }
-
 
 /* =========================================================
    BUSCAR POST POR ID
 ========================================================= */
-
-export async function buscarPostPorId(
-  req,
-  res
-) {
-
+export async function buscarPostPorId(req, res) {
   try {
-
     const { id } = req.params;
 
     const result = await pool.query(
@@ -167,12 +132,10 @@ export async function buscarPostPorId(
     );
 
     if (result.rows.length === 0) {
-
       return res.status(404).json({
         ok: false,
         error: "Post não encontrado"
       });
-
     }
 
     res.json({
@@ -180,42 +143,27 @@ export async function buscarPostPorId(
       post: result.rows[0]
     });
 
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.error(error);
-
     res.status(500).json({
       ok: false,
       error: "Erro ao buscar post"
     });
-
   }
-
 }
-
 
 /* =========================================================
    ATUALIZAR POST
 ========================================================= */
-
-export async function atualizarPost(
-  req,
-  res
-) {
-
+export async function atualizarPost(req, res) {
   try {
-
     const { id } = req.params;
-
     const {
       titulo,
       resumo,
       conteudo,
       status
     } = req.body;
-
 
     const result = await pool.query(
       `
@@ -237,66 +185,61 @@ export async function atualizarPost(
       ]
     );
 
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Post não encontrado para atualização"
+      });
+    }
+
     res.json({
       ok: true,
       post: result.rows[0]
     });
 
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.error(error);
-
     res.status(500).json({
       ok: false,
       error: "Erro ao atualizar post"
     });
-
   }
-
 }
-
 
 /* =========================================================
    DELETAR POST
 ========================================================= */
-
-export async function deletarPost(
-  req,
-  res
-) {
-
+export async function deletarPost(req, res) {
   try {
-
     const { id } = req.params;
 
-    await pool.query(
+    const result = await pool.query(
       `
       DELETE
       FROM portal.posts
       WHERE id = $1
+      RETURNING id
       `,
       [id]
     );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Post não encontrado para exclusão"
+      });
+    }
 
     res.json({
       ok: true,
       message: "Post deletado"
     });
 
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.error(error);
-
     res.status(500).json({
       ok: false,
       error: "Erro ao deletar post"
     });
-
   }
-
 }
-

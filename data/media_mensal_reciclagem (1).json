@@ -1,0 +1,301 @@
+{
+  "metadata": {
+    "titulo": "Geração Média Mensal por Categoria (2024 - 2025)",
+    "unidade": "kg",
+    "fonte": "Dados internos de gestão de resíduos",
+    "metodologia": "Média calculada apenas sobre os meses com dado preenchido em cada ano (média real, não estimada por total/12).",
+    "meses_label": [
+      "Jan",
+      "Fev",
+      "Mar",
+      "Abr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Set",
+      "Out",
+      "Nov",
+      "Dez"
+    ],
+    "observacao_2025": "2025 considera somente os meses preenchidos na planilha (jan a out)."
+  },
+  "media_macro": {
+    "2024": [
+      {
+        "Tipo": "Rejeito",
+        "valoresMensais": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          2739.0,
+          3058.45,
+          2496.37,
+          2288.25
+        ],
+        "mesesPreenchidos": 4,
+        "mediaMensal": 2645.52
+      },
+      {
+        "Tipo": "Organico",
+        "valoresMensais": [
+          286.64,
+          233.6,
+          270.22,
+          255.1,
+          295.86,
+          334.22,
+          386.59,
+          298.39,
+          377.3,
+          245.8,
+          195.8,
+          175.4
+        ],
+        "mesesPreenchidos": 12,
+        "mediaMensal": 279.58
+      },
+      {
+        "Tipo": "Reciclavel",
+        "valoresMensais": [
+          1073.17,
+          809.89,
+          421.35,
+          416.31,
+          1029.71,
+          849.73,
+          1090.25,
+          568.13,
+          840.19,
+          705,
+          564.9,
+          397.79
+        ],
+        "mesesPreenchidos": 12,
+        "mediaMensal": 730.53
+      }
+    ],
+    "2025": [
+      {
+        "Tipo": "Rejeito",
+        "valoresMensais": [
+          3034.19,
+          3311.76,
+          2556.54,
+          2465.0,
+          3204.75,
+          2885.18,
+          2845.55,
+          2703.7,
+          3044.16,
+          897.3,
+          null,
+          null
+        ],
+        "mesesPreenchidos": 10,
+        "mediaMensal": 2694.81
+      },
+      {
+        "Tipo": "Organico",
+        "valoresMensais": [
+          223,
+          187.5,
+          156.9,
+          277.36,
+          349,
+          458.83,
+          645.2,
+          795.2,
+          978.1,
+          245,
+          null,
+          null
+        ],
+        "mesesPreenchidos": 10,
+        "mediaMensal": 431.61
+      },
+      {
+        "Tipo": "Reciclavel",
+        "valoresMensais": [
+          694.8,
+          3555.46,
+          327.8,
+          600.85,
+          496.3,
+          769.3,
+          1704.36,
+          2428.35,
+          2718.1,
+          699.1,
+          null,
+          null
+        ],
+        "mesesPreenchidos": 10,
+        "mediaMensal": 1399.44
+      }
+    ]
+  },
+  "media_sub": {
+    "2024": [
+      {
+        "Tipo": "Papel",
+        "valoresMensais": [
+          931.13,
+          700.99,
+          367.67,
+          383.6,
+          871.07,
+          788.27,
+          880.74,
+          503.39,
+          618.69,
+          525.3,
+          415.5,
+          276.81
+        ],
+        "mesesPreenchidos": 12,
+        "mediaMensal": 605.26
+      },
+      {
+        "Tipo": "Plastico",
+        "valoresMensais": [
+          94.17,
+          76.12,
+          48.46,
+          31.07,
+          95.81,
+          61.46,
+          104.91,
+          50.94,
+          186.4,
+          166,
+          138.2,
+          82.38
+        ],
+        "mesesPreenchidos": 12,
+        "mediaMensal": 94.66
+      },
+      {
+        "Tipo": "Metal",
+        "valoresMensais": [
+          35.36,
+          32.77,
+          5.22,
+          1.64,
+          11.44,
+          0,
+          19.98,
+          4.91,
+          17.3,
+          9.2,
+          2.1,
+          6.2
+        ],
+        "mesesPreenchidos": 12,
+        "mediaMensal": 12.18
+      },
+      {
+        "Tipo": "Vidro",
+        "valoresMensais": [
+          12.52,
+          0,
+          0,
+          0,
+          51.39,
+          0,
+          84.62,
+          8.9,
+          17.8,
+          4.5,
+          9.1,
+          32.4
+        ],
+        "mesesPreenchidos": 12,
+        "mediaMensal": 18.44
+      }
+    ],
+    "2025": [
+      {
+        "Tipo": "Papel",
+        "valoresMensais": [
+          594.3,
+          3357.86,
+          230.9,
+          442.2,
+          422.8,
+          442.3,
+          845.2,
+          1149.9,
+          1025.9,
+          137.6,
+          null,
+          null
+        ],
+        "mesesPreenchidos": 10,
+        "mediaMensal": 864.9
+      },
+      {
+        "Tipo": "Plastico",
+        "valoresMensais": [
+          64.3,
+          194.7,
+          82.15,
+          79.25,
+          73.5,
+          112,
+          177.36,
+          234.05,
+          251.1,
+          73.7,
+          null,
+          null
+        ],
+        "mesesPreenchidos": 10,
+        "mediaMensal": 134.21
+      },
+      {
+        "Tipo": "Metal",
+        "valoresMensais": [
+          27,
+          2.9,
+          4.6,
+          8.3,
+          0,
+          20.2,
+          22,
+          44.3,
+          129,
+          7.2,
+          null,
+          null
+        ],
+        "mesesPreenchidos": 10,
+        "mediaMensal": 26.55
+      },
+      {
+        "Tipo": "Vidro",
+        "valoresMensais": [
+          9.2,
+          0,
+          10.15,
+          71.1,
+          0,
+          194.8,
+          659.8,
+          1000.1,
+          1312.1,
+          480.6,
+          null,
+          null
+        ],
+        "mesesPreenchidos": 10,
+        "mediaMensal": 373.78
+      }
+    ]
+  }
+}

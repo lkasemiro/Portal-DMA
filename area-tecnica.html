@@ -8,90 +8,105 @@
   <style>
     :root {
       --sidebar-width: 260px;
-      --kpi-column-width: 280px;
       --primary-blue: #0b3d91;
       --dark-blue: #001d3d;
       --accent-green: #22c55e;
       --warning-orange: #f59e0b;
       --danger-red: #ef4444;
-      --bg-gray: #f4f7fa;
+      --bg-gray: #f0f4f8; /* Tom cinza gelo estilo BI */
       --white: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-gray); display: flex; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-gray); display: flex; color: var(--text-main); }
+
+    /* --- LOADING SCREEN --- */
+    #loading-screen {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: var(--dark-blue); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 99999;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .spinner {
+      width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%; border-top-color: var(--accent-green); animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* --- SIDEBAR ORIGINAL --- */
     .sidebar { width: var(--sidebar-width); background: var(--dark-blue); color: white; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
     .sidebar__header { padding: 25px 20px; background: rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; }
-    .logo-dma-estilizado { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; letter-spacing: -1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); }
+    .logo-dma-estilizado { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); }
     .brand-name { display: flex; flex-direction: column; }
-    .brand-name b { font-size: 1.1rem; letter-spacing: 1px; color: white; }
+    .brand-name b { font-size: 1.1rem; color: white; }
     .brand-name span { font-size: 0.65rem; color: var(--accent-green); text-transform: uppercase; font-weight: bold; }
-    .sidebar__nav { flex: 1; padding: 20px 0; }
+    .sidebar__nav { flex: 1; padding: 20px 0; display: flex; flex-direction: column; }
     .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
     .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); border-left: 4px solid var(--accent-green); }
 
-    /* --- ESTRUTURA DE COLUNAS --- */
-    .main-wrapper {
-        margin-left: var(--sidebar-width);
-        display: flex;
-        width: calc(100% - var(--sidebar-width));
-        padding: 35px;
-        gap: 25px;
-        align-items: flex-start;
-    }
+    /* --- CONTAINER PRINCIPAL --- */
+    .main-container { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 30px; display: flex; flex-direction: column; gap: 25px; }
 
-    .center-column { flex: 1; display: flex; flex-direction: column; gap: 25px; }
-    
-    .kpi-column {
-        width: var(--kpi-column-width);
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        position: sticky;
-        top: 35px;
-    }
+    /* --- HEADER & LIVE MONITOR --- */
+    .hub-header { display: flex; justify-content: space-between; align-items: center; background: var(--white); padding: 20px 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .live-db-status { display: flex; align-items: center; gap: 15px; background: #f8fafc; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.85rem; }
+    .pulse-dot { width: 10px; height: 10px; background-color: var(--accent-green); border-radius: 50%; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
 
-    /* --- COMPONENTES --- */
-    .content-header { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-    
-    .kpi-card:hover { transform: translateX(-5px); }
-    
+    /* --- LAYOUT EM DUAS COLUNAS --- */
+    .hub-content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+    .blocks-column { display: flex; flex-direction: column; gap: 20px; }
 
-    .card { background: white; border-radius: 12px; border: 1px solid #eef2f6; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-    .card-header { padding: 20px; background: #fcfdfe; border-bottom: 1px solid #f1f5f9; font-weight: bold; color: var(--dark-blue); display: flex; align-items: center; gap: 10px; }
+    /* --- CARDS DOS BLOCOS/PROGRAMAS --- */
+    .program-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); display: flex; flex-direction: column; }
+    .program-card-header { padding: 18px 22px; background: #fdfefe; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .program-title { display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--dark-blue); font-size: 1.1rem; }
+    .program-body { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
     
+    /* Mini KPIs dentro do Bloco */
+    .program-mini-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .mini-kpi { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #edf2f7; text-align: center; }
+    .mini-kpi span { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+    .mini-kpi font { display: block; font-size: 1.3rem; font-weight: 800; color: var(--dark-blue); margin-top: 4px; }
+
+    /* Ações do Bloco */
+    .program-actions { display: flex; gap: 12px; }
+    .btn-action { flex: 1; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; border: 1px solid transparent; }
+    .btn-audit { background: var(--primary-blue); color: var(--white); }
+    .btn-audit:hover { background: #072a66; }
+    .btn-export { background: var(--white); border-color: #cbd5e1; color: var(--text-main); }
+    .btn-export:hover { background: #f8fafc; border-color: #94a3b8; }
+
+    /* --- COLUNA LATERAL: INTERAÇÕES & LOGS --- */
+    .interactions-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; gap: 15px; height: fit-content; }
+    .interactions-header { font-weight: 700; color: var(--dark-blue); font-size: 1rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+    .log-list { display: flex; flex-direction: column; gap: 12px; list-style: none; }
+    .log-item { font-size: 0.8rem; padding: 10px; border-radius: 6px; background: #f8fafc; border-left: 3px solid #cbd5e1; display: flex; flex-direction: column; gap: 2px; }
+    .log-item.success { border-left-color: var(--accent-green); }
+    .log-item.info { border-left-color: #3b82f6; }
+    .log-time { color: var(--text-muted); font-size: 0.7rem; font-weight: 600; }
+
+    /* --- CONTAINER DA AUDITORIA TRADICIONAL (ESCONDIDO POR PADRÃO) --- */
+    #section-auditoria-detalhada { display: none; flex-direction: column; gap: 20px; }
+    .btn-back-hub { width: fit-content; padding: 8px 14px; background: white; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; font-size: 0.85rem; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .btn-back-hub:hover { background: #f8fafc; }
+    
+    /* Reaproveitamento de tabela */
+    .card-table { background: white; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
     table { width: 100%; border-collapse: collapse; }
-    th { background: #f8fafc; padding: 15px; text-align: left; color: #64748b; font-size: 0.8rem; text-transform: uppercase; }
-    td { padding: 15px; border-bottom: 1px solid #f8fafc; font-size: 0.9rem; }
-
-    .kpi-card {
-  background: white;
-  border: 1px solid #e8ecf0;
-  border-radius: 10px;
-  padding: 20px 14px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  text-align: center;
-}
-.kpi-card h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0;
-}
-.kpi-card span {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
+    th { background: #f8fafc; padding: 15px; text-align: left; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
+    td { padding: 15px; border-bottom: 1px solid #f8fafc; font-size: 0.85rem; }
   </style>
 </head>
 <body>
+
+  <div id="loading-screen">
+    <div class="spinner"></div>
+    <div style="color: white; font-weight: 600; margin-top: 15px; font-size: 1rem;">Sincronizando Hub Técnico...</div>
+  </div>
 
   <aside class="sidebar">
     <div class="sidebar__header">
@@ -103,49 +118,68 @@
       </div>
     </div>
     <nav class="sidebar__nav">
-      <a href="#" class="nav-item active"><i class="fas fa-shield-alt"></i> Histórico de Registros</a>
+      <a href="#" class="nav-item active" id="menu-hub-link"><i class="fas fa-server"></i> Hub do Sistema</a>
       <a href="./aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> DENGUE</a>
-      <a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase  1 </a>
-      <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase  2 </a>
+      <a href="./dashboard_aedes.html" class="nav-item"><i class="fas fa-bug"></i> DASHBOARD DENGUE</a>
+      <a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase 1</a>
+      <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase 2</a>
       <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </nav>
   </aside>
 
-  <div class="main-wrapper">
-    <div class="center-column">
-      <header class="content-header">
-        <h1 style="color:var(--dark-blue); font-weight: 800;">Painel de Auditoria</h1>
-        <p style="color:#64748b;">Monitoramento centralizado filtrado a partir de 14/05/2026.</p>
+  <div class="main-container">
+    
+    <div id="section-hub-home" style="display: flex; flex-direction: column; gap: 25px;">
+      
+      <header class="hub-header">
+        <div>
+          <h1 style="color: var(--dark-blue); font-weight: 800; font-size: 1.8rem; letter-spacing: -0.5px;">Canal de Auditoria e Controle</h1>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2px;">Acompanhamento de integridade de dados e interações do ecossistema.</p>
+        </div>
+        <div class="live-db-status">
+          <div class="pulse-dot"></div>
+          <div>Banco Cloud: <strong style="color: var(--accent-green);">CONECTADO</strong> <span style="color: #94a3b8; margin: 0 6px;">|</span> Latência: <strong>32ms</strong></div>
+        </div>
       </header>
 
-      <section class="card">
-        <div class="card-header"><i class="fas fa-list-ul"></i> Últimos Registros Processados</div>
-        <div id="mainDataTable"></div>
-      </section>
+      <div class="hub-content-grid">
+        
+        <div class="blocks-column">
+          
+          <section class="program-card">
+            <div class="program-card-header">
+              <div class="program-title"><i class="fas fa-bug" style="color: var(--warning-orange);"></i> Monitoramento de Vetores (AEDES)</div>
+              <span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">API Sincronizada</span>
+            </div>
+            <div class="program-body">
+              <div class="program-mini-kpis">
+                <div class="mini-kpi"><span>Lotes Coletados</span><font id="hub-aedes-lotes">--</font></div>
+                <div class="mini-kpi"><span>Vistorias Totais</span><font id="hub-aedes-vistorias">--</font></div>
+                <div class="mini-kpi"><span>Focos Alerta</span><font id="hub-aedes-focos" style="color: var(--danger-red);">--</font></div>
+              </div>
+              <div class="program-actions">
+                <button class="btn-action btn-audit" id="btn-entrar-auditoria-aedes"><i class="fas fa-search"></i> Auditar Registros</button>
+                <button class="btn-action btn-export" id="btn-exportar-csv-aedes"><i class="fas fa-download"></i> Extrair Base (CSV)</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
 
-    <aside class="kpi-column">
-      <div class="kpi-card" style="border-left-color: #3b82f6">
-        <span>Vistorias Realizadas</span>
-        <h2 id="kpi-vistorias-sim">--</h2>
-      </div>
+    <div id="section-auditoria-detalhada">
+      <button class="btn-back-hub" id="btn-voltar-ao-hub"><i class="fas fa-arrow-left"></i> Voltar ao Hub Geral</button>
+      
+      <header style="margin-top: 10px;">
+        <h2 style="color: var(--dark-blue); font-weight: 800;"> Registros Brutos dos Relatórios </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Exibição de todos os lotes que entraram no banco de dados.</p>
+      </header>
 
-      <div class="kpi-card" style="border-left-color: var(--danger-red)">
-        <span>Vistorias Não Realizadas</span>
-        <h2 id="kpi-vistorias-nao">--</h2>
+      <div class="card-table">
+        <div id="mainDataTable"></div>
       </div>
+    </div>
 
-      <div class="kpi-card" style="border-left-color: var(--warning-orange)">
-        <span>Focos Encontrados</span>
-        <h2 id="kpi-focos">--</h2>
-      </div>
-
-      <div class="kpi-card" style="border-left-color: var(--accent-green)">
-        <span>Focos Remediados</span>
-        <h2 id="kpi-remediados">--</h2>
-      </div>
-
-    </aside>
   </div>
 
   <script src="./js/core/api-config.js"></script>

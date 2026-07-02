@@ -1,88 +1,79 @@
 import { AedesAPI } from '../modules/aedes/aedes-api.js';
 
-async function inicializarDashboard() {
-    try {
-        const todosLotes = await AedesAPI.getLotes();
-        
-        const dataCorte = new Date('2026-05-14T00:00:00');
-        const lotes = todosLotes.filter(lote => {
-            const dataLote = new Date(lote.data_envio);
-            return dataLote >= dataCorte;
-        });
+const loadingScreen = document.getElementById('loading-screen');
+const sectionHubHome = document.getElementById('section-hub-home');
+const sectionAuditoria = document.getElementById('section-auditoria-detalhada');
 
-        let vistoriasRealizadas = 0;
-        let vistoriasNaoRealizadas = 0;
-        let totalFocos = 0;
-        let totalRemediados = 0;
+const btnEntrarAuditoria = document.getElementById('btn-entrar-auditoria-aedes');
+const btnVoltarHub = document.getElementById('btn-voltar-ao-hub');
+const menuHubLink = document.getElementById('menu-hub-link');
 
-        lotes.forEach(lote => {
-            const registros = lote.payload_completo?.dados || [];
-            if (Array.isArray(registros)) {
-                registros.forEach(r => {
-                    // [2] Vistoria, [3] Foco, [4] Remediação
-                    if (r[2] && String(r[2]).toLowerCase() === 'sim') {
-                        vistoriasRealizadas++;
-                        if (r[3] && String(r[3]).toLowerCase() === 'sim') totalFocos++;
-                        if (r[4] && String(r[4]).toLowerCase() === 'sim') totalRemediados++;
-                    } else if (r[2] && String(r[2]).toLowerCase() === 'nao') {
-                        vistoriasNaoRealizadas++;
-                    }
-                });
-            }
-        });
-
-        const domElements = {
-            realizadas: document.getElementById('kpi-vistorias-sim'),
-            naoRealizadas: document.getElementById('kpi-vistorias-nao'),
-            focos: document.getElementById('kpi-focos'),
-            remediados: document.getElementById('kpi-remediados'),
-            esperados: document.getElementById('kpi-esperados') 
-        };
-
-        if (domElements.realizadas) domElements.realizadas.innerText = vistoriasRealizadas;
-        if (domElements.naoRealizadas) domElements.naoRealizadas.innerText = vistoriasNaoRealizadas;
-        if (domElements.focos) domElements.focos.innerText = totalFocos;
-        if (domElements.remediados) domElements.remediados.innerText = totalRemediados;
-        if (domElements.esperados) domElements.esperados.innerText = "126";
-
-        renderizarTabelaRecentes(lotes);
-
-    } catch (error) {
-        console.error("Erro ao carregar dados:", error);
+function removerLoading() {
+    if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        loadingScreen.style.visibility = 'hidden';
+        setTimeout(() => { loadingScreen.remove(); }, 400);
     }
 }
 
-function renderizarTabelaRecentes(lotes) {
-    const container = document.getElementById('mainDataTable');
-    if (!container) return;
+async function inicializarHubTecnico() {
+    try {
+        // Apenas busca os lotes para auditar e contar o volume básico
+        const todosLotes = await AedesAPI.getLotes();
+        
+        const dataCorte = new Date('2026-05-14T00:00:00');
+        const lotesFiltrados = todosLotes.filter(lote => {
+            return new Date(lote.data_envio) >= dataCorte;
+        });
 
-    const recentes = lotes.slice(0, 10);
+        // Exibe dados superficiais de transações no Hub
+        document.getElementById('hub-aedes-lotes').innerText = lotesFiltrados.length;
+        document.getElementById('hub-aedes-vistorias').innerText = "Ver no Módulo";
+        document.getElementById('hub-aedes-focos').innerText = "Ver no Módulo";
 
-    container.innerHTML = `
+        // Renderiza o livro de logs brutos
+        renderizarLivroAuditoria(lotesFiltrados);
+        configurarNavegacao();
+        removerLoading();
+
+    } catch (error) {
+        console.error("Erro no Hub Técnico:", error);
+        removerLoading();
+    }
+}
+
+function renderizarLivroAuditoria(lotes) {
+    const tableContainer = document.getElementById('mainDataTable');
+    if (!tableContainer) return;
+
+    tableContainer.innerHTML = `
         <table>
             <thead>
                 <tr>
-                    <th>DATA ENVIO</th>
-                    <th>FOCAL</th>
-                    <th>UNIDADES NO LOTE</th>
-                    <th>STATUS</th>
+                    <th>Data de Envio</th>
+                    <th>Focal Técnico</th>
+                    <th>Volume do Lote</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                ${recentes.map(l => {
-                    const nome = l.focal_nome || l.payload_completo?.cabecalho?.focal_nome || 'N/A';
-                    const qtd = l.payload_completo?.dados?.length || 0;
-                    return `
+                ${lotes.map(lote => `
                     <tr>
-                        <td style="font-weight:600">${l.data_envio ? new Date(l.data_envio).toLocaleDateString('pt-BR') : 'N/A'}</td>
-                        <td>${nome}</td>
-                        <td>${qtd} unidades</td>
-                        <td><span style="color:var(--accent-green)">●</span> Sincronizado</td>
+                        <td style="font-weight: 600;">${lote.data_envio ? new Date(lote.data_envio).toLocaleDateString('pt-BR') : 'N/A'}</td>
+                        <td>${lote.focal_nome || 'Sistema'}</td>
+                        <td>${lote.payload_completo?.dados?.length || 0} registros</td>
+                        <td><span style="color: #22c55e;">●</span> Recebido no Banco</td>
                     </tr>
-                `}).join('')}
+                `).join('')}
             </tbody>
         </table>
     `;
 }
 
-document.addEventListener("DOMContentLoaded", inicializarDashboard);
+function configurarNavegacao() {
+    if (btnEntrarAuditoria) btnEntrarAuditoria.onclick = () => { sectionHubHome.style.display = 'none'; sectionAuditoria.style.display = 'flex'; };
+    if (btnVoltarHub) btnVoltarHub.onclick = () => { sectionAuditoria.style.display = 'none'; sectionHubHome.style.display = 'flex'; };
+    if (menuHubLink) menuHubLink.onclick = (e) => { e.preventDefault(); sectionAuditoria.style.display = 'none'; sectionHubHome.style.display = 'flex'; };
+}
+
+document.addEventListener("DOMContentLoaded", inicializarHubTecnico);

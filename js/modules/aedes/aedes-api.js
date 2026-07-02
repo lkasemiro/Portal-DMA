@@ -71,78 +71,28 @@ export const AedesAPI = {
         }
     },
 
-    /**
-     * Consolida a base de dados mapeando os motivos diretamente do JSON de lotes
+/**
+     * Busca os dados unificados e tratados da tabela vistorias_itens
      */
     async getDadosPainel() {
         try {
-            const lotes = await this.getLotes();
-            const registrosAnaliticos = [];
-
-            const ordemMesesRef = [
-                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-            ];
-
-            lotes.forEach(lote => {
-                const dados = lote.payload_completo?.dados || lote.dados || [];
-                const dataEnvio = lote.data_envio ? new Date(lote.data_envio) : null;
-                
-                const ano = dataEnvio ? dataEnvio.getFullYear() : 2026; 
-                const mesNome = dataEnvio ? ordemMesesRef[dataEnvio.getMonth()] : "Não Informado";
-
-                dados.forEach(r => {
-                    const statusVistoria = String(r[2]).toLowerCase().trim();
-                    const visitada = statusVistoria === 'sim' ? 1 : 0;
-                    
-                    const temFoco = (visitada && String(r[3]).toLowerCase().trim() === 'sim') ? 1 : 0;
-                    const remediado = (temFoco && String(r[4]).toLowerCase().trim() === 'sim') ? 1 : 0;
-                    const pendente = (temFoco && !remediado) ? 1 : 0;
-
-                    // --- TRATAMENTO DOS MOTIVOS DIRETO DO JSON (r[7] e r[9]) ---
-                    // Convertemos para string minúscula para fazer a busca indexada por chaves do banco
-                    const motivoNV = Array.isArray(r[7]) ? r[7].join(" ").toLowerCase() : String(r[7] || "").toLowerCase();
-                    const motivoMNR = Array.isArray(r[9]) ? r[9].join(" ").toLowerCase() : String(r[9] || "").toLowerCase();
-
-                    registrosAnaliticos.push({
-                        Ano: ano,
-                        Mes_Nome: mesNome,
-                        Unidade: r[1] || "Unidade Não Identificada",
-                        visitada: visitada,
-                        foco_encontrado: temFoco,
-                        foco_remediado: remediado,
-                        foco_pendente: pendente,
-                        
-                        // Mapeamento baseado nas CHAVES REAIS do JSON (LABELS_MAP)
-                        nv_acesso: (motivoNV.includes("acesso") || motivoNV.includes("condicao")) ? 1 : 0,
-                        nv_brigadista: motivoNV.includes("brigadista") ? 1 : 0,
-                        nv_viatura: motivoNV.includes("viatura") ? 1 : 0,
-                        nv_esquecimento: motivoNV.includes("esquecimento") ? 1 : 0,
-                        
-                        mnr_capacitacao: (motivoMNR.includes("treino") || motivoMNR.includes("capacita")) ? 1 : 0,
-                        mnr_larvicida: (motivoMNR.includes("cloro") || motivoMNR.includes("larvicida")) ? 1 : 0,
-                        mnr_limpeza: motivoMNR.includes("limpeza") ? 1 : 0,
-                        mnr_cobertura: (motivoMNR.includes("cobertura") || motivoMNR.includes("tampa")) ? 1 : 0
-                    });
-                });
-            });
-
-            return registrosAnaliticos;
+            const response = await fetch(`${API_BASE}/api/aedes/painel-dados`);
+            if (!response.ok) return [];
+            const data = await response.json();
+            return Array.isArray(data) ? data : [];
         } catch (error) {
-            console.error("❌ Erro em processar getDadosPainel:", error);
+            console.error("❌ AedesAPI.getDadosPainel:", error);
             return [];
         }
     },
-    // Substitua o método getFocalDossie por esta versão corrigida:
-/**
-     * Busca o focal técnico responsável pela unidade para alimentar o Dossiê
+
+    /**
+     * Busca informações do responsável técnico para o Dossiê
      */
-   async getFocalDossie(nomeUnidade) {
+    async getFocalDossie(nomeUnidade) {
         try {
-            // Consome a constante oficial (API_BASE) que gerencia localhost vs Render automaticamente
             const response = await fetch(`${API_BASE}/api/aedes/focal-dossie?unidade=${encodeURIComponent(nomeUnidade)}`);
-            
-            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+            if (!response.ok) throw new Error();
             return await response.json();
         } catch (error) {
             console.error("❌ AedesAPI.getFocalDossie:", error);

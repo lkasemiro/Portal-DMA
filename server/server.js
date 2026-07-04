@@ -1,57 +1,76 @@
-// server.js
+// =========================================================
+// SERVER - PORTAL AMBIENTAL
+// =========================================================
 
-// =========================================================
+// ---------------------------------------------------------
 // IMPORTS
-// =========================================================
+// ---------------------------------------------------------
 
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import path from "path";
+import { fileURLToPath } from "url";
 
-import {
-  fileURLToPath
-}
-from "url";
+// ---------------------------------------------------------
+// ESM (__dirname)
+// ---------------------------------------------------------
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// ---------------------------------------------------------
+// ENV (.env na raiz do Portal-DMA)
+// ---------------------------------------------------------
+
+dotenv.config({
+    path: path.resolve(__dirname, "../.env")
+});
+
+// ---------------------------------------------------------
 // DATABASE
-import { pool }
-from "./infra/db.js";
+// ---------------------------------------------------------
 
+import { pool } from "./infra/db.js";
 
+// ---------------------------------------------------------
 // ROUTES
-import postsRoutes
-from "./routes/posts.js";
+// ---------------------------------------------------------
 
-import modulosRoutes
-from "./routes/modulos.js";
-
+import postsRoutes from "./routes/posts.js";
+import modulosRoutes from "./routes/modulos.js";
 
 // =========================================================
-// CONFIG
+// DEBUG
 // =========================================================
 
-dotenv.config();
+console.log("======================================");
+console.log("Servidor iniciado");
+console.log("CWD:", process.cwd());
+console.log("PORT:", process.env.PORT);
+
+if (process.env.DATABASE_URL) {
+
+    const url = new URL(process.env.DATABASE_URL);
+
+    console.log("Banco:", url.pathname);
+    console.log("Host:", url.hostname);
+
+} else {
+
+    console.error("DATABASE_URL NÃO ENCONTRADA");
+
+}
+
+console.log("======================================");
+
+// =========================================================
+// EXPRESS
+// =========================================================
 
 const app = express();
 
-const PORT =
-  process.env.PORT || 3001;
-
-
-// =========================================================
-// ESM PATH FIX
-// =========================================================
-
-const __filename =
-  fileURLToPath(import.meta.url);
-
-const __dirname =
-  path.dirname(__filename);
-
-
+const PORT = process.env.PORT || 3001;
 // =========================================================
 // MIDDLEWARES
 // =========================================================
@@ -538,39 +557,99 @@ app.get("/api/health", (_req, res) => {
 // ─── ENDPOINT REAL DA TABELA VISTORIAS_ITENS ───────────────────────────────
 app.get("/api/aedes/painel-dados", async (req, res) => {
   try {
+
+    console.log("====================================");
+    console.log("➡️ Requisição recebida: /api/aedes/painel-dados");
+
+    const banco = await pool.query("SELECT current_database(), current_schema()");
+    console.log("Banco:", banco.rows[0]);
+
+    const total = await pool.query(`
+      SELECT COUNT(*) AS total
+      FROM aedes.vistorias_itens
+    `);
+
+    console.log("Total de registros:", total.rows[0].total);
+
     const query = `
-      SELECT 
+      SELECT
         EXTRACT(YEAR FROM data_registro) AS "Ano",
+
         CASE EXTRACT(MONTH FROM data_registro)
-          WHEN 1 THEN 'Janeiro' WHEN 2 THEN 'Fevereiro' WHEN 3 THEN 'Março'
-          WHEN 4 THEN 'Abril' WHEN 5 THEN 'Maio' WHEN 6 THEN 'Junho'
-          WHEN 7 THEN 'Julho' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Setembro'
-          WHEN 10 THEN 'Outubro' WHEN 11 THEN 'Novembro' WHEN 12 THEN 'Dezembro'
+          WHEN 1 THEN 'Janeiro'
+          WHEN 2 THEN 'Fevereiro'
+          WHEN 3 THEN 'Março'
+          WHEN 4 THEN 'Abril'
+          WHEN 5 THEN 'Maio'
+          WHEN 6 THEN 'Junho'
+          WHEN 7 THEN 'Julho'
+          WHEN 8 THEN 'Agosto'
+          WHEN 9 THEN 'Setembro'
+          WHEN 10 THEN 'Outubro'
+          WHEN 11 THEN 'Novembro'
+          WHEN 12 THEN 'Dezembro'
         END AS "Mes_Nome",
+
         unidade_nome AS "Unidade",
-        
-        -- Mapeamentos binários para cálculo de KPIs e Estados Pastéis da Tabela
-        CASE WHEN LOWER(TRIM(vistoria_realizada)) = 'sim' THEN 1 ELSE 0 END AS visitada,
-        CASE WHEN LOWER(TRIM(vistoria_realizada)) = 'sim' AND LOWER(TRIM(foco_encontrado)) = 'sim' THEN 1 ELSE 0 END AS foco_encontrado,
-        CASE WHEN LOWER(TRIM(vistoria_realizada)) = 'sim' AND LOWER(TRIM(foco_encontrado)) = 'sim' AND LOWER(TRIM(foco_remediado)) = 'sim' THEN 1 ELSE 0 END AS foco_remediado,
-        
-        -- Envio das colunas estruturadas e textuais livres para gráficos e tabelas de "Outros"
+
+        CASE
+          WHEN LOWER(TRIM(vistoria_realizada))='sim'
+          THEN 1 ELSE 0
+        END AS visitada,
+
+        CASE
+          WHEN LOWER(TRIM(vistoria_realizada))='sim'
+           AND LOWER(TRIM(foco_encontrado))='sim'
+          THEN 1 ELSE 0
+        END AS foco_encontrado,
+
+        CASE
+          WHEN LOWER(TRIM(vistoria_realizada))='sim'
+           AND LOWER(TRIM(foco_encontrado))='sim'
+           AND LOWER(TRIM(foco_remediado))='sim'
+          THEN 1 ELSE 0
+        END AS foco_remediado,
+
         motivos_nao_vistoria,
         outros_motivo_nao_vistoria,
         motivos_nao_remediacao,
         outros_motivo_nao_remediacao,
         locais_foco,
         outros_local,
-        TO_CHAR(data_registro, 'DD/MM/YYYY') AS data_formatada
+
+        TO_CHAR(data_registro,'DD/MM/YYYY') AS data_formatada
+
       FROM aedes.vistorias_itens
       ORDER BY data_registro DESC;
     `;
 
     const result = await pool.query(query);
-    res.json(result.rows || []);
+
+    console.log("Linhas retornadas:", result.rowCount);
+
+    if (result.rowCount > 0) {
+      console.log("Primeira linha:");
+      console.log(result.rows[0]);
+    }
+const teste = await pool.query(`
+    SELECT schemaname, tablename
+    FROM pg_tables
+    WHERE tablename = 'vistorias_itens';
+`);
+
+console.log(teste.rows);
+    console.log("====================================");
+
+    res.json(result.rows);
+
   } catch (err) {
-    console.error("❌ Erro em /api/aedes/painel-dados:", err.message);
-    res.status(500).json([]);
+
+    console.error(err);
+
+    res.status(500).json({
+      erro: err.message
+    });
+
   }
 });
 
@@ -724,3 +803,13 @@ app.listen(PORT, async () => {
   console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
   await initSchema();
 });
+const info = await pool.query(`
+SELECT
+    current_database(),
+    current_user,
+    inet_server_addr(),
+    inet_server_port(),
+    version();
+`);
+
+console.log(info.rows[0]);

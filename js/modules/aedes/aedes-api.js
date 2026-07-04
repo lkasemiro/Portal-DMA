@@ -1,102 +1,186 @@
-// js/modules/aedes/aedes-api.js
+// ======================================================
+// Portal Ambiental
+// API - Módulo Aedes aegypti
+// ======================================================
 
-const API_BASE = window.location.hostname === "localhost" 
-    ? "http://localhost:3001" 
-    : "https://dma-aedes-api.onrender.com";
+const API_BASE = "https://dma-aedes-api.onrender.com";
 
 export const AedesAPI = {
 
-    /**
-     * Busca a lista de unidades operacionais registradas
-     */
+    // ==================================================
+    // Unidades
+    // ==================================================
+
     async getUnidades() {
+
         try {
+
             const response = await fetch(`${API_BASE}/api/unidades`);
-            if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+            if (!response.ok)
+                throw new Error(`HTTP ${response.status}`);
+
             return await response.json();
+
         } catch (error) {
-            console.error("❌ AedesAPI.getUnidades:", error);
+
+            console.error("❌ getUnidades:", error);
             return [];
+
         }
+
     },
 
-    /**
-     * Busca os lotes enviados pelas unidades (contém o array de dados)
-     */
+    // ==================================================
+    // Lotes
+    // ==================================================
+
     async getLotes() {
+
         try {
+
             const response = await fetch(`${API_BASE}/api/aedes/lotes`);
-            if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+            if (!response.ok)
+                throw new Error(`HTTP ${response.status}`);
+
             return await response.json();
+
         } catch (error) {
-            console.error("❌ AedesAPI.getLotes:", error);
+
+            console.error("❌ getLotes:", error);
             return [];
+
         }
+
     },
 
-    /**
-     * Busca a lista oficial de focais técnicos cadastrados
-     */
+    // ==================================================
+    // Focais
+    // ==================================================
+
     async getFocais() {
+
         try {
+
             const response = await fetch(`${API_BASE}/api/aedes/focais`);
-            if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+            if (!response.ok)
+                throw new Error(`HTTP ${response.status}`);
+
             return await response.json();
+
         } catch (error) {
-            console.error("❌ AedesAPI.getFocais:", error);
+
+            console.error("❌ getFocais:", error);
             return [];
+
         }
+
     },
 
-    /**
-     * Envia um lote de vistorias
-     */
+    // ==================================================
+    // Envio de Lote
+    // ==================================================
+
     async postLote(payload) {
-        try {
-            const response = await fetch(`${API_BASE}/api/aedes/lotes`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Erro ao salvar os dados no banco.");
-            }
+        const response = await fetch(`${API_BASE}/api/aedes/lotes`, {
 
-            return await response.json();
-        } catch (error) {
-            console.error("❌ AedesAPI.postLote:", error);
-            throw error;
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(payload)
+
+        });
+
+        if (!response.ok) {
+
+            const erro = await response.json();
+
+            throw new Error(
+                erro.error || "Erro ao salvar lote."
+            );
+
         }
+
+        return await response.json();
+
     },
 
-/**
-     * Busca os dados unificados e tratados da tabela vistorias_itens
-     */
+    // ==================================================
+    // Dashboard
+    // ==================================================
+
     async getDadosPainel() {
+
         try {
+
             const response = await fetch(`${API_BASE}/api/aedes/painel-dados`);
-            if (!response.ok) return [];
-            const data = await response.json();
-            return Array.isArray(data) ? data : [];
-        } catch (error) {
-            console.error("❌ AedesAPI.getDadosPainel:", error);
+
+            if (!response.ok)
+                throw new Error(`HTTP ${response.status}`);
+
+            const json = await response.json();
+
+            console.log("📦 Resposta painel:", json);
+
+            // Caso a API retorne somente um array
+            if (Array.isArray(json))
+                return json;
+
+            // Caso retorne { registros: [...] }
+            if (Array.isArray(json.registros))
+                return json.registros;
+
             return [];
+
+        } catch (error) {
+
+            console.error("❌ getDadosPainel:", error);
+
+            return [];
+
         }
+
     },
 
-    /**
-     * Busca informações do responsável técnico para o Dossiê
-     */
-    async getFocalDossie(nomeUnidade) {
+    // ==================================================
+    // Dossiê
+    // ==================================================
+
+    async getFocalDossie(unidade) {
+
         try {
-            const response = await fetch(`${API_BASE}/api/aedes/focal-dossie?unidade=${encodeURIComponent(nomeUnidade)}`);
-            if (!response.ok) throw new Error();
+
+            const response = await fetch(
+
+                `${API_BASE}/api/aedes/focal-dossie?unidade=${encodeURIComponent(unidade)}`
+
+            );
+
+            if (!response.ok)
+                throw new Error();
+
             return await response.json();
+
         } catch (error) {
-            console.error("❌ AedesAPI.getFocalDossie:", error);
-            return { nome: null, matricula: null, email: null };
+
+            console.error("❌ getFocalDossie:", error);
+
+            return {
+
+                nome: null,
+                matricula: null,
+                email: null
+
+            };
+
         }
+
     }
+
 };

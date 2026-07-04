@@ -4,13 +4,26 @@
  * Configuração PostgreSQL (Neon) - Versão ES Modules Definitiva
  * ============================================================
  */
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({
+    path: path.join(__dirname, "../../.env")
+});
 import pg from "pg";
 const { Pool } = pg;
+console.log("=== DATABASE_URL carregada ===");
 
-if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL não definida.");
-}
+const dbUrl = process.env.DATABASE_URL;
+
+console.log("CWD:", process.cwd());
+console.log("DATABASE_URL existe?", !!process.env.DATABASE_URL);
+console.log("Host:", process.env.DATABASE_URL?.match(/@([^/]+)/)?.[1]);
+console.log("==============================");
 
 const usarSSL = process.env.NODE_ENV === "production" || process.env.DATABASE_URL.includes("neon.tech");
 

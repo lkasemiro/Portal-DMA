@@ -345,18 +345,19 @@ export async function getPainelDados(req, res) {
 
     const resultado = await pool.query(query);
 
-    // Retorna os dados formatados em JSON para o painel front-end
+   console.log(`📊 Painel carregado com sucesso: ${resultado.rows.length} linhas.`);
+    
+    // Retorna o array para o front-end
     return res.json(resultado.rows || []);
 
   } catch (error) {
-    console.error("❌ Erro ao buscar dados do painel (fato_vistorias):", error);
+    console.error("❌ Erro ao buscar dados do painel:", error);
     return res.status(500).json({ 
-      error: "Erro interno ao processar dados do painel", 
+      error: "Erro interno no servidor ao processar a base unificada.", 
       detalhe: error.message 
     });
   }
 }
-
 /**
  * GET /api/aedes/focal-dossie
  */

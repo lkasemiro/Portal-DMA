@@ -1,46 +1,18 @@
-/**
- * ============================================================
- * Portal Ambiental
- * Controller de Autenticação
- * ============================================================
- */
+// server/auth/auth.controller.js
+// Alterado de: const authService = require("../services/auth.service");
+import * as authService from "../services/auth.service.js"; // Lembre-se da extensão .js
 
-const authService = require("../services/auth.service");
-
-/**
- * Retorna os dados do usuário autenticado.
- *
- * GET /api/auth/me
- */
-async function me(req, res) {
-
+export async function me(req, res) {
     try {
-
         const usuario = await authService.carregarSessao(req.user.user_id);
-
-        return res.status(200).json({
-
-            success: true,
-
-            data: usuario
-
-        });
-
+        return res.status(200).json({ success: true, data: usuario });
     } catch (error) {
-
         console.error(error);
-
-        return res.status(500).json({
-
-            success: false,
-
-            message: error.message
-
-        });
-
+        return res.status(500).json({ success: false, message: error.message });
     }
-
 }
+
+
 
 /**
  * Lista usuários.
@@ -157,14 +129,3 @@ async function alterarStatus(req, res) {
 
 }
 
-module.exports = {
-
-    me,
-
-    listarUsuarios,
-
-    cadastrarUsuario,
-
-    alterarStatus
-
-};

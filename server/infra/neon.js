@@ -4,7 +4,7 @@
  * Configuração do Neon Auth
  * ============================================================
  */
-const env = require("../config/env");
+const env = require("../config/env.js");
 
 module.exports = {
 

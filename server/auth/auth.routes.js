@@ -1,80 +1,53 @@
 /**
  * ============================================================
  * Portal Ambiental
- * Rotas de Autenticação
+ * Rotas de Autenticação (Versão ES Modules)
  * ============================================================
  */
 
-const express = require("express");
+import express from "express";
+import * as controller from "./auth.controller.js"; // Obrigatório o .js no final
+import { verificarAutenticacao, authorize } from "./auth.middleware.js";
 
 const router = express.Router();
-
-const controller = require("./auth.controller");
-
-const {
-
-    authenticate,
-
-    authorize
-
-} = require("./auth.middleware");
 
 /**
  * Usuário autenticado
  */
 router.get(
-
     "/me",
-
-    authenticate,
-
+    verificarAutenticacao,
     controller.me
-
 );
 
 /**
  * Lista usuários
  */
 router.get(
-
     "/users",
-
-    authenticate,
-
+    verificarAutenticacao,
     authorize("Administrador"),
-
     controller.listarUsuarios
-
 );
 
 /**
  * Cadastro de usuários
  */
 router.post(
-
     "/users",
-
-    authenticate,
-
+    verificarAutenticacao,
     authorize("Administrador"),
-
     controller.cadastrarUsuario
-
 );
 
 /**
  * Ativar/desativar usuário
  */
 router.patch(
-
     "/users/:userId/status",
-
-    authenticate,
-
+    verificarAutenticacao,
     authorize("Administrador"),
-
     controller.alterarStatus
-
 );
 
-module.exports = router;
+export default router;

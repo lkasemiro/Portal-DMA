@@ -2,18 +2,18 @@
  * ============================================================
  * Portal Ambiental
  * Middleware de Autenticação
- * Validação de JWT emitido pelo Neon Auth
+ * Validação de JWT emitido pelo Neon Auth (Versão ES Modules)
  * ============================================================
  */
 
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import * as perfilService from "../services/perfil.service.js";
+import * as authService from "../services/auth.service.js"; // Modificado: importação limpa via ESM
 
 // Garante que a URL do JWKS do Neon está configurada no .env
 if (!process.env.NEON_JWKS_URL) {
     throw new Error("A variável NEON_JWKS_URL não está definida no ambiente.");
 }
-
 
 // JWKS do Neon
 const JWKS = createRemoteJWKSet(
@@ -24,28 +24,22 @@ const JWKS = createRemoteJWKSet(
  * Middleware responsável por autenticar
  * usuários através do JWT emitido pelo Neon Auth.
  */
-async function authenticate(req, res, next) {
-
+export async function verificarAutenticacao(req, res, next) {
     try {
-
         const authHeader = req.headers.authorization;
 
         if (!authHeader) {
-
             return res.status(401).json({
                 success: false,
                 message: "Token não informado."
             });
-
         }
 
         if (!authHeader.startsWith("Bearer ")) {
-
             return res.status(401).json({
                 success: false,
                 message: "Formato de autenticação inválido."
             });
-
         }
 
         const token = authHeader.replace("Bearer ", "");
@@ -59,26 +53,21 @@ async function authenticate(req, res, next) {
         // user_id do Neon
         const userId = payload.sub;
 
-        const authService = require("../services/auth.service");
-
+        // Modificado: Removido o require interno e utilizada a referência do import do topo
         const perfil = await authService.obterUsuario(userId);
         
         if (!perfil) {
-
             return res.status(403).json({
                 success: false,
                 message: "Usuário não possui perfil cadastrado."
             });
-
         }
 
         if (!perfil.ativo) {
-
             return res.status(403).json({
                 success: false,
                 message: "Usuário desativado."
             });
-
         }
 
         // Atualiza último login
@@ -88,70 +77,38 @@ async function authenticate(req, res, next) {
         req.user = perfil;
 
         next();
-
     } catch (error) {
-
-        console.error(error);
-
+        console.error("❌ Erro na verificação do token:", error.message);
         return res.status(401).json({
-
             success: false,
-
             message: "Token inválido."
-
         });
-
     }
-
 }
 
 /**
- * Middleware para verificar papéis.
+ * Middleware para verificar papéis (RBAC).
  *
- * Exemplo:
- *
+ * Exemplo de uso nas rotas:
  * authorize("Administrador")
- *
- * authorize("Administrador","Editor")
+ * authorize("Administrador", "Editor")
  */
-function authorize(...papeisPermitidos) {
-
+export function authorize(...papeisPermitidos) {
     return (req, res, next) => {
-
         if (!req.user) {
-
             return res.status(401).json({
-
                 success: false,
-
                 message: "Usuário não autenticado."
-
             });
-
         }
 
         if (!papeisPermitidos.includes(req.user.papel)) {
-
             return res.status(403).json({
-
                 success: false,
-
                 message: "Você não possui permissão para esta operação."
-
             });
-
         }
 
         next();
-
     };
-
 }
-
-module.exports = {
-
-    authenticate,
-
-    authorize
-
-};

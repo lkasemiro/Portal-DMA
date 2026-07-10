@@ -1,4 +1,4 @@
-// server/routes/aedes.js
+// server/routes/aedes_routes.js
 import express from "express";
 import * as aedesController from "../controllers/aedesController.js";
 
@@ -12,7 +12,7 @@ router.get("/base", aedesController.getBase);
 router.get("/certificados", aedesController.getCertificados);
 router.post("/lotes", aedesController.criarLote);
 router.get("/lotes", aedesController.getLotes);
-router.get("/painel-dados", aedesController.getPainelDados);
+router.get("/aedes/painel-dados", aedesController.getPainelDados);
 router.get("/focal-dossie", aedesController.getFocalDossie);
 
 export default router;

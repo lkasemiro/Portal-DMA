@@ -1,10 +1,9 @@
 import { AedesAPI } from '/js/modules/aedes/aedes-api.js';
 
-// Mapeamento dos nomes de meses retornados pelo banco para a abreviação do gráfico
+// Mapeamento numérico dos meses para exibição gráfica amigável
 const MAPA_MESES = {
-    'Janeiro': 'Jan', 'Fevereiro': 'Fev', 'Março': 'Mar', 'Abril': 'Abr',
-    'Maio': 'Mai', 'Junho': 'Jun', 'Julho': 'Jul', 'Agosto': 'Ago',
-    'Setembro': 'Set', 'Outubro': 'Out', 'Novembro': 'Nov', 'Dezembro': 'Dez'
+    1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Abr', 5: 'Mai', 6: 'Jun',
+    7: 'Jul', 8: 'Ago', 9: 'Set', 10: 'Out', 11: 'Nov', 12: 'Dez'
 };
 
 // =========================================================================
@@ -21,7 +20,7 @@ export async function inicializarPainelAedes() {
             return;
         }
 
-        // Executar processamento mapeando os campos mapeados do backend
+        // Executa o processamento lendo a estrutura real validada na rota do backend
         processarDadosDashboard(registros);
         
     } catch (error) {
@@ -30,7 +29,7 @@ export async function inicializarPainelAedes() {
 }
 
 // =========================================================================
-// PROCESSAMENTO DAS MÉTRICAS REAIS (Baseado em aedes.vistorias_itens)
+// PROCESSAMENTO DAS MÉTRICAS REAIS
 // =========================================================================
 function processarDadosDashboard(registros) {
     let totalVistorias = registros.length;
@@ -42,10 +41,10 @@ function processarDadosDashboard(registros) {
     const dadosUnidades = {}; 
 
     registros.forEach(reg => {
-        // 1. Agrupamento Cronológico usando as chaves reais: "Ano" e "Mes_Nome"
-        const ano = reg.Ano || new Date().getFullYear();
-        const mesNomeOriginal = reg.Mes_Nome || "Janeiro";
-        const mesAbreviado = MAPA_MESES[mesNomeOriginal] || mesNomeOriginal;
+        // 1. Extração segura das chaves temporais (Trata "Ano" ou "ano")
+        const ano = reg.Ano || reg.ano || new Date().getFullYear();
+        const mesNum = reg.mes || 1;
+        const mesAbreviado = MAPA_MESES[mesNum] || `Mês ${mesNum}`;
         const chaveMes = `${ano} - ${mesAbreviado}`;
         
         if (!evolucaoMeses[chaveMes]) {
@@ -53,25 +52,28 @@ function processarDadosDashboard(registros) {
         }
         evolucaoMeses[chaveMes].vistorias++;
 
-        // 2. Agrupamento por Unidade (campo real vindo do backend: "Unidade")
-        const nomeUnidade = reg.Unidade || "Desconhecida";
+        // 2. Extração segura da Unidade (Trata "Unidade" ou "unidade_nome")
+        const nomeUnidade = reg.Unidade || reg.unidade_nome || "Desconhecida";
         if (!dadosUnidades[nomeUnidade]) {
             dadosUnidades[nomeUnidade] = { total: 0, visitadas: 0 };
         }
         dadosUnidades[nomeUnidade].total++;
 
-        // 3. Verificação de Visita Realizada (campo numérico: visitada)
-        if (Number(reg.visitada) === 1) {
+        // 3. Validação flexível (aceita o número 1 ou o texto "sim")
+        const isVisitada = reg.visitada === 1 || reg.vistoria_realizada === 'sim';
+        const isFoco = reg.foco_encontrado === 1 || reg.foco_encontrado === 'sim';
+        const isRemediado = reg.foco_remediado === 1 || reg.foco_remediado === 'sim';
+
+        if (isVisitada) {
             totalVisitadas++;
             dadosUnidades[nomeUnidade].visitadas++;
 
-            // 4. Verificação de Foco Encontrado (campo numérico: foco_encontrado)
-            if (Number(reg.foco_encontrado) === 1) {
+            if (isFoco) {
                 totalFocos++;
                 evolucaoMeses[chaveMes].focos++;
 
-                // 5. Ação Pendente: Foco encontrado (1) mas NÃO remediado (foco_remediado === 0)
-                if (Number(reg.foco_remediado) !== 1) {
+                // Foco detectado mas NÃO remediado vira pendência operacional
+                if (!isRemediado) {
                     acoesPendentes++;
                 }
             }
@@ -100,7 +102,7 @@ function renderizarGraficoEvolucao(evolucaoMeses) {
     const elementoGrafico = document.getElementById('graficoEvolucaoAedes');
     if (!elementoGrafico || !window.Plotly) return;
 
-    // Ordena as chaves dos meses para garantir ordem cronológica na linha
+    // Ordenação alfabética e temporal das chaves ("2026 - Mai")
     const mesesLabels = Object.keys(evolucaoMeses).sort();
     const vistoriasValores = mesesLabels.map(m => evolucaoMeses[m].vistorias);
     const focosValores = mesesLabels.map(m => evolucaoMeses[m].focos);
@@ -108,7 +110,7 @@ function renderizarGraficoEvolucao(evolucaoMeses) {
     const traceVistorias = {
         x: mesesLabels,
         y: vistoriasValores,
-        name: 'Vistorias Planejadas',
+        name: 'Vistorias Agendadas',
         type: 'scatter',
         mode: 'lines+markers',
         line: { color: '#3b82f6', width: 3 },

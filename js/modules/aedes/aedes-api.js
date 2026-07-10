@@ -3,10 +3,8 @@
 // API - Módulo Aedes aegypti (Sincronizado com o Novo Backend)
 // ======================================================
 
-// Dica: Altere para "http://localhost:3001" durante os testes locais, 
-// e volte para a URL do Render em produção.
-const API_BASE = "https://dma-aedes-api.onrender.com";
-
+// IMPORTANTE: Importa a URL dinâmica direto do arquivo de configuração
+import { API_BASE } from '/js/core/api-config.js';
 export const AedesAPI = {
 
     // ==================================================

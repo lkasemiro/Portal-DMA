@@ -308,36 +308,52 @@ export async function getUnidades(_req, res) {
 /**
  * GET /api/aedes/painel-dados
  */
+// server/controllers/aedesController.js
+
 export async function getPainelDados(req, res) {
   try {
+    // Consultando diretamente a tabela fato_vistorias que já possui as colunas estruturadas
     const query = `
-      SELECT
-        EXTRACT(YEAR FROM data_registro) AS "Ano",
-        CASE EXTRACT(MONTH FROM data_registro)
-          WHEN 1 THEN 'Janeiro' WHEN 2 THEN 'Fevereiro' WHEN 3 THEN 'Março'
-          WHEN 4 THEN 'Abril'   WHEN 5 THEN 'Maio'      WHEN 6 THEN 'Junho'
-          WHEN 7 THEN 'Julho'   WHEN 8 THEN 'Agosto'    WHEN 9 THEN 'Setembro'
-          WHEN 10 THEN 'Outubro' WHEN 11 THEN 'Novembro' WHEN 12 THEN 'Dezembro'
-        END AS "Mes_Nome",
-        unidade_nome AS "Unidade",
-        CASE WHEN LOWER(TRIM(vistoria_realizada))='sim' THEN 1 ELSE 0 END AS visitada,
-        CASE WHEN LOWER(TRIM(vistoria_realizada))='sim' AND LOWER(TRIM(foco_encontrado))='sim' THEN 1 ELSE 0 END AS foco_encontrado,
-        CASE WHEN LOWER(TRIM(vistoria_realizada))='sim' AND LOWER(TRIM(foco_encontrado))='sim' AND LOWER(TRIM(foco_remediado))='sim' THEN 1 ELSE 0 END AS foco_remediado,
-        motivos_nao_vistoria,
-        outros_motivo_nao_vistoria,
-        motivos_nao_remediacao,
-        outros_motivo_nao_remediacao,
-        locais_foco,
-        outros_local,
-        TO_CHAR(data_registro,'DD/MM/YYYY') AS data_formatada
-      FROM aedes.vistorias_itens
-      ORDER BY data_registro DESC;
+      SELECT 
+        id,
+        origem,
+        lote_id,
+        data_registro,
+        COALESCE(ano, EXTRACT(YEAR FROM NOW())::INTEGER) as "Ano",
+        CASE 
+          WHEN mes = 1 THEN 'Janeiro'
+          WHEN mes = 2 THEN 'Fevereiro'
+          WHEN mes = 3 THEN 'Março'
+          WHEN mes = 4 THEN 'Abril'
+          WHEN mes = 5 THEN 'Maio'
+          WHEN mes = 6 THEN 'Junho'
+          WHEN mes = 7 THEN 'Julho'
+          WHEN mes = 8 THEN 'Agosto'
+          WHEN mes = 9 THEN 'Setembro'
+          WHEN mes = 10 THEN 'Outubro'
+          WHEN mes = 11 THEN 'Novembro'
+          WHEN mes = 12 THEN 'Dezembro'
+          ELSE 'Janeiro'
+        END as "Mes_Nome",
+        COALESCE(unidade_nome, 'Desconhecida') as "Unidade",
+        CASE WHEN vistoria_realizada = 'sim' THEN 1 ELSE 0 END as visitada,
+        CASE WHEN foco_encontrado = 'sim' THEN 1 ELSE 0 END as foco_encontrado,
+        CASE WHEN foco_remediado = 'sim' THEN 1 ELSE 0 END as foco_remediado
+      FROM aedes.fato_vistorias
+      ORDER BY ano DESC, mes DESC, id ASC;
     `;
-    const result = await pool.query(query);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: err.message });
+
+    const resultado = await pool.query(query);
+
+    // Retorna os dados formatados em JSON para o painel front-end
+    return res.json(resultado.rows || []);
+
+  } catch (error) {
+    console.error("❌ Erro ao buscar dados do painel (fato_vistorias):", error);
+    return res.status(500).json({ 
+      error: "Erro interno ao processar dados do painel", 
+      detalhe: error.message 
+    });
   }
 }
 

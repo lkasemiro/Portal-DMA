@@ -1,7 +1,7 @@
 // js/core/api-config.js
 
 const LOCAL_API = "http://localhost:3001";
-const PROD_API = "https://dma-aedes-api.onrender.com";
+const PROD_API = "https://portal-dma.onrender.com";
 
 function resolveBaseURL() {
   const hostname = window.location.hostname;

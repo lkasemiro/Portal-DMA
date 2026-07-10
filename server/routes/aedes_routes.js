@@ -12,7 +12,7 @@ router.get("/base", aedesController.getBase);
 router.get("/certificados", aedesController.getCertificados);
 router.post("/lotes", aedesController.criarLote);
 router.get("/lotes", aedesController.getLotes);
-router.get("/aedes/painel-dados", aedesController.getPainelDados);
+router.get("/painel-dados", aedesController.getPainelDados);
 router.get("/focal-dossie", aedesController.getFocalDossie);
 
 export default router;

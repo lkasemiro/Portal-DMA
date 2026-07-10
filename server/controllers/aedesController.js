@@ -312,42 +312,44 @@ export async function getUnidades(_req, res) {
 
 export async function getPainelDados(req, res) {
   try {
-    // Consultando diretamente a tabela fato_vistorias que já possui as colunas estruturadas
+    // Query calibrada eliminando conflito de tipos de dados (double precision para integer)
     const query = `
       SELECT 
         id,
         origem,
         lote_id,
         data_registro,
-        COALESCE(ano, EXTRACT(YEAR FROM NOW())::INTEGER) as "Ano",
+        COALESCE(ano::INTEGER, EXTRACT(YEAR FROM NOW())::INTEGER) AS "Ano",
         CASE 
-          WHEN mes = 1 THEN 'Janeiro'
-          WHEN mes = 2 THEN 'Fevereiro'
-          WHEN mes = 3 THEN 'Março'
-          WHEN mes = 4 THEN 'Abril'
-          WHEN mes = 5 THEN 'Maio'
-          WHEN mes = 6 THEN 'Junho'
-          WHEN mes = 7 THEN 'Julho'
-          WHEN mes = 8 THEN 'Agosto'
-          WHEN mes = 9 THEN 'Setembro'
-          WHEN mes = 10 THEN 'Outubro'
-          WHEN mes = 11 THEN 'Novembro'
-          WHEN mes = 12 THEN 'Dezembro'
+          WHEN mes::INTEGER = 1 THEN 'Janeiro'
+          WHEN mes::INTEGER = 2 THEN 'Fevereiro'
+          WHEN mes::INTEGER = 3 THEN 'Março'
+          WHEN mes::INTEGER = 4 THEN 'Abril'
+          WHEN mes::INTEGER = 5 THEN 'Maio'
+          WHEN mes::INTEGER = 6 THEN 'Junho'
+          WHEN mes::INTEGER = 7 THEN 'Julho'
+          WHEN mes::INTEGER = 8 THEN 'Agosto'
+          WHEN mes::INTEGER = 9 THEN 'Setembro'
+          WHEN mes::INTEGER = 10 THEN 'Outubro'
+          WHEN mes::INTEGER = 11 THEN 'Novembro'
+          WHEN mes::INTEGER = 12 THEN 'Dezembro'
           ELSE 'Janeiro'
-        END as "Mes_Nome",
-        COALESCE(unidade_nome, 'Desconhecida') as "Unidade",
-        CASE WHEN vistoria_realizada = 'sim' THEN 1 ELSE 0 END as visitada,
-        CASE WHEN foco_encontrado = 'sim' THEN 1 ELSE 0 END as foco_encontrado,
-        CASE WHEN foco_remediado = 'sim' THEN 1 ELSE 0 END as foco_remediado
+        END AS "Mes_Nome",
+        COALESCE(unidade_nome, 'Desconhecida') AS "Unidade",
+        CASE WHEN LOWER(vistoria_realizada) = 'sim' THEN 1 ELSE 0 END AS visitada,
+        CASE WHEN LOWER(foco_encontrado) = 'sim' THEN 1 ELSE 0 END AS foco_encontrado,
+        CASE WHEN LOWER(foco_remediado) = 'sim' THEN 1 ELSE 0 END AS foco_remediado,
+        motivos_nao_vistoria,
+        locais_foco
       FROM aedes.fato_vistorias
       ORDER BY ano DESC, mes DESC, id ASC;
     `;
 
     const resultado = await pool.query(query);
 
-   console.log(`📊 Painel carregado com sucesso: ${resultado.rows.length} linhas.`);
+    console.log(`📊 Painel carregado com sucesso: ${resultado.rows.length} linhas enviadas.`);
     
-    // Retorna o array para o front-end
+    // Retorna o array perfeitamente tratado para o front-end
     return res.json(resultado.rows || []);
 
   } catch (error) {

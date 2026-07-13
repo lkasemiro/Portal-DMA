@@ -294,7 +294,7 @@ export async function getUnidades(_req, res) {
   try {
     const result = await pool.query(`
       SELECT DISTINCT "Unidade" AS nome_unidade 
-      FROM aedes.excel_historico 
+      FROM aedes.unidades
       WHERE "Unidade" IS NOT NULL 
       ORDER BY nome_unidade ASC
     `);

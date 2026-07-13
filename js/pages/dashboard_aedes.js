@@ -3,15 +3,11 @@
 // CONFIGURAÇÃO DA API (Atualizado para o seu novo servidor)
 // ─────────────────────────────────────────────────────────────
 
-const API_BASE = "https://portal-dma.onrender.com"; // <-- Seu novo link oficial!
+const API_BASE = "https://portal-dma.onrender.com";
 console.log("🌐 Conectado à nova API:", API_BASE);
 
-// ─────────────────────────────────────────────────────────────
-// CLIENTE DA API AEDES (Consumindo as novas Views do Banco)
-// ─────────────────────────────────────────────────────────────
-
 const AedesAPI = {
-    // Busca a base histórica antiga (mantida por compatibilidade)
+    // Busca a base histórica antiga
     async getDadosPainel() {
         try {
             const response = await fetch(`${API_BASE}/api/aedes/painel-dados`);
@@ -24,43 +20,42 @@ const AedesAPI = {
         }
     },
 
-    // 1. Busca os dados dos Cards (KPIs)
+    // 1. Busca os dados dos Cards (KPIs usando a vw_resumo_aedes)
     async getResumoGeral() {
         try {
             const response = await fetch(`${API_BASE}/api/aedes/resumo`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json(); // Retorna { total_registros, total_vistorias, total_focos, total_remediados }
+            return await response.json(); 
         } catch (error) {
             console.error("❌ Erro ao buscar resumo:", error);
             return { total_registros: 0, total_vistorias: 0, total_focos: 0, total_remediados: 0 };
         }
     },
 
-    // 2. Busca os Motivos de Não Vistoria (para Gráfico de Pizza/Donut)
+    // 2. Busca os Motivos de Não Vistoria (vw_motivos_nao_vistoria)
     async getMotivosNaoVistoria() {
         try {
             const response = await fetch(`${API_BASE}/api/aedes/motivos-nao-vistoria`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json(); // Retorna Array de { motivo, quantidade }
+            return await response.json(); 
         } catch (error) {
             console.error("❌ Erro ao buscar motivos de não vistoria:", error);
             return [];
         }
     },
 
-    // 3. Busca o Ranking Dinâmico das Unidades
+    // 3. Busca o Ranking Dinâmico das Unidades (vw_unidades_aedes)
     async getEstatistiscasUnidades() {
         try {
             const response = await fetch(`${API_BASE}/api/aedes/vistas-unidades`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json(); // Retorna Array de { unidade_nome, registros, vistorias, focos, focos_remediados }
+            return await response.json(); 
         } catch (error) {
             console.error("❌ Erro ao buscar estatísticas por unidade:", error);
             return [];
         }
     }
 };
-
 // ─────────────────────────────────────────────────────────────
 // FUNÇÃO EXEMPLO DE RENDERIZAÇÃO NA TELA
 // ─────────────────────────────────────────────────────────────

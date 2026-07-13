@@ -1,4 +1,4 @@
-import { AedesAPI } from '/js/modules/aedes/aedes-api.js';
+import { AedesAPI } from './js/modules/aedes/aedes-api.js';
 
 const loadingScreen = document.getElementById('loading-screen');
 const sectionHubHome = document.getElementById('section-hub-home');

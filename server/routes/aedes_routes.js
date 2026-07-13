@@ -15,4 +15,12 @@ router.get("/lotes", aedesController.getLotes);
 router.get("/painel-dados", aedesController.getPainelDados);
 router.get("/focal-dossie", aedesController.getFocalDossie);
 
+// ========================================================
+// NOVAS ROTAS - Consumindo as Views do Banco de Dados
+// ========================================================
+router.get("/resumo", aedesController.getResumoGeral);
+router.get("/motivos-nao-vistoria", aedesController.getMotivosNaoVistoria);
+router.get("/motivos-nao-remediacao", aedesController.getMotivosNaoRemediacao);
+router.get("/vistas-unidades", aedesController.getEstatisticasUnidades);
+
 export default router;

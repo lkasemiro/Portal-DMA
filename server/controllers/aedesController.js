@@ -380,4 +380,78 @@ export async function getFocalDossie(req, res) {
   } catch (err) {
     res.status(500).json({ nome: null, matricula: null, email: null });
   }
+
+}
+// ========================================================
+// NOVOS CONTROLLERS - Mapeando as Views do Banco
+// ========================================================
+
+/**
+ * GET /api/aedes/resumo
+ */
+export async function getResumoGeral(req, res) {
+  try {
+    // Executa a query na view de resumo geral do aedes
+    const result = await pool.query('SELECT * FROM aedes.vw_resumo_aedes;');
+    
+    // Como o resumo devolve apenas 1 linha com os totais, devolvemos rows[0]
+    return res.json(result.rows[0] || { total_registros: 0, total_vistorias: 0, total_focos: 0, total_remediados: 0 });
+  } catch (error) {
+    console.error("❌ Erro em getResumoGeral:", error);
+    return res.status(500).json({ 
+      error: "Erro ao buscar resumo geral do Aedes do banco.",
+      detalhe: error.message 
+    });
+  }
+}
+
+/**
+ * GET /api/aedes/motivos-nao-vistoria
+ */
+export async function getMotivosNaoVistoria(req, res) {
+  try {
+    // Executa a query na view unificada de motivos de impedimento
+    const result = await pool.query('SELECT * FROM aedes.vw_motivos_nao_vistoria;');
+    return res.json(result.rows || []);
+  } catch (error) {
+    console.error("❌ Erro em getMotivosNaoVistoria:", error);
+    return res.status(500).json({ 
+      error: "Erro ao buscar motivos de não vistoria.",
+      detalhe: error.message 
+    });
+  }
+}
+
+/**
+ * GET /api/aedes/motivos-nao-remediacao
+ */
+export async function getMotivosNaoRemediacao(req, res) {
+  try {
+    // Executa a query na view de motivos de não remediação
+    const result = await pool.query('SELECT * FROM aedes.vw_motivos_nao_remediacao;');
+    return res.json(result.rows || []);
+  } catch (error) {
+    console.error("❌ Erro em getMotivosNaoRemediacao:", error);
+    return res.status(500).json({ 
+      error: "Erro ao buscar motivos de não remediação.",
+      detalhe: error.message 
+    });
+  }
+}
+
+/**
+ * GET /api/aedes/vistas-unidades
+ */
+export async function getEstatisticasUnidades(req, res) {
+  try {
+    // Executa a query na view que agrupa dados consolidados por unidade
+    const result = await pool.query('SELECT * FROM aedes.vw_unidades_aedes;');
+    return res.json(result.rows || []);
+  } catch (error) {
+    console.error("❌ Erro em getEstatisticasUnidades:", error);
+    return res.status(500).json({ 
+      error: "Erro ao buscar estatísticas de unidades.",
+      detalhe: error.message 
+    });
+  }
 }

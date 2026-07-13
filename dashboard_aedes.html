@@ -11,71 +11,265 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
     <style>
-        body { font-family: 'Inter', sans-serif; font-size: 14px; background-color: #f1f5f9; }
-        .navbar { background-color: #cc0000 !important; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .navbar-brand { font-size: 20px !important; font-weight: 800; color: white !important; }
+        :root {
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 70px;
+            --primary-blue: #0b3d91;
+            --dark-blue: #001d3d;
+            --accent-green: #22c55e;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --bg-gray: #f0f4f8; /* Tom cinza gelo unificado estilo BI */
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --transition-speed: 0.25s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-gray); display: flex; color: var(--text-main); overflow-x: hidden; }
+
+        /* --- LOADING SCREEN --- */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--dark-blue); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 99999;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px; border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%; border-top-color: var(--accent-green); animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- SIDEBAR RETRÁTIL UNIFICADA --- */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: var(--dark-blue);
+            color: white; 
+            position: fixed; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 100; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            transition: width var(--transition-speed) ease;
+            overflow: hidden;
+        }
+        body.sidebar-collapsed .sidebar {
+            width: var(--sidebar-collapsed-width);
+        }
         
-        .card-kpi { border: none; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); background: white; }
-        .kpi-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #64748b; }
-        .kpi-value { font-size: 2rem; font-weight: 800; color: #1e293b; margin-top: 2px; }
+        .sidebar__header { 
+            padding: 20px 15px; 
+            background: rgba(0,0,0,0.2); 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .header-logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+        }
+        .logo-dma-estilizado { 
+            width: 40px; 
+            height: 40px; 
+            min-width: 40px;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); 
+            border-radius: 8px; 
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-weight: 900; 
+            font-size: 1.1rem; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .brand-name { 
+            display: flex; 
+            flex-direction: column;
+            white-space: nowrap;
+            transition: opacity var(--transition-speed);
+        }
+        body.sidebar-collapsed .brand-name {
+            opacity: 0;
+            width: 0;
+            pointer-events: none;
+        }
+        .brand-name b { font-size: 0.95rem; color: white; }
+        .brand-name span { font-size: 0.6rem; color: var(--accent-green); text-transform: uppercase; font-weight: bold; }
         
-        .card-painel { border: none; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); background: white; padding: 20px; margin-bottom: 24px; }
-        .painel-header { font-size: 1.05rem; font-weight: 700; color: #1e293b; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .btn-toggle-sidebar {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+        .btn-toggle-sidebar:hover {
+            color: white;
+        }
+
+        .sidebar__nav { flex: 1; padding: 20px 0; display: flex; flex-direction: column; gap: 4px; }
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            padding: 12px 20px; 
+            color: rgba(255,255,255,0.6); 
+            text-decoration: none;
+            transition: all 0.2s; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            white-space: nowrap;
+        }
+        .nav-item i {
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+        .nav-item span {
+            transition: opacity var(--transition-speed);
+        }
+        body.sidebar-collapsed .nav-item span {
+            opacity: 0;
+            width: 0;
+            pointer-events: none;
+        }
+        .nav-item:hover, .nav-item.active { 
+            color: white; 
+            background: rgba(255,255,255,0.06); 
+            border-left-color: var(--accent-green);
+        }
+
+        /* --- CONTAINER PRINCIPAL RETRÁTIL --- */
+        .main-container { 
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width)); 
+            padding: 35px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 25px;
+            transition: margin-left var(--transition-speed) ease, width var(--transition-speed) ease;
+        }
+        body.sidebar-collapsed .main-container {
+            margin-left: var(--sidebar-collapsed-width);
+            width: calc(100% - var(--sidebar-collapsed-width));
+        }
+
+        /* --- CARDS DE PERFORMANCE E TEXTOS --- */
+        .card-painel { background: var(--white); border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); margin-bottom: 20px; }
+        .painel-header { font-size: 0.9rem; font-weight: 800; color: var(--dark-blue); border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .table-textos { font-size: 0.8rem; max-height: 160px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 6px; }
-        #mapa_aedes { height: 450px; border-radius: 12px; z-index: 1; }
+        .mini-kpi-card { background: var(--white); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
+        .mini-kpi-card i { font-size: 1.8rem; opacity: 0.85; }
+        .mini-kpi-val { font-size: 1.8rem; font-weight: 800; color: var(--dark-blue); line-height: 1.1; margin-top: 2px; }
+        .mini-kpi-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        #mapa_aedes { height: 480px; width: 100%; border-radius: 10px; border: 1px solid var(--border-color); z-index: 1; }
+        .table-textos { max-height: 175px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--border-color); background: #f8fafc; font-size: 0.8rem; }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .ranking-container { max-height: 480px; overflow-y: auto; padding-right: 5px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark mb-4">
-        <div class="container-fluid">
-            <span class="navbar-brand"><i class="fa-solid fa-mosquito me-2"></i> DMA - CONTROLO INTEGRADO AEDES AEGYPTI</span>
-        </div>
-    </nav>
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <div style="color: white; font-weight: 600; margin-top: 15px; font-size: 1rem;">Processando BI Gerencial Aedes...</div>
+    </div>
 
-    <div class="container-fluid px-4">
+    <aside class="sidebar">
+        <div class="sidebar__header">
+            <div class="header-logo-group">
+                <div class="logo-dma-estilizado">DMA</div>
+                <div class="brand-name">
+                    <span>DEPARTAMENTO DE</span>
+                    <b>MEIO AMBIENTE</b>
+                    <span>SISTEMA DE GESTÃO</span>
+                </div>
+            </div>
+            <button class="btn-toggle-sidebar" id="toggle-sidebar-btn" title="Recolher Barra Lateral">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+      
+        <nav class="sidebar__nav">
+            <a href="./area-tecnica.html" class="nav-item"><i class="fas fa-server"></i> <span>ÁREA TÉCNICA</span></a>
+            <a href="./aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> <span>AEDES - DADOS</span></a>
+            <a href="./dashboard_aedes.html" class="nav-item active"><i class="fas fa-chart-line"></i> <span>AEDES - DASHBOARD</span></a>
+            <a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 1</span></a>
+            <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 2</span></a>
+            <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
+        </nav>
+    </aside>
+
+    <div class="main-container">
         
-        <!-- CARDS DE MÉTRICAS (KPIs) -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="card-kpi p-3 border-start border-primary border-4">
-                    <div class="kpi-title">Total Registos</div>
-                    <div class="kpi-value" id="kpi-total-registros">-</div>
+        <div>
+            <h1 style="color: var(--dark-blue); font-weight: 800; font-size: 1.8rem; letter-spacing: -0.5px;">Painel de Controle Macro: Vetores</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2px;">Análise geográfica dinâmica da conformidade de vistorias e remediações semanais no Rio de Janeiro.</p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="mini-kpi-card">
+                    <div>
+                        <div class="mini-kpi-label">Registros brutos</div>
+                        <div class="mini-kpi-val" id="kpi-total-registros">0</div>
+                    </div>
+                    <i class="fa-solid fa-clipboard-list text-primary"></i>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="card-kpi p-3 border-start border-success border-4">
-                    <div class="kpi-title">Vistorias Efetuadas</div>
-                    <div class="kpi-value" id="kpi-total-vistorias">-</div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="mini-kpi-card">
+                    <div>
+                        <div class="mini-kpi-label">Vistorias efetuadas</div>
+                        <div class="mini-kpi-val" id="kpi-total-vistorias">0</div>
+                    </div>
+                    <i class="fa-solid fa-file-medical text-success"></i>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="card-kpi p-3 border-start border-danger border-4">
-                    <div class="kpi-title">Focos Identificados</div>
-                    <div class="kpi-value" id="kpi-total-focos">-</div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="mini-kpi-card">
+                    <div>
+                        <div class="mini-kpi-label">Focos identificados</div>
+                        <div class="mini-kpi-val" id="kpi-total-focos" style="color: var(--danger-red);">0</div>
+                    </div>
+                    <i class="fa-solid fa-biohazard text-danger"></i>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="card-kpi p-3 border-start border-warning border-4">
-                    <div class="kpi-title">Focos Remediados</div>
-                    <div class="kpi-value" id="kpi-total-remediados">-</div>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="mini-kpi-card">
+                    <div>
+                        <div class="mini-kpi-label">Focos remediados</div>
+                        <div class="mini-kpi-val" id="kpi-total-remediados">0</div>
+                    </div>
+                    <i class="fa-solid fa-hand-holding-medical text-warning"></i>
                 </div>
             </div>
         </div>
 
-        <!-- SEÇÃO SUPERIOR: MAPA E RANKING -->
-        <div class="row g-4 mb-4">
+        <div class="row g-4 mt-1">
             <div class="col-12 col-lg-8">
                 <div class="card-painel h-100 mb-0">
-                    <div class="painel-header">
-                        <span><i class="fa-solid fa-map-location-dot text-danger me-2"></i> MAPA ESTRATÉGICO DE CONFORMIDADE</span>
-                        <span class="badge bg-secondary" id="total-pins-mapa">126 Unidades</span>
+                    <div class="painel-header d-flex justify-content-between align-items-center">
+                        <span><i class="fa-solid fa-map-location-dot me-2 text-primary"></i> Vetores Georreferenciados (Dispersão RJ)</span>
+                        <span class="badge bg-light text-dark shadow-sm" id="total-pins-mapa">Analisando...</span>
                     </div>
                     <div id="mapa_aedes"></div>
                 </div>
@@ -84,55 +278,51 @@
             <div class="col-12 col-lg-4">
                 <div class="card-painel h-100 mb-0">
                     <div class="painel-header">
-                        <span><i class="fa-solid fa-ranking-star text-warning me-2"></i> DESEMPENHO POR UNIDADE</span>
+                        <span><i class="fa-solid fa-ranking-star me-2 text-success"></i> Eficiência das Unidades</span>
                     </div>
-                    <div id="ranking-unidades-container" style="max-height: 400px; overflow-y: auto;">
-                        <div class="text-center text-muted py-5">A carregar ranking...</div>
-                    </div>
+                    <div class="ranking-container" id="ranking-unidades-container">
+                        </div>
                 </div>
             </div>
         </div>
 
-        <!-- SEÇÃO INFERIOR: GRÁFICOS COMPACTOS + TABELAS DE RESPOSTAS ABERTAS -->
-        <div class="row g-4">
-            <!-- COLUNA NÃO VISTORIA -->
+        <div class="row g-4 mt-1">
             <div class="col-12 col-md-6">
                 <div class="card-painel">
                     <div class="painel-header">
-                        <span><i class="fa-solid fa-triangle-exclamation text-danger me-2"></i> IMPEDIMENTOS DE VISTORIA</span>
+                        <span><i class="fa-solid fa-triangle-exclamation text-danger me-2"></i> Impedimentos de Vistoria</span>
                     </div>
                     <div class="row align-items-center mb-3">
                         <div class="col-6" style="height: 180px; position: relative;">
                             <canvas id="graficoMotivosVistoria"></canvas>
                         </div>
                         <div class="col-6">
-                            <div id="legenda-vistoria-compacta" class="small text-muted"></div>
+                            <div id="legenda-vistoria-compacta" class="small text-muted d-flex flex-column gap-1"></div>
                         </div>
                     </div>
-                    <h6>Especificações Textuais / Respostas Abertas</h6>
-                    <div class="table-textos bg-light p-2" id="tabela-textos-vistoria">
-                        <div class="text-muted text-center py-3">Sem observações abertas.</div>
+                    <h6 style="font-size: 0.8rem; font-weight: 700; color: var(--text-main);" class="mb-2">Especificações Textuais / Respostas Abertas</h6>
+                    <div class="table-textos p-2" id="tabela-textos-vistoria">
+                        <div class="text-muted text-center py-3">Carregando dados textuais...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- COLUNA NÃO REMEDIAÇÃO -->
             <div class="col-12 col-md-6">
                 <div class="card-painel">
                     <div class="painel-header">
-                        <span><i class="fa-solid fa-hand text-warning me-2"></i> IMPEDIMENTOS DE REMEDIAÇÃO</span>
+                        <span><i class="fa-solid fa-hand text-warning me-2"></i> Impedimentos de Remediação</span>
                     </div>
                     <div class="row align-items-center mb-3">
                         <div class="col-6" style="height: 180px; position: relative;">
                             <canvas id="graficoMotivosRemediacao"></canvas>
                         </div>
                         <div class="col-6">
-                            <div id="legenda-remediacao-compacta" class="small text-muted"></div>
+                            <div id="legenda-remediacao-compacta" class="small text-muted d-flex flex-column gap-1"></div>
                         </div>
                     </div>
-                    <h6>Especificações Textuais / Respostas Abertas</h6>
-                    <div class="table-textos bg-light p-2" id="tabela-textos-remediacao">
-                        <div class="text-muted text-center py-3">Sem observações abertas.</div>
+                    <h6 style="font-size: 0.8rem; font-weight: 700; color: var(--text-main);" class="mb-2">Especificações Textuais / Respostas Abertas</h6>
+                    <div class="table-textos p-2" id="tabela-textos-remediacao">
+                        <div class="text-muted text-center py-3">Carregando dados textuais...</div>
                     </div>
                 </div>
             </div>
@@ -140,12 +330,48 @@
 
     </div>
 
-    <!-- Bibliotecas Obrigatórias -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggleBtn = document.getElementById("toggle-sidebar-btn");
+            const body = document.body;
+            const icon = toggleBtn.querySelector("i");
+
+            // Carrega estado prévio do usuário (expandido ou colapsado)
+            const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+            if (isCollapsed) {
+                body.classList.add("sidebar-collapsed");
+                icon.className = "fas fa-chevron-right";
+            }
+
+            toggleBtn.addEventListener("click", () => {
+                body.classList.toggle("sidebar-collapsed");
+                const collapsedActive = body.classList.contains("sidebar-collapsed");
+                localStorage.setItem("sidebar-collapsed", collapsedActive);
+
+                if (collapsedActive) {
+                    icon.className = "fas fa-chevron-right";
+                } else {
+                    icon.className = "fas fa-chevron-left";
+                }
+            });
+
+            // Timeout técnico de segurança para esconder o loading screen em caso de erros silenciosos de rede
+            setTimeout(() => {
+                const loading = document.getElementById("loading-screen");
+                if (loading && loading.style.display !== "none") {
+                    console.warn("⚠️ Ocultação forçada da tela de carregamento via temporizador.");
+                    loading.style.opacity = "0";
+                    setTimeout(() => loading.style.display = "none", 400);
+                }
+            }, 1800);
+        });
+    </script>
     
-    <script src="js/pages/dashboard_aedes.js"></script>
+    <script src="./js/pages/dashboard_aedes.js"></script>
 </body>
 </html>

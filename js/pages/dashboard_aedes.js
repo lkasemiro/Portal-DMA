@@ -3,12 +3,11 @@
 const API_BASE =
     window.location.hostname === "localhost"
         ? "http://localhost:3001"
-        : "https://portal-dma.onrender.com"; // Ajuste conforme a sua URL de produção
+        : "https://portal-dma.onrender.com";
 
 console.log("🌐 API Conectada em:", `${API_BASE}/api/aedes/painel-dados`);
 
 let mapaAedes = null;
-
 // Estrutura de Zonas do Rio de Janeiro para dispersar os pins de forma realista
 const ZONAS_RJ = [
     { nome: "Zona Sul", latMin: -22.98, latMax: -22.95, lngMin: -43.22, lngMax: -43.17 },
@@ -35,7 +34,6 @@ function agruparTermosAedes(motivoCru) {
 // Retorna uma latitude e longitude fictícia mas bem distribuída dentro do RJ usando um hash simples do nome
 function obterCoordenadasPorNome(nomeUnidade, index) {
     const zona = ZONAS_RJ[index % ZONAS_RJ.length];
-    
     // Gerador pseudo-aleatório baseado no nome da unidade para manter o pin sempre no mesmo lugar
     let hash = 0;
     for (let i = 0; i < nomeUnidade.length; i++) {
@@ -44,14 +42,12 @@ function obterCoordenadasPorNome(nomeUnidade, index) {
     
     const pctLat = Math.abs(Math.sin(hash)) * 0.9; 
     const pctLng = Math.abs(Math.cos(hash)) * 0.9;
-
     const lat = zona.latMin + pctLat * (zona.latMax - zona.latMin);
     const lng = zona.lngMin + pctLng * (zona.lngMax - zona.lngMin);
-
     return [lat, lng];
 }
 
-// Inicializa e desenha os 126 Pins no Mapa do Rio de Janeiro
+// Inicializa e desenha os Pins no Mapa do Rio de Janeiro
 function renderizarMapa(unidadesEstatísticas) {
     if (mapaAedes) {
         mapaAedes.remove();
@@ -59,7 +55,6 @@ function renderizarMapa(unidadesEstatísticas) {
 
     // Centra o mapa no Rio de Janeiro
     mapaAedes = L.map('mapa_aedes').setView([-22.9068, -43.3400], 11);
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(mapaAedes);
@@ -125,18 +120,15 @@ async function carregarNovoDashboard() {
             return;
         }
 
-        // 2. Determinar a "Semana Vigente" (Vamos agrupar pela data_registro mais recente do banco de dados)
-        // Extrai todas as datas válidas do registo para encontrar a última semana disponível
+        // 2. Determinar a "Semana Vigente"
         const datasOrdenadas = vistorias_raw
             .map(v => v.data_registro ? new Date(v.data_registro) : null)
             .filter(d => d !== null)
             .sort((a, b) => b - a);
-
         if (datasOrdenadas.length === 0) return;
 
         const ultimaData = datasOrdenadas[0];
         
-        // Calculamos o início e o fim da semana dessa última data para determinar a janela de 7 dias
         const fimSemanaVigente = new Date(ultimaData);
         const inicioSemanaVigente = new Date(ultimaData);
         inicioSemanaVigente.setDate(inicioSemanaVigente.getDate() - 7);
@@ -155,9 +147,7 @@ async function carregarNovoDashboard() {
         if (document.getElementById("kpi-total-remediados")) document.getElementById("kpi-total-remediados").innerText = totalRemediados.toLocaleString();
 
         // 4. Processar Unidades e avaliar a Conformidade na Semana Vigente
-        // Agrupamos todos os registros associados a cada unidade
         const mapaUnidades = {};
-
         vistorias_raw.forEach(v => {
             const nomeUnidade = v.Unidade || "Desconhecida";
             if (!mapaUnidades[nomeUnidade]) {
@@ -169,7 +159,6 @@ async function carregarNovoDashboard() {
             }
             mapaUnidades[nomeUnidade].historicoGeral.push(v);
 
-            // Se o registo estiver dentro do intervalo da semana vigente, adicionamos para cálculo de conformidade
             const dataReg = v.data_registro ? new Date(v.data_registro) : null;
             if (dataReg && dataReg >= inicioSemanaVigente && dataReg <= fimSemanaVigente) {
                 mapaUnidades[nomeUnidade].vistoriasSemana.push(v);
@@ -178,26 +167,19 @@ async function carregarNovoDashboard() {
 
         // Mapeamos o estado final de cada unidade
         const listaUnidadesEstatísticas = Object.values(mapaUnidades).map(unidade => {
-            // Se não tem registos específicos na semana, cai para o histórico mais recente da unidade
             const dadosSemana = unidade.vistoriasSemana.length > 0 ? unidade.vistoriasSemana : [unidade.historicoGeral[0]];
-            
-            // Uma vistoria foi realizada com sucesso se pelo menos um registo foi "visitado"
             const vistoriaRealizada = dadosSemana.some(d => d.visitada === 1);
             
-            // Focos e remediações da unidade na semana
             const focos = dadosSemana.filter(d => d.foco_encontrado === 1).length;
             const remediados = dadosSemana.filter(d => d.foco_remediado === 1).length;
-            
             const focoAtivoPendente = focos > remediados;
 
             // REGRA DE OURO DA CONFORMIDADE:
-            // Deve ter feito vistoria na semana vigente E remediado TODOS os focos que porventura encontrou.
             const conforme = vistoriaRealizada && !focoAtivoPendente;
 
-            // Calcula taxa de eficiência global (histórica) para o ranking lateral
+            // Mapeamentos históricos para o ranking
             const totalRegistrosHist = unidade.historicoGeral.length;
             const totalVistoriasHist = unidade.historicoGeral.filter(h => h.visitada === 1).length;
-            const eficienciaGlobal = totalRegistrosHist > 0 ? Math.round((totalVistoriasHist / totalRegistrosHist) * 100) : 0;
 
             return {
                 nome: unidade.nome,
@@ -206,45 +188,54 @@ async function carregarNovoDashboard() {
                 remediados,
                 focoAtivoPendente,
                 conforme,
-                eficienciaGlobal,
                 totalVistoriasHist,
                 totalRegistrosHist
             };
-        }).sort((a, b) => b.eficienciaGlobal - a.eficienciaGlobal); // Ranking ordenado por eficiência de vistoria
+        });
 
         // 5. Inicializar o Mapa com Pins e Conformidades Reais
         renderizarMapa(listaUnidadesEstatísticas);
 
-        // 6. Atualizar Painel de Ranking Lateral das Unidades
+        // 6. CORREÇÃO DO RANKING LATERAL (Ordenado da unidade com mais vistorias para a que tem menos)
         const containerRanking = document.getElementById("ranking-unidades-container");
-        if (containerRanking) {
-            containerRanking.innerHTML = listaUnidadesEstatísticas.map((unidade, index) => {
-                const corStatus = unidade.conforme ? '#16a34a' : '#ef4444';
-                const statusTexto = unidade.conforme ? 'Conforme' : 'Irregular';
+        if (containerRanking && listaUnidadesEstatísticas.length > 0) {
+            
+            // Realiza a ordenação decrescente de vistorias absolutas
+            const rankingOrdenado = [...listaUnidadesEstatísticas].sort((a, b) => b.totalVistoriasHist - a.totalVistoriasHist);
+
+            containerRanking.innerHTML = rankingOrdenado.map((unidade, index) => {
+                const pctEficiencia = unidade.totalRegistrosHist > 0 
+                    ? Math.round((unidade.totalVistoriasHist / unidade.totalRegistrosHist) * 100) 
+                    : 0;
+                    
+                let corBarra = '#ef4444'; 
+                if (pctEficiencia >= 80) corBarra = '#16a34a'; 
+                else if (pctEficiencia >= 50) corBarra = '#f59e0b'; 
 
                 return `
-                    <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px;">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #1e293b; margin-bottom: 4px;">
-                            <span class="text-truncate" style="max-width: 70%;" title="${unidade.nome}">#${index + 1} ${unidade.nome}</span>
-                            <span style="color: ${corStatus}; font-size: 11px; font-weight:700;">${statusTexto}</span>
+                    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #f1f5f9; margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #1e293b; margin-bottom: 6px;">
+                            <span>#${index + 1} ${unidade.nome}</span>
+                            <span style="color: var(--text-muted); font-size: 0.75rem; font-weight: normal;">
+                                ${unidade.totalVistoriasHist} vist. de ${unidade.totalRegistrosHist}
+                            </span>
+                            <span style="color: ${corBarra}; font-weight: 700;">${pctEficiencia}%</span>
                         </div>
-                        <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">
-                            Vistorias Históricas: ${unidade.totalVistoriasHist}/${unidade.totalRegistrosHist} (${unidade.eficienciaGlobal}%)
-                        </div>
-                        <div style="width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
-                            <div style="width: ${unidade.eficienciaGlobal}%; height: 100%; background: ${corStatus};"></div>
+                        <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                            <div style="width: ${pctEficiencia}%; height: 100%; background-color: ${corBarra}; transition: width 0.5s ease-in-out;"></div>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // 7. Processar as respostas abertas e motivos de não-vistoria
+        // 7. Processar Impedimentos de Vistoria (Gráfico de Pizza para Opções Fechadas e Tabela para Textos Escritos)
         let motivosVistoriaAgrupados = {};
         let listaVistoriasTexto = [];
         
+        const coresVistoria = ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#64748b', '#8b5cf6'];
+
         vistorias_raw.forEach(v => {
-            // Tratar campos JSON ou texto simples de motivos_nao_vistoria
             let motivos = [];
             if (v.motivos_nao_vistoria) {
                 try {
@@ -260,80 +251,105 @@ async function carregarNovoDashboard() {
 
             motivos.forEach(mot => {
                 if (mot) {
-                    const cat = agruparTermosAedes(mot);
-                    motivosVistoriaAgrupados[cat] = (motivosVistoriaAgrupados[cat] || 0) + 1;
-
-                    if (mot.length > 25 || cat === 'Especificações Individuais') {
-                        listaVistoriasTexto.push(`<tr><td>• ${mot} <span class="badge bg-light text-dark float-end">1</span></td></tr>`);
+                    // Se o texto for longo ou tiver traços, categoriza como escrita individual para a tabela
+                    if (mot.length > 28 || mot.includes('-') || mot.includes(';')) {
+                        listaVistoriasTexto.push(`<tr><td>• <b>Unidade ${v.Unidade || 'Não Especificada'}:</b> ${mot} <span class="badge bg-light text-dark float-end">Escrita</span></td></tr>`);
+                        motivosVistoriaAgrupados['Especificações Individuais'] = (motivosVistoriaAgrupados['Especificações Individuais'] || 0) + 1;
+                    } else {
+                        // Se for uma opção curta/fechada do checkbox
+                        const cat = agruparTermosAedes(mot);
+                        motivosVistoriaAgrupados[cat] = (motivosVistoriaAgrupados[cat] || 0) + 1;
                     }
                 }
             });
         });
 
-        // Renderizar Gráficos e Legenda de Impedimento de Vistoria
+        // Renderizar Gráficos e Legendas Dinâmicas de Vistoria
         const canvasVistoria = document.getElementById("graficoMotivosVistoria");
         if (canvasVistoria && Object.keys(motivosVistoriaAgrupados).length > 0) {
+            const labels = Object.keys(motivosVistoriaAgrupados);
+            const dados = Object.values(motivosVistoriaAgrupados);
+
             new Chart(canvasVistoria.getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(motivosVistoriaAgrupados),
-                    datasets: [{ data: Object.values(motivosVistoriaAgrupados), backgroundColor: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#64748b'] }]
+                    labels: labels,
+                    datasets: [{ data: dados, backgroundColor: coresVistoria.slice(0, labels.length) }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
+            // Geração de legenda com a cor correspondente à fatia
             const elLegenda = document.getElementById("legenda-vistoria-compacta");
-            if (elLegenda) elLegenda.innerHTML = Object.entries(motivosVistoriaAgrupados).map(([lbl, val]) => `<div><i class="fa-solid fa-circle me-1" style="color: #3b82f6;"></i> <b>${val}</b> - ${lbl}</div>`).join('');
+            if (elLegenda) {
+                elLegenda.innerHTML = labels.map((lbl, idx) => {
+                    const cor = coresVistoria[idx % coresVistoria.length];
+                    return `<div style="font-size: 0.8rem; margin-bottom: 4px;"><i class="fa-solid fa-circle me-1" style="color: ${cor};"></i> <b>${dados[idx]}</b> - ${lbl}</div>`;
+                }).join('');
+            }
         }
 
         const elTabela = document.getElementById("tabela-textos-vistoria");
         if (elTabela) {
             elTabela.innerHTML = listaVistoriasTexto.length > 0 
                 ? `<table class="table table-sm table-borderless mb-0">${listaVistoriasTexto.slice(0, 40).join('')}</table>` 
-                : '<div class="text-muted small text-center py-2">Nenhuma ocorrência complexa registrada.</div>';
+                : '<div class="text-muted small text-center py-2">Nenhuma observação escrita registrada nesta categoria.</div>';
         }
 
-        // 8. Processar as respostas abertas e motivos de não-remediação
+        // 8. Processar Impedimentos de Não-Remediação (Gráfico de Pizza e Tabela)
         let motivosRemediacaoAgrupados = {};
         let listaRemediacaoTexto = [];
+        const coresRemediacao = ['#8b5cf6', '#ec4899', '#f59e0b', '#64748b', '#ef4444'];
 
         vistorias_raw.forEach(v => {
-            // Se houve foco detectado mas não remediado
             if (v.foco_encontrado === 1 && v.foco_remediado === 0) {
-                // Adicionamos observações textuais se existirem
-                let obs = v.observacoes || "Foco detectado pendente de ação imediata.";
-                const cat = agruparTermosAedes(obs);
-                motivosRemediacaoAgrupados[cat] = (motivosRemediacaoAgrupados[cat] || 0) + 1;
-
-                listaRemediacaoTexto.push(`<tr><td>• Unidade ${v.Unidade}: ${obs} <span class="badge bg-light text-dark float-end">1</span></td></tr>`);
+                let obs = v.observacoes || "";
+                if (obs) {
+                    if (obs.length > 28 || obs.includes('-')) {
+                        listaRemediacaoTexto.push(`<tr><td>• <b>Unidade ${v.Unidade || 'N/A'}:</b> ${obs} <span class="badge bg-light text-dark float-end">Escrita</span></td></tr>`);
+                        motivosRemediacaoAgrupados['Especificações Individuais'] = (motivosRemediacaoAgrupados['Especificações Individuais'] || 0) + 1;
+                    } else {
+                        const cat = agruparTermosAedes(obs);
+                        motivosRemediacaoAgrupados[cat] = (motivosRemediacaoAgrupados[cat] || 0) + 1;
+                    }
+                } else {
+                    motivosRemediacaoAgrupados['Pendente de Ação'] = (motivosRemediacaoAgrupados['Pendente de Ação'] || 0) + 1;
+                }
             }
         });
 
-        // Garantir categorias para gráfico de remediação
         if (Object.keys(motivosRemediacaoAgrupados).length === 0) {
             motivosRemediacaoAgrupados['Tudo Remediado'] = totalRemediados;
         }
 
         const canvasRemediacao = document.getElementById("graficoMotivosRemediacao");
         if (canvasRemediacao) {
+            const labelsRem = Object.keys(motivosRemediacaoAgrupados);
+            const dadosRem = Object.values(motivosRemediacaoAgrupados);
+
             new Chart(canvasRemediacao.getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(motivosRemediacaoAgrupados),
-                    datasets: [{ data: Object.values(motivosRemediacaoAgrupados), backgroundColor: ['#8b5cf6', '#ec4899', '#f59e0b', '#64748b'] }]
+                    labels: labelsRem,
+                    datasets: [{ data: dadosRem, backgroundColor: coresRemediacao.slice(0, labelsRem.length) }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
             const elLegendaRem = document.getElementById("legenda-remediacao-compacta");
-            if (elLegendaRem) elLegendaRem.innerHTML = Object.entries(motivosRemediacaoAgrupados).map(([lbl, val]) => `<div><i class="fa-solid fa-circle me-1" style="color: #8b5cf6;"></i> <b>${val}</b> - ${lbl}</div>`).join('');
+            if (elLegendaRem) {
+                elLegendaRem.innerHTML = labelsRem.map((lbl, idx) => {
+                    const cor = coresRemediacao[idx % coresRemediacao.length];
+                    return `<div style="font-size: 0.8rem; margin-bottom: 4px;"><i class="fa-solid fa-circle me-1" style="color: ${cor};"></i> <b>${dadosRem[idx]}</b> - ${lbl}</div>`;
+                }).join('');
+            }
         }
 
         const elTabelaRem = document.getElementById("tabela-textos-remediacao");
         if (elTabelaRem) {
             elTabelaRem.innerHTML = listaRemediacaoTexto.length > 0 
                 ? `<table class="table table-sm table-borderless mb-0">${listaRemediacaoTexto.slice(0, 40).join('')}</table>` 
-                : '<div class="text-muted small text-center py-2">Sem pendências de remediação ativas.</div>';
+                : '<div class="text-muted small text-center py-2">Nenhuma observação escrita ativa. Todos os focos resolvidos na rotina.</div>';
         }
 
     } catch (err) {

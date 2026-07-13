@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Módulo Técnico Aedes | Hub de Gestão</title>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -16,7 +18,7 @@
       --dark-blue: #001d3d;
       --accent-green: #22c55e;
       --warning-orange: #f59e0b;
-      --danger-red: #ff2c2c;
+      --danger-red: #ef4444;
       --bg-gray: #f0f4f8; /* Tom cinza gelo estilo BI */
       --white: #ffffff;
       --text-main: #1e293b;
@@ -25,60 +27,225 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-gray); display: flex; color: var(--text-main); }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-gray); display: flex; color: var(--text-main); }
 
-    /* --- SIDEBAR ORIGINAL --- */
-    .sidebar { width: var(--sidebar-width); background: var(--danger-red); color: white; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-    .sidebar__header { padding: 25px 20px; background: rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; }
-    .logo-dma-estilizado { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); }
+    /* --- SIDEBAR FIXA --- */
+    .sidebar { 
+      width: var(--sidebar-width); 
+      background: var(--dark-blue);
+      color: white; 
+      position: fixed; 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      z-index: 100; 
+      box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    }
+    .sidebar__header { 
+      padding: 25px 20px; 
+      background: rgba(0,0,0,0.2); 
+      display: flex; 
+      align-items: center; 
+      gap: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .logo-dma-estilizado { 
+      width: 45px; 
+      height: 45px; 
+      background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); 
+      border-radius: 10px; 
+      display: flex;
+      align-items: center; 
+      justify-content: center; 
+      color: white; 
+      font-weight: 900; 
+      font-size: 1.2rem; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+      border: 2px solid rgba(255,255,255,0.2);
+    }
     .brand-name { display: flex; flex-direction: column; }
     .brand-name b { font-size: 1.1rem; color: white; }
     .brand-name span { font-size: 0.65rem; color: var(--accent-green); text-transform: uppercase; font-weight: bold; }
-    .sidebar__nav { flex: 1; padding: 20px 0; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
-    .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); border-left: 4px solid var(--accent-green); }
+    
+    .sidebar__nav { flex: 1; padding: 20px 0; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 12px 25px; 
+      color: rgba(255,255,255,0.6); 
+      text-decoration: none; 
+      transition: 0.3s; 
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-left: 4px solid transparent;
+    }
+    .nav-item i { width: 20px; text-align: center; }
+    .nav-item:hover, .nav-item.active { 
+      color: white; 
+      background: rgba(255,255,255,0.08); 
+      border-left-color: var(--accent-green);
+    }
 
     /* --- MAIN CONTENT CONTAINER --- */
-    .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 35px; display: flex; flex-direction: column; gap: 25px; }
+    .main-content { 
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width)); 
+      padding: 35px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 25px;
+    }
 
     /* --- CONTROL BAR (FILTROS E AÇÕES) --- */
-    .control-panel { background: var(--white); padding: 20px 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; }
+    .control-panel { 
+      background: var(--white);
+      padding: 20px 25px; 
+      border-radius: 12px; 
+      border: 1px solid var(--border-color); 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+    }
     .filter-group { display: flex; align-items: center; gap: 12px; }
-    .filter-label { font-size: 0.85rem; font-weight: 700; color: var(--dark-blue); text-transform: uppercase; letter-spacing: 0.5px; }
+    .filter-label { 
+      font-size: 0.85rem;
+      font-weight: 700; 
+      color: var(--dark-blue); 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+    }
     
-    .select-custom { padding: 10px 16px; border-radius: 8px; border: 1px solid #cbd5e1; background-color: #f8fafc; color: var(--text-main); font-size: 0.9rem; font-weight: 600; outline: none; cursor: pointer; transition: all 0.2s; min-width: 280px; }
-    .select-custom:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.1); }
+    .select-custom { 
+      padding: 10px 16px;
+      border-radius: 8px; 
+      border: 1px solid #cbd5e1; 
+      background-color: #f8fafc; 
+      color: var(--text-main); 
+      font-size: 0.9rem; 
+      font-weight: 600; 
+      outline: none; 
+      cursor: pointer;
+      transition: all 0.2s; 
+      min-width: 280px; 
+    }
+    .select-custom:focus { 
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(11, 61, 145, 0.1); 
+    }
 
-    .btn-export-excel { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: var(--white); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.2); transition: all 0.2s; }
-    .btn-export-excel:hover { transform: translateY(-1px); box-shadow: 0 6px 12px -1px rgba(22, 163, 74, 0.3); }
+    .btn-export-excel { 
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      color: var(--white); 
+      border: none; 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      font-weight: 700; 
+      font-size: 0.85rem; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center;
+      gap: 8px; 
+      box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.2); 
+      transition: all 0.2s;
+    }
+    .btn-export-excel:hover { 
+      transform: translateY(-1px); 
+      box-shadow: 0 6px 12px -1px rgba(22, 163, 74, 0.3);
+    }
     .btn-export-excel:active { transform: translateY(0); }
 
     /* --- DATA TABLE CARD --- */
-    .table-container-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); overflow: hidden; }
+    .table-container-card { 
+      background: var(--white);
+      border-radius: 12px; 
+      border: 1px solid var(--border-color); 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); 
+      overflow: hidden;
+    }
     
     /* ESTILIZAÇÃO COMPLETA DA TABELA ESTILO BI CLÁSSICO */
-    .tabela-aedes-dma { width: 100%; border-collapse: collapse; text-align: left; }
-    .tabela-aedes-dma th { background-color: #f8fafc; padding: 16px 20px; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; }
-    .tabela-aedes-dma td { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: var(--text-main); vertical-align: middle; }
+    .tabela-custom { 
+      width: 100%;
+      border-collapse: collapse; 
+      text-align: left; 
+    }
+    .tabela-custom th { 
+      background-color: #f8fafc; 
+      padding: 16px 20px; 
+      color: var(--text-muted); 
+      font-size: 0.75rem;
+      font-weight: 700; 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+      border-bottom: 2px solid #e2e8f0; 
+    }
+    .tabela-custom td { 
+      padding: 16px 20px;
+      border-bottom: 1px solid #f1f5f9; 
+      font-size: 0.9rem; 
+      color: var(--text-main); 
+      vertical-align: middle;
+    }
     
     /* Efeito de Hover nas Linhas Padrão */
-    .tabela-aedes-dma tbody tr:hover { background-color: #f8fafc; }
+    .tabela-custom tbody tr:hover { 
+      background-color: #f8fafc;
+    }
 
-    /* REGRAS VISUAIS CONDICIONAIS DE ALTA FIDELIDADE (Cores dos Prints) */
-    /* Linha quando um Foco Crítico é Detectado */
-    .tabela-aedes-dma tr.status-foco-alerta { background-color: #fef2f2; }
-    .tabela-aedes-dma tr.status-foco-alerta:hover { background-color: #fee2e2; }
-    .tabela-aedes-dma tr.status-foco-alerta td { border-bottom-color: #fee2e2; }
+    /* REGRAS VISUAIS CONDICIONAIS DE ALTA FIDELIDADE */
+    /* Linha quando um Foco Crítico é Detectado (Foco = Sim) */
+    .tabela-custom tr.status-foco-alerta { 
+      background-color: #fef2f2;
+    }
+    .tabela-custom tr.status-foco-alerta:hover { 
+      background-color: #fee2e2; 
+    }
+    .tabela-custom tr.status-foco-alerta td { 
+      border-bottom-color: #fca5a5; 
+    }
 
-    /* Linha quando a Vistoria Não foi Realizada */
-    .tabela-aedes-dma tr.status-nao-informado { background-color: #fffbeb; }
-    .tabela-aedes-dma tr.status-nao-informado:hover { background-color: #fef3c7; }
-    .tabela-aedes-dma tr.status-nao-informado td { border-bottom-color: #fef3c7; }
+    /* Linha quando a Vistoria Não foi Realizada ou não houve envio */
+    .tabela-custom tr.status-nao-informado { 
+      background-color: #fffbeb;
+    }
+    .tabela-custom tr.status-nao-informado:hover { 
+      background-color: #fef3c7; 
+    }
+    .tabela-custom tr.status-nao-informado td { 
+      border-bottom-color: #fde047; 
+    }
+
+    /* Badges customizadas de Status */
+    .badge-status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-status-sim { background-color: #dcfce7; color: #15803d; }
+    .badge-status-nao { background-color: #fee2e2; color: #b91c1c; }
+    .badge-status-pendente { background-color: #fef3c7; color: #b45309; }
 
     /* Utilitários de Alerta Genéricos */
-    .alert { padding: 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; margin: 20px; }
-    .alert-info { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-    .alert-danger { background-color: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+    .alert { 
+      padding: 20px; 
+      border-radius: 8px;
+      font-weight: 600; 
+      font-size: 0.9rem; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      margin: 20px; 
+    }
+    .alert-info { 
+      background-color: #eff6ff;
+      color: #1e40af; 
+      border: 1px solid #bfdbfe; 
+    }
   </style>
 </head>
 <body>
@@ -93,11 +260,12 @@
       </div>
     </div>
     <nav class="sidebar__nav">
-      <a href="./area-tecnica.html" class="nav-item"><i class="fas fa-server"></i> Voltar para hub</a>
-      <a href="./aedes-tecnico.html" class="nav-item active"><i class="fas fa-bug"></i> DENGUE</a>
-     <a href="./dashboard_aedes.html" class="nav-item active"><i class="fas fa-bug"></i> DASHBOARD DENGUE</a>
-     <a href="./aedes-painel.html" class="nav-item active"><i class="fas fa-bug"></i> PAINEL DENGUE</a>
-      <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ffffff;"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      <a href="./area-tecnica.html" class="nav-item"><i class="fas fa-server"></i> <span>ÁREA TÉCNICA</span></a>
+      <a href="./aedes-tecnico.html" class="nav-item active"><i class="fas fa-bug"></i> <span>AEDES - DADOS</span></a>
+      <a href="./dashboard_aedes.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - DASHBOARD</span></a>
+      <a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 1</span></a>
+      <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 2</span></a>
+      <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
     </nav>
   </aside>
 
@@ -112,7 +280,7 @@
       <div class="filter-group">
         <label class="filter-label" for="selectFiltroSemana"><i class="fas fa-filter"></i> Filtrar Período:</label>
         <select id="selectFiltroSemana" class="select-custom">
-          <option value="Todas">A carregar semanas disponíveis...</option>
+          <option value="Todas">Todas as Semanas</option>
         </select>
       </div>
       
@@ -135,6 +303,88 @@
   <script src="./js/core/auth.js"></script>
   <script>requireAuth("./login.html");</script>
   
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const selectFiltro = document.getElementById('selectFiltroSemana');
+      const container = document.getElementById('containerTabelaAedes');
+
+      // Observa a renderização dinâmica da tabela para mapear períodos e classes de risco
+      const observer = new MutationObserver((mutations) => {
+        const table = container.querySelector('table');
+        if (table) {
+          observer.disconnect(); // Desliga para evitar loops ao modificar as classes de linha
+
+          const rows = table.querySelectorAll('tbody tr');
+          const semanasSet = new Set();
+
+          rows.forEach(row => {
+            const cells = row.getElementsByTagName('td');
+            if (cells.length > 0) {
+              const dataTexto = cells[0]?.textContent.trim() || '';
+              if (dataTexto && dataTexto !== '---' && dataTexto !== '-') {
+                semanasSet.add(dataTexto);
+              }
+
+              // Análise das colunas: Vistoria (col 2) e Foco (col 3) para coloração de BI
+              const textoVistoria = cells[2]?.textContent || '';
+              const textoFoco = cells[3]?.textContent || '';
+
+              if (textoVistoria.includes('✖') || textoVistoria.toLowerCase().includes('não informado')) {
+                row.className = 'status-nao-informado';
+              } else if (textoFoco.includes('✔')) {
+                row.className = 'status-foco-alerta';
+              }
+            }
+          });
+
+          // População dinâmica do seletor baseado nas datas enviadas
+          selectFiltro.innerHTML = '<option value="Todas">Todas as Semanas</option>';
+          
+          // Ordena as datas de forma decrescente (mais recente primeiro)
+          const datasOrdenadas = Array.from(semanasSet).sort((a, b) => {
+            const [diaA, mesA, anoA] = a.split('/').map(Number);
+            const [diaB, mesB, anoB] = b.split('/').map(Number);
+            return new Date(anoB, mesB - 1, diaB) - new Date(anoA, mesA - 1, diaA);
+          });
+
+          datasOrdenadas.forEach(data => {
+            const opt = document.createElement('option');
+            opt.value = data;
+            opt.textContent = `Semana de ${data}`;
+            selectFiltro.appendChild(opt);
+          });
+
+          // Reativa o observador
+          observer.observe(container, { childList: true, subtree: true });
+        }
+      });
+
+      if (container) {
+        observer.observe(container, { childList: true, subtree: true });
+      }
+
+      // Evento de alteração no Filtro de Período (Visualização Instantânea)
+      selectFiltro.addEventListener('change', () => {
+        const valorSelecionado = selectFiltro.value;
+        const rows = container.querySelectorAll('table tbody tr');
+
+        rows.forEach(row => {
+          const cells = row.getElementsByTagName('td');
+          if (cells.length > 0) {
+            const dataTexto = cells[0]?.textContent.trim() || '';
+            
+            // Permite exibir sempre as linhas que correspondem ao período ou a ausências sem data definida
+            if (valorSelecionado === 'Todas' || dataTexto === valorSelecionado || dataTexto === '---') {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  </script>
+
   <script type="module" src="./js/pages/aedes-tecnico.js"></script>
 </body>
 </html>

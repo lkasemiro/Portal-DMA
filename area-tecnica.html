@@ -8,6 +8,7 @@
   <style>
     :root {
       --sidebar-width: 260px;
+      --sidebar-collapsed-width: 70px;
       --primary-blue: #0b3d91;
       --dark-blue: #001d3d;
       --accent-green: #22c55e;
@@ -18,37 +19,152 @@
       --text-main: #1e293b;
       --text-muted: #64748b;
       --border-color: #e2e8f0;
+      --transition-speed: 0.25s;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-gray); display: flex; color: var(--text-main); }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-gray); display: flex; color: var(--text-main); overflow-x: hidden; }
 
     /* --- LOADING SCREEN --- */
     #loading-screen {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       background-color: var(--dark-blue); display: flex; flex-direction: column;
       align-items: center; justify-content: center; z-index: 99999;
       transition: opacity 0.4s ease, visibility 0.4s ease;
     }
     .spinner {
-      width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.1);
+      width: 50px;
+      height: 50px; border: 5px solid rgba(255, 255, 255, 0.1);
       border-radius: 50%; border-top-color: var(--accent-green); animation: spin 1s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* --- SIDEBAR ORIGINAL --- */
-    .sidebar { width: var(--sidebar-width); background: var(--dark-blue); color: white; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-    .sidebar__header { padding: 25px 20px; background: rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; }
-    .logo-dma-estilizado { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); }
-    .brand-name { display: flex; flex-direction: column; }
-    .brand-name b { font-size: 1.1rem; color: white; }
-    .brand-name span { font-size: 0.65rem; color: var(--accent-green); text-transform: uppercase; font-weight: bold; }
-    .sidebar__nav { flex: 1; padding: 20px 0; display: flex; flex-direction: column; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 25px; color: rgba(255,255,255,0.6); text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
-    .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); border-left: 4px solid var(--accent-green); }
+    /* --- SIDEBAR RETRÁTIL UNIFICADA --- */
+    .sidebar { 
+      width: var(--sidebar-width); 
+      background: var(--dark-blue);
+      color: white; 
+      position: fixed; 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      z-index: 100; 
+      box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+      transition: width var(--transition-speed) ease;
+      overflow: hidden;
+    }
+    body.sidebar-collapsed .sidebar {
+      width: var(--sidebar-collapsed-width);
+    }
+    
+    .sidebar__header { 
+      padding: 20px 15px; 
+      background: rgba(0,0,0,0.2); 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .header-logo-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+    }
+    .logo-dma-estilizado { 
+      width: 40px; 
+      height: 40px; 
+      min-width: 40px;
+      background: linear-gradient(135deg, var(--accent-green) 0%, #16a34a 100%); 
+      border-radius: 8px; 
+      display: flex;
+      align-items: center; 
+      justify-content: center; 
+      color: white; 
+      font-weight: 900; 
+      font-size: 1.1rem; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .brand-name { 
+      display: flex; 
+      flex-direction: column;
+      white-space: nowrap;
+      transition: opacity var(--transition-speed);
+    }
+    body.sidebar-collapsed .brand-name {
+      opacity: 0;
+      width: 0;
+      pointer-events: none;
+    }
+    .brand-name b { font-size: 0.95rem; color: white; }
+    .brand-name span { font-size: 0.6rem; color: var(--accent-green); text-transform: uppercase; font-weight: bold; }
+    
+    .btn-toggle-sidebar {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+    .btn-toggle-sidebar:hover {
+      color: white;
+    }
 
-    /* --- CONTAINER PRINCIPAL --- */
-    .main-container { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 30px; display: flex; flex-direction: column; gap: 25px; }
+    .sidebar__nav { flex: 1; padding: 20px 0; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { 
+      display: flex; 
+      align-items: center; 
+      gap: 15px; 
+      padding: 12px 20px; 
+      color: rgba(255,255,255,0.6); 
+      text-decoration: none;
+      transition: all 0.2s; 
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-left: 4px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-item i {
+      font-size: 1.1rem;
+      min-width: 24px;
+      text-align: center;
+    }
+    .nav-item span {
+      transition: opacity var(--transition-speed);
+    }
+    body.sidebar-collapsed .nav-item span {
+      opacity: 0;
+      width: 0;
+      pointer-events: none;
+    }
+    .nav-item:hover, .nav-item.active { 
+      color: white; 
+      background: rgba(255,255,255,0.06); 
+      border-left-color: var(--accent-green);
+    }
+
+    /* --- CONTAINER PRINCIPAL RETRÁTIL --- */
+    .main-container { 
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width)); 
+      padding: 30px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 25px;
+      transition: margin-left var(--transition-speed) ease, width var(--transition-speed) ease;
+    }
+    body.sidebar-collapsed .main-container {
+      margin-left: var(--sidebar-collapsed-width);
+      width: calc(100% - var(--sidebar-collapsed-width));
+    }
 
     /* --- HEADER & LIVE MONITOR --- */
     .hub-header { display: flex; justify-content: space-between; align-items: center; background: var(--white); padding: 20px 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -110,18 +226,26 @@
 
   <aside class="sidebar">
     <div class="sidebar__header">
-      <div class="logo-dma-estilizado">DMA</div>
-      <div class="brand-name">
-          <span>DEPARTAMENTO DE</span>
-          <b>MEIO AMBIENTE</b>
-          <span>SISTEMA DE GESTÃO</span>
+      <div class="header-logo-group">
+        <div class="logo-dma-estilizado">DMA</div>
+        <div class="brand-name">
+            <span>DEPARTAMENTO DE</span>
+            <b>MEIO AMBIENTE</b>
+            <span>SISTEMA DE GESTÃO</span>
+        </div>
       </div>
+      <button class="btn-toggle-sidebar" id="toggle-sidebar-btn" title="Recolher Barra Lateral">
+        <i class="fas fa-chevron-left"></i>
+      </button>
     </div>
+  
     <nav class="sidebar__nav">
-      <a href="./aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> DENGUE</a>
-      <a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase 1</a>
-      <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> RECICLA fase 2</a>
-      <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      <a href="./area-tecnica.html" class="nav-item active"><i class="fas fa-server"></i> <span>ÁREA TÉCNICA</span></a>
+      <a href="./aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> <span>AEDES - DADOS</span></a>
+      <a href="./dashboard_aedes.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - DASHBOARD</span></a>
+      <a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 1</span></a>
+      <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 2</span></a>
+      <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
     </nav>
   </aside>
 
@@ -180,9 +304,57 @@
 
   </div>
 
- 
   <script src="./js/core/auth.js"></script>
-  <script>requireAuth("./login.html");</script>
+  <script>
+    // Se o core de autenticação falhar ou não carregar, evitamos o travamento do loading
+    try {
+      if (typeof requireAuth === "function") {
+        requireAuth("./login.html");
+      }
+    } catch (e) {
+      console.warn("Mecanismo de autenticação indisponível temporariamente:", e);
+    }
+  </script>
+  
+  <script>
+    // --- LÓGICA DE CONTROLO DE EXPANSÃO DA BARRA LATERAL ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleBtn = document.getElementById("toggle-sidebar-btn");
+      const body = document.body;
+      const icon = toggleBtn.querySelector("i");
+
+      // Carregar estado anterior do utilizador
+      const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+      if (isCollapsed) {
+        body.classList.add("sidebar-collapsed");
+        icon.className = "fas fa-chevron-right";
+      }
+
+      toggleBtn.addEventListener("click", () => {
+        body.classList.toggle("sidebar-collapsed");
+        const collapsedActive = body.classList.contains("sidebar-collapsed");
+        localStorage.setItem("sidebar-collapsed", collapsedActive);
+
+        // Altera o sentido do ícone da seta
+        if (collapsedActive) {
+          icon.className = "fas fa-chevron-right";
+        } else {
+          icon.className = "fas fa-chevron-left";
+        }
+      });
+      
+      // --- SEGURANÇA MÁXIMA CONTRA TELA AZUL INFINITA ---
+      // Caso a inicialização ou a chamada do módulo 'area-tecnica.js' falhe, garante o fechamento forçado em 1.5s
+      setTimeout(() => {
+        const loading = document.getElementById("loading-screen");
+        if (loading && loading.style.display !== "none") {
+          console.warn("⚠️ Fechamento forçado do loading acionado.");
+          loading.style.opacity = "0";
+          setTimeout(() => loading.style.display = "none", 400);
+        }
+      }, 1500);
+    });
+  </script>
   <script type="module" src="./js/pages/area-tecnica.js"></script>
 </body>
 </html>

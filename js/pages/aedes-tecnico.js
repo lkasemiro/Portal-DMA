@@ -1,4 +1,6 @@
+
 import { AedesAPI } from '../modules/aedes/aedes-api.js';
+
 
 const LABELS_MAP = {
     "objetos_acumulando_agua": "Objetos acumulando água",

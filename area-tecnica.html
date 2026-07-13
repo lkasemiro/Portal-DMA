@@ -304,7 +304,7 @@
 
   </div>
 
-  <script src="./js/core/auth.js"></script>
+  
   <script>
     // Se o core de autenticação falhar ou não carregar, evitamos o travamento do loading
     try {
@@ -352,9 +352,11 @@
           loading.style.opacity = "0";
           setTimeout(() => loading.style.display = "none", 400);
         }
-      }, 1500);
+      },4000);
     });
   </script>
+  <script src="./js/core/auth.js"></script>
+  <script>requireAuth("./login.html");</script>
   <script type="module" src="./js/pages/area-tecnica.js"></script>
 </body>
 </html>

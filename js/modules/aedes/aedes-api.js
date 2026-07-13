@@ -4,7 +4,7 @@
 // ======================================================
 
 // IMPORTANTE: Importa a URL dinâmica direto do arquivo de configuração
-import { API_BASE } from '/js/core/api-config.js';
+import { API_BASE } from '../../core/api-config.js';
 
 export const AedesAPI = {
 

@@ -5,10 +5,10 @@
 
 /* ── Tokens ──────────────────────────────────────────────────────────────── */
 :root {
-  --verde-floresta:     #36a336;
-  --verde-medio:        #1a6b42;
-  --verde-vivo:         #5fd348;
-  --verde-claro:        #4dbe80;
+  --verde-floresta:     #ffffff;
+  --verde-medio:        #6b9b6dd7;
+  --verde-vivo:         #5f8f6a;
+  --verde-claro:        #b84646;
   --verde-palido:       #d4f0e0;
 
   --teal-profundo:      #3d77b9;
@@ -90,8 +90,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--verde-medio);
-  border-bottom: 1px solid rgba(4, 15, 9, 0.25);
+  background: var(--verde-floresta);
+  border-bottom: 1px solid rgba(243, 223, 223, 0.25);
   height: 62px;
   padding: 0 32px;
   display: flex;
@@ -120,10 +120,10 @@ body {
 }
 
 .dma-tag-line {
-  color: rgba(255,255,255,0.70);
+  color: rgba(36, 63, 28, 0.7);
   font-size: 0.82rem;
   font-weight: 600;
-  border-left: 2px solid rgba(77,190,128,0.40);
+  border-left: 2px solid rgba(255, 255, 255, 0.4);
   padding-left: 16px;
   height: 20px;
   display: flex;
@@ -139,7 +139,7 @@ body {
 
 .cedae-saude-brand-box {
   background: rgba(255,255,255,0.09);
-  color: rgba(255,255,255,0.80);
+  color: rgba(90, 146, 79, 0.8);
   padding: 4px 10px;
   border-radius: 5px;
   font-size: 0.70rem;
@@ -149,7 +149,7 @@ body {
 }
 
 .topbar__back-link {
-  color: var(--verde-claro) !important;
+  color: var(--verde-medio) !important;
   text-decoration: none;
   font-size: 0.80rem;
   font-weight: 700;
@@ -194,7 +194,7 @@ body {
   left: -60px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(34,160,90,0.16) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.884) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -214,20 +214,20 @@ body {
 
 .hero-pretitle {
   display: inline-block;
-  color: var(--verde-palido);
+  color: var(--verde-floresta);
   font-weight: 800;
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.14em;
-  background: rgba(87, 60, 9, 0.918);
-  border: 1px solid rgba(77,190,128,0.30);
+  background: rgba(255, 255, 254, 0.918);
+  border: 1px solid rgb(0, 0, 0);
   padding: 4px 12px;
   border-radius: 4px;
   margin-bottom: 12px;
 }
 
 .hero-main-title {
-  color: #ffffff;
+  color: #ff1515;
   font-size: 2.2rem;
   font-weight: 900;
   margin: 0 0 14px;
@@ -265,7 +265,7 @@ body {
 /* Divisor do hero */
 .hero-divider {
   margin: 32px 0 20px;
-  border-top: 1px solid rgba(255,255,255,0.12);
+  border-top: 1px solid rgb(255, 0, 0);
   padding-top: 22px;
 }
 

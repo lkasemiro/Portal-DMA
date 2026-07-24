@@ -2,33 +2,32 @@ const CACHE_NAME = "portal-dma-v26";
 
 const APP_ASSETS = [
   "./",
-  "./index.html",
-  "./aedes.html",
-  "./aedes-tecnico.html",
-  "./aedes-focais.html",
-  "./recicla.html",
-  "./manifest.json",
-  "./icon-192.png",
+  "../autenticacao/index.html",
+  "../dengue/aedes.html",
+  "../dengue/aedes-tecnico.html",
+  "../dengue/aedes-focais.html",
+  "../recicla/recicla.html",
+  "../manifest.json",
+  "../icon-192.png",
 
-  "./css/global.css",
-  "./css/home.css",
-  "./css/recicla.css",
-  "./css/aedes.css",
+  "../css/global.css",
+  "../css/home.css",
+  "../css/recicla.css",
+  "../css/aedes.css",
 
-  "./js/home.js",
-  "./js/pages/recicla.js",
-  "./js/db.js",
-  "./js/modules/aedes/certs.js",
-  "./js/aedes.js",
-  "./js/pages/aedes-publico.js",
-  "./js/pages/aedes-tecnico.js",
-  "./js/pages/aedes-focais.js",
-  "./js/pages/aedes-focais.js",
-  "./js/pages/aedes-focais-vistoria.js",
+  "../js/home.js",
+  "../js/pages/recicla/recicla.js",
+  "../server/database/db.js",
+  "../js/modules/aedes/certs.js",
+  "../js/aedes.js",
+  "../js/pages/aedes/aedes-publico.js",
+  "../js/pages/aedes/aedes-tecnico.js",
+  "../js/pages/aedes/aedes-focais.js",
+  "../js/pages/aedes/aedes-focais-vistoria.js",
  
 
-  "./assets/icon.png",
-  "./assets/folder-arboviroses.jpg"
+  "../assets/icon.png",
+  "../assets/folder-arboviroses.jpg"
 ];
 
 // ----------------------------

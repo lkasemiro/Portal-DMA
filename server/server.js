@@ -38,7 +38,7 @@ const app = express();
 const allowedOrigins = [
     ...(CORS_ALLOWED_ORIGINS || []),
     "http://localhost:3001",
-    "https://lkasemiro.github.io" // ➔ GARANTE O GITHUB PAGES AQUI DIRETAMENTE
+    "https://lkasemiro.github.io" // Garante o GitHub Pages
 ];
 
 app.use(cors({
@@ -46,7 +46,7 @@ app.use(cors({
         // Permite requisições sem origem (como aplicativos mobile ou ferramentas de teste como Postman)
         if (!origin) return callback(null, true);
         
-        // Remove barras no final da string para evitar falhas de correspondência estrita
+        // Remove barras no final da string para evitar falhas de correspondência
         const sanitizedOrigin = origin.replace(/\/$/, "");
         
         const isAllowed = allowedOrigins.some(allowed => allowed.replace(/\/$/, "") === sanitizedOrigin);
@@ -55,25 +55,19 @@ app.use(cors({
             callback(null, true);
         } else {
             console.warn(`🚨 Bloqueado pelo CORS. Origem rejeitada: ${origin}`);
-            // Correção crucial: Não passamos um 'new Error' no primeiro parâmetro para evitar Erro 500 no Node.
-            // Passamos 'null' no erro e 'false' para o Express lidar apenas com o bloqueio HTTP limpo.
-            callback(null, false);
+            callback(null, false); // Rejeição limpa HTTP sem estourar Erro 500 interno
         }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+    optionsSuccessStatus: 200 // 🔥 Responde requisições de pré-verificação (OPTIONS) com Status 200 automaticamente
 }));
-
-// 🔥 ADICIONE ESTE MIDDLEWARE PARA REQUISIÇÕES DE PRÉ-VERIFICAÇÃO (Preflight)
-// Isso responde instantaneamente requisições OPTIONS sem deixar bater nas rotas internas
-app.options('*', cors());
 
 // 🔥 REGRA CRÍTICA DO BETTER AUTH: Deve interceptar a requisição ANTES dos parsers express.json()
 app.use("/api/auth", (req, res) => {
     return toNodeHandler(auth)(req, res);
 });
-
 // Parsers globais para o restante das rotas do ecossistema Express
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));

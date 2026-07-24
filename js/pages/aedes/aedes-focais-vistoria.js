@@ -6,7 +6,14 @@
  * ============================================================
  */
 
+// Se window.AEDES_API_BASE_URL não foi definida por outro script externo, define ela aqui
+if (!window.AEDES_API_BASE_URL) {
+  window.AEDES_API_BASE_URL = "https://portal-dma.onrender.com";
+}
+
 const AEDES_FOCAL_SESSION_KEY = "dma_aedes_focal_session_v1";
+// ... (resto do seu código permanece idêntico)
+
 const AEDES_FOCAL_REPORTS_STORAGE_KEY = "dma_aedes_focal_reports_v7";
 const AEDES_API_TIMEOUT_MS = 90000;
 const DASH_VALUE = "-";

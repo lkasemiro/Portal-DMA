@@ -34,29 +34,33 @@ const AedesFocaisApp = (() => {
   }
 
   async function loadFocaisFromApi() {
-    try {
-      // 3. Rota dinâmica unificada no seu novo back-end
-      const response = await fetch(`${API_BASE}/api/aedes/focais/lista`);
-      const data = await response.json();
-      
-      // Ajusta o desempacotamento considerando a nova estrutura do back-end { sucesso: true, dados: [...] }
-      const listaFocais = data.dados || data;
-      state.focaisBrutos = Array.isArray(listaFocais) ? listaFocais : [];
-
-      const processados = new Set();
-      state.focaisLista = state.focaisBrutos.filter(item => {
-        const nome = item.nome?.trim().toUpperCase(); 
-        if (!nome || nome === "SEM FOCAL DESIGNADO" || processados.has(nome)) return false;
-        processados.add(nome);
-        return true;
-      });
-
-      return state.focaisLista;
-    } catch (err) {
-      console.error("Erro API:", err);
-      throw err;
+  try {
+    const response = await fetch(`${API_BASE}/api/aedes/focais/lista`); 
+    
+    if (!response.ok) {
+      throw new Error(`Erro no servidor: ${response.status}`);
     }
+
+    const data = await response.json();
+    
+    // 🔽 Garante a leitura tanto se vier array direto quanto se vier dentro de .dados
+    const listaFocais = data.dados || (Array.isArray(data) ? data : []);
+    state.focaisBrutos = listaFocais;
+
+    const processados = new Set();
+    state.focaisLista = state.focaisBrutos.filter(item => {
+      const nome = (item.nome || item.focal)?.trim().toUpperCase(); 
+      if (!nome || nome === "SEM FOCAL DESIGNADO" || processados.has(nome)) return false;
+      processados.add(nome);
+      return true;
+    });
+
+    return state.focaisLista;
+  } catch (err) {
+    console.error("Erro API:", err);
+    throw err;
   }
+}
 
   function renderFocais() {
     if (!els.focaisGrid) return;

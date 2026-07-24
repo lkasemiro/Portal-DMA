@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acesso ao Portal | Portal DMA</title>
+  <meta name="description" content="Portal de autenticação unificado para a equipe do Portal DMA" />
+  <meta name="theme-color" content="#0b3d91" />
+
+  <link rel="icon" href="./assets/icon.png" type="image/png" />
+  <!-- Remova o comentário se o arquivo global existir, ou mantenha os estilos abaixo -->
+  <!-- <link rel="stylesheet" href="./css/global.css" /> -->
+
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(11,61,145,.10), rgba(11,61,145,0)), #0b1324;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      box-sizing: border-box;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.24);
+      border: 1px solid rgba(11,19,36,.08);
+      transition: max-width 0.3s ease;
+    }
+
+    /* Expande o card quando estiver no modo cadastro para acomodar o grid */
+    .login-card.mode--cadastro {
+      max-width: 580px;
+    }
+
+    .login-card__eyebrow {
+      margin: 0 0 8px;
+      color: #0b66c3;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .login-card h1 {
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      color: #0b1324;
+    }
+
+    .login-card__text {
+      margin: 0 0 24px;
+      color: #4b5563;
+      line-height: 1.55;
+      font-size: .95rem;
+    }
+
+    /* Grid responsivo para o cadastro */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0 16px;
+    }
+
+    @media (min-width: 480px) {
+      .mode--cadastro .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .field--full {
+        grid-column: span 2;
+      }
+    }
+
+    .field {
+      margin-top: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(11,19,36,.14);
+      font: inherit;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: rgba(11,102,195,.45);
+      box-shadow: 0 0 0 3px rgba(11,102,195,.12);
+    }
+
+    /* Links auxiliares internos dos campos */
+    .field__label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field__link {
+      font-size: 0.8rem;
+      color: #0b66c3;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .field__link:hover {
+      text-decoration: underline;
+    }
+
+    .login-card__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+      text-decoration: none;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .btn--primary {
+      background: #0b66c3;
+      color: #ffffff;
+    }
+
+    .btn--primary:hover {
+      background: #084d94;
+    }
+
+    .btn--primary:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: #475467;
+      border: 1px solid rgba(11,19,36,.14);
+    }
+
+    .btn--ghost:hover {
+      background: #f8fafc;
+    }
+
+    /* Classes utilitárias de feedback */
+    .status-message {
+      min-height: 20px;
+      margin-top: 14px;
+      font-size: .88rem;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .status-message--error {
+      display: block;
+      color: #b42318;
+    }
+    
+    .status-message--success {
+      display: block;
+      color: #027a48;
+    }
+
+    .login-note {
+      margin-top: 24px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #f8fbff;
+      border: 1px solid rgba(11,102,195,.10);
+      color: #475467;
+      font-size: .84rem;
+      line-height: 1.5;
+    }
+
+    /* Controle de visibilidade dos formulários */
+    .auth-view {
+      display: none;
+    }
+    .auth-view.is-active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Altere a URL base da API conforme seu ambiente de desenvolvimento/produção -->
+  <script>
+    const API_BASE_URL = "http://localhost:3001"; 
+  </script>
+
+  <main id="authCard" class="login-card">
+    <p class="login-card__eyebrow">Portal DMA</p>
+    
+    <!-- ================= VISTA: LOGIN ================= -->
+    <section id="view-login" class="auth-view is-active">
+      <h1>Acesso Técnico</h1>
+      <p class="login-card__text">Entre com suas credenciais corporativas para acessar o ambiente interno.</p>
+      
+      <form id="loginForm">
+        <div class="field">
+          <label for="login-email">E-mail Corporativo</label>
+          <input id="login-email" type="email" required placeholder="nome@cedae.com.br" autocomplete="username"/>
+        </div>
+        <div class="field">
+          <div class="field__label-row">
+            <label for="login-password">Senha</label>
+            <a href="#" class="field__link" onclick="switchView('forgot')">Esqueceu a senha?</a>
+          </div>
+          <input id="login-password" type="password" required placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        
+        <div class="login-card__actions">
+          <button type="submit" id="loginBtn" class="btn btn--primary">Entrar</button>
+          <button type="button" class="btn btn--ghost" onclick="switchView('cadastro')">Primeiro Acesso / Cadastrar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ================= VISTA: CADASTRO ================= -->
+    <section id="view-cadastro" class="auth-view">
+      <h1>Cadastro Técnico</h1>
+      <p class="login-card__text">Preencha suas informações para criar sua credencial de acesso interna.</p>
+      
+      <form id="cadastroForm" class="form-grid">
+        <div class="field field--full">
+          <label for="cad-name">Nome Completo</label>
+          <input id="cad-name" type="text" required placeholder="Ex: João da Silva" />
+        </div>
+        <div class="field field--full">
+          <label for="cad-email">E-mail Corporativo</label>
+          <input id="cad-email" type="email" required placeholder="nome@cedae.com.br" />
+        </div>
+        <div class="field">
+          <label for="cad-matricula">Matrícula</label>
+          <input id="cad-matricula" type="text" required placeholder="Ex: 12345" />
+        </div>
+        <div class="field">
+          <label for="cad-diretoria">Diretoria</label>
+          <input id="cad-diretoria" type="text" required placeholder="Ex: DSU" />
+        </div>
+        <div class="field">
+          <label for="cad-cargo">Cargo</label>
+          <input id="cad-cargo" type="text" required placeholder="Ex: Chefe de Departamento" />
+        </div>
+        <div class="field">
+          <label for="cad-setor">Setor</label>
+          <input id="cad-setor" type="text" required placeholder="Ex: DMA" />
+        </div>
+        <div class="field field--full">
+          <label for="cad-password">Definir Senha</label>
+          <input id="cad-password" type="password" required placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+        </div>
+        
+        <div class="login-card__actions field--full">
+          <button type="submit" id="registerBtn" class="btn btn--primary">Criar Conta</button>
+          <button type="button" class="btn btn--ghost" onclick="switchView('login')">Já tenho conta</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ================= VISTA: ESQUECI A SENHA ================= -->
+    <section id="view-forgot" class="auth-view">
+      <h1>Recuperar Senha</h1>
+      <p class="login-card__text">Insira seu e-mail corporativo cadastrado para receber as instruções de recuperação.</p>
+      
+      <form id="forgotForm">
+        <div class="field">
+          <label for="forgot-email">E-mail Corporativo</label>
+          <input id="forgot-email" type="email" required placeholder="nome@cedae.com.br" />
+        </div>
+        
+        <div class="login-card__actions">
+          <button type="submit" id="forgotBtn" class="btn btn--primary">Enviar Link de Recuperação</button>
+          <button type="button" class="btn btn--ghost" onclick="switchView('login')">Voltar ao Login</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Área Global de Status e Mensagens -->
+    <div id="statusMessage" class="status-message" aria-live="polite"></div>
+
+    <div class="login-note">
+      <strong>Nota:</strong> A liberação é exclusiva para colaboradores da área técnica. Os Focais devem continuar acessando exclusivamente via número de matrícula.
+    </div>
+  </main>
+
+  <script>
+    const authCard = document.getElementById('authCard');
+    const statusDiv = document.getElementById('statusMessage');
+
+    // Alternador Dinâmico de Telas (Views)
+    function switchView(viewName) {
+      // Limpa mensagens anteriores
+      statusDiv.textContent = '';
+      statusDiv.className = 'status-message';
+      
+      // Esconde todas as visões
+      document.querySelectorAll('.auth-view').forEach(view => view.classList.remove('is-active'));
+      
+      // Altera o layout do card dinamicamente se for a tela de cadastro
+      if(viewName === 'cadastro') {
+        authCard.classList.add('mode--cadastro');
+      } else {
+        authCard.classList.remove('mode--cadastro');
+      }
+
+      // Ativa a tela solicitada
+      document.getElementById(`view-${viewName}`).classList.add('is-active');
+    }
+
+    // Auxiliar para resetar e tratar os botões durante chamadas assíncronas
+    function setSubmitting(buttonId, isSubmitting, activeText, loadingText = 'Processando...') {
+      const btn = document.getElementById(buttonId);
+      btn.disabled = isSubmitting;
+      btn.textContent = isSubmitting ? loadingText : activeText;
+    }
+
+    // Auxiliar de renderização de mensagens de feedback
+    function displayStatus(message, isSuccess = false) {
+      statusDiv.textContent = message;
+      statusDiv.className = isSuccess ? 'status-message status-message--success' : 'status-message status-message--error';
+    }
+
+    // ================= SUBMIT: LOGIN =================
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      setSubmitting('loginBtn', true, 'Entrar');
+
+      const payload = {
+        email: document.getElementById('login-email').value,
+        password: document.getElementById('login-password').value
+      };
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/sign-in/email`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        let result = {};
+        if (response.headers.get("content-type")?.includes("application/json")) {
+          result = await response.json();
+        }
+
+        if (response.ok) {
+          displayStatus('Autenticado com sucesso! Redirecionando...', true);
+
+          // Captura os dados do usuário retornados pelo Better Auth (ajuste de acordo com a resposta da sua API)
+          const user = result.user || result; 
+          const userRole = String(user.role || '').toLowerCase();
+
+          // Se o perfil logado for 'focal', prepara a sessão e joga para o painel de vistorias
+          if (userRole === 'focal') {
+            const focalSession = {
+              auth_type: "aedes_focal",
+              focal_id: user.id, 
+              nome: user.name,
+              email: user.email,
+              matricula: user.matricula || ""
+            };
+            localStorage.setItem("dma_aedes_focal_session_v1", JSON.stringify(focalSession));
+            
+            setTimeout(() => { window.location.href = './painel-focal.html'; }, 1500);
+          } else {
+            // Se for técnico, administrador, etc., segue o fluxo padrão antigo
+            setTimeout(() => { window.location.href = './area-tecnica.html'; }, 1500);
+          }
+
+        } else {
+          throw new Error(result.message || 'E-mail ou senha incorretos.');
+        }
+      } catch (err) {
+        displayStatus(err.message);
+        setSubmitting('loginBtn', false, 'Entrar');
+      }
+    });
+
+    // ================= SUBMIT: LOGIN =================
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      setSubmitting('loginBtn', true, 'Entrar');
+
+      const payload = {
+        email: document.getElementById('login-email').value,
+        password: document.getElementById('login-password').value
+      };
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/sign-in/email`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        let result = {};
+        if (response.headers.get("content-type")?.includes("application/json")) {
+          result = await response.json();
+        }
+
+        if (response.ok) {
+          displayStatus('Autenticado com sucesso! Redirecionando...', true);
+
+          // Captura os dados do usuário retornados pelo Better Auth (ajuste de acordo com a resposta da sua API)
+          const user = result.user || result; 
+          const userRole = String(user.role || '').toLowerCase();
+
+          // Se o perfil logado for 'focal', prepara a sessão e joga para o painel de vistorias
+          if (userRole === 'focal') {
+            const focalSession = {
+              auth_type: "aedes_focal",
+              focal_id: user.id, 
+              nome: user.name,
+              email: user.email,
+              matricula: user.matricula || ""
+            };
+            localStorage.setItem("dma_aedes_focal_session_v1", JSON.stringify(focalSession));
+            
+            setTimeout(() => { window.location.href = './painel-focal.html'; }, 1500);
+          } else {
+            // Se for técnico, administrador, etc., segue o fluxo padrão antigo
+            setTimeout(() => { window.location.href = './area-tecnica.html'; }, 1500);
+          }
+
+        } else {
+          throw new Error(result.message || 'E-mail ou senha incorretos.');
+        }
+      } catch (err) {
+        displayStatus(err.message);
+        setSubmitting('loginBtn', false, 'Entrar');
+      }
+    });
+    // ================= SUBMIT: ESQUECI A SENHA =================
+    document.getElementById('forgotForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      setSubmitting('forgotBtn', true, 'Enviar Link de Recuperação');
+
+      const payload = {
+        email: document.getElementById('forgot-email').value,
+        redirectTo: `${window.location.origin}/redefinir-senha.html` // Altere para a sua página de redefinição
+      };
+
+      try {
+        // Endpoint padrão do Better Auth para solicitação de reset de senha via email
+        const response = await fetch(`${API_BASE_URL}/api/auth/forget-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        let result = {};
+        if (response.headers.get("content-type")?.includes("application/json")) {
+          result = await response.json();
+        }
+
+        if (response.ok) {
+          displayStatus('Se o e-mail estiver cadastrado, um link de recuperação será enviado em instantes.', true);
+          document.getElementById('forgotForm').reset();
+        } else {
+          throw new Error(result.message || 'Erro ao processar solicitação.');
+        }
+      } catch (err) {
+        displayStatus(err.message);
+      } finally {
+        setSubmitting('forgotBtn', false, 'Enviar Link de Recuperação');
+      }
+    });
+  </script>
+</body>
+</html>

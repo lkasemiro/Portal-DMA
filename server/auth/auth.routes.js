@@ -1,53 +1,64 @@
-/**
- * ============================================================
- * Portal Ambiental
- * Rotas de Autenticação (Versão ES Modules)
- * ============================================================
- */
-
+/* auth.routes.js*/
 import express from "express";
-import * as controller from "./auth.controller.js"; // Obrigatório o .js no final
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./auth.config.js";
 import { verificarAutenticacao, authorize } from "./auth.middleware.js";
+import * as controller from "./auth.controller.js";
 
 const router = express.Router();
 
+/* ==========================================================================
+   1. ROTAS CUSTOMIZADAS DE GESTÃO E DINÂMICA DE ACESSO
+   Nota: Elas devem vir ANTES do handler coringa (/*) para não serem interceptadas.
+   ========================================================================== */
+
 /**
- * Usuário autenticado
+ * Buscar o menu/páginas dinâmicas do usuário logado
+ * Acessível a qualquer perfil autenticado (Focal, Técnico, Administrador, Dev)
  */
 router.get(
-    "/me",
-    verificarAutenticacao,
-    controller.me
+    "/minhas-paginas", 
+    verificarAutenticacao, 
+    controller.obterPaginasPermitidas
 );
 
 /**
- * Lista usuários
+ * Listar usuários do sistema (Exibe no painel de controle)
+ * Protegido: Apenas Administradores e Desenvolvedores podem ver a lista
  */
 router.get(
-    "/users",
-    verificarAutenticacao,
-    authorize("Administrador"),
-    controller.listarUsuarios
+    "/usuarios", 
+    verificarAutenticacao, 
+    authorize("Desenvolvedor", "Administrador"), 
+    controller.listarUsuariosEPerfis
 );
 
 /**
- * Cadastro de usuários
- */
-router.post(
-    "/users",
-    verificarAutenticacao,
-    authorize("Administrador"),
-    controller.cadastrarUsuario
-);
-
-/**
- * Ativar/desativar usuário
+ * Alterar a role (papel) de um usuário dinamicamente
+ * Protegido: Apenas Administradores e Desenvolvedores podem alterar cargos
  */
 router.patch(
-    "/users/:userId/status",
-    verificarAutenticacao,
-    authorize("Administrador"),
-    controller.alterarStatus
+    "/usuarios/:userId/role", 
+    verificarAutenticacao, 
+    authorize("Desenvolvedor", "Administrador"), 
+    controller.atualizarRoleUsuario
 );
+
+/**
+ * Criar ou atualizar matriz de acesso de páginas
+ * Protegido: Exclusivo do Desenvolvedor alterar regras estruturais do site
+ */
+router.post(
+    "/regras-paginas", 
+    verificarAutenticacao, 
+    authorize("Desenvolvedor"), 
+    controller.salvarRegrasPaginas
+);
+
+/* ==========================================================================
+   2. ROTEADOR UNIVERSAL DO BETTER AUTH
+   Captura todas as outras requisições (Ex: /login, /sign-up, /sign-out, /session)
+   ========================================================================== */
+router.all("{/*any}", toNodeHandler(auth));
 
 export default router;

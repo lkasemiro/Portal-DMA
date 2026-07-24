@@ -1,5 +1,5 @@
 // server/database/queries.js
-import { pool } from "../infra/db.js";
+import { pool } from "./db.js"; // Ajustado para a mesma pasta!
 
 /**
  * Executa uma consulta SQL genérica (útil para comandos que não retornam linhas específicas).
@@ -53,11 +53,6 @@ export async function remove(sql, params = []) {
 /**
  * Executa um conjunto de operações isoladas dentro de uma Transação SQL (BEGIN/COMMIT/ROLLBACK).
  * O callback recebe o 'client' dedicado que deve ser usado para executar as queries da transação.
- * * Exemplo de uso:
- * await transaction(async (client) => {
- * await client.query('INSERT INTO...', [dados1]);
- * await client.query('UPDATE...', [dados2]);
- * });
  */
 export async function transaction(callback) {
     // Obtém um cliente exclusivo do pool para a transação

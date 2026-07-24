@@ -1,152 +1,124 @@
-// server.js
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import { toNodeHandler } from "better-auth/node";
 
-// ESM (__dirname)
+// 🌍 Central de Configuração Ambiental & Variáveis Validadas
+import { PORT, CORS_ALLOWED_ORIGINS } from "./config/env.js";
+
+// 🔒 Instância de Configuração do Better Auth
+import { auth } from "./auth/auth.config.js";
+
+// 🗄️ Infraestrutura de Banco de Dados e Inicializadores de Schemas
+import { pool } from "./database/db.js";
+import { initSchema as initAedesSchema } from "./aedes/aedes.schema.js"; // Exemplo de isolamento do DDL do Aedes
+import { initReciclaSchema } from "./recicla/recicla.schema.js";
+import { initPostsSchema } from "./posts/posts.schema.js";
+import { initModulosSchema } from "./modulos/modulos.schema.js";
+
+// 🛣️ Importação dos Módulos de Rotas Consolidados
+import authManagementRoutes from "./auth/auth.routes.js";
+import modulosRoutes from "./modulos/modulos.routes.js";
+import postsRoutes from "./posts/posts.routes.js";
+import aedesRoutes from "./aedes/aedes.routes.js";
+import reciclaRoutes from "./recicla/recicla.routes.js";
+
+// Configuração do ambiente para ES Modules (ESM)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuração de Variáveis de Ambiente (.env)
-dotenv.config({
-    path: path.resolve(__dirname, "../.env")
-});
-
-// Database Infra & Schema Init de módulos
-import { pool } from "./infra/db.js";
-import { initSchema as initAedesSchema, getUnidades } from "./controllers/aedesController.js";
-
-// Importação das Rotas Modulares
-import postsRoutes from "./routes/posts.js";
-import modulosRoutes from "./routes/modulos.js";
-import aedesRoutes from "./routes/aedes_routes.js"; // <--- Novo Roteador do Aedes
-
 const app = express();
-const PORT = process.env.PORT || 3001;
 
-// Middlewares Globais
+/* ==========================================================================
+   1. MIDDLEWARES CRÍTICOS & CONFIGURAÇÃO DO CORS
+   ========================================================================== */
+
+// Configuração dinâmica de origens permitidas baseada no array do env.js
+const allowedOrigins = [
+    ...CORS_ALLOWED_ORIGINS,
+    "http://localhost:3001"
+];
+
 app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+    origin: function (origin, callback) {
+        // Permite requisições sem origem (como aplicativos mobile ou ferramentas de teste como Postman)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.warn(`🚨 Bloqueado pelo CORS. Origem rejeitada: ${origin}`);
+            callback(new Error('Bloqueado pelo CORS: Origem não permitida pelas configurações do ambiente.'));
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
+// 🔥 REGRA CRÍTICA DO BETTER AUTH: Deve interceptar a requisição ANTES dos parsers express.json()
+app.use("/api/auth", (req, res) => {
+    return toNodeHandler(auth)(req, res);
+});
+
+// Parsers globais para o restante das rotas do ecossistema Express
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Arquivos Estáticos (Frontend e Uploads)
-app.use(express.static(path.join(__dirname, "..")));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+/* ==========================================================================
+   2. ARQUIVOS ESTÁTICOS (Uploads Locais)
+   ========================================================================== */
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 
-// Acoplamento das Rotas na API
-app.use("/api/posts", postsRoutes);
-app.use("/api/modulos", modulosRoutes);
-app.use("/api/aedes", aedesRoutes); // <--- Injetando todo o escopo do Aedes isolado
+/* ==========================================================================
+   3. ACOPLAMENTO DAS ROTAS MODULARES DA API
+   ========================================================================== */
+app.use("/api/auth-management", authManagementRoutes); // Rotas acessórias administrativas do Auth (ex: listagem de usuários)
+app.use("/api/modulos", modulosRoutes);               // Estrutura de menus dinâmicos por cargo
+app.use("/api/posts", postsRoutes);                   // Notícias, comunicados e upload de mídias
+app.use("/api/aedes", aedesRoutes);                   // Operações, KPIs e Auditoria Semanal do Aedes
+app.use("/api/recicla", reciclaRoutes);               // Coleta seletiva e reciclagem
 
-// Esta rota de unidades ficava solta e agora mapeia para o controller correto
-app.get("/api/unidades", getUnidades);
-
-// Healthcheck do sistema
+/* ==========================================================================
+   4. HEALTHCHECK DO SISTEMA
+   ========================================================================== */
 app.get("/api/health", async (req, res) => {
-  try {
-    await pool.query("SELECT NOW()");
-    res.json({ ok: true, database: "online", server: "online" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ ok: false, error: "database offline" });
-  }
-});
-
-// Inicialização Assíncrona de Tabelas Adicionais (Agenda)
-async function initSchemaAgenda() {
-  try {
-    await pool.query(`CREATE SCHEMA IF NOT EXISTS dma;`);
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS dma.agenda_eventos (
-        id SERIAL PRIMARY KEY,
-        titulo TEXT NOT NULL,
-        categoria TEXT NOT NULL,
-        data_evento DATE NOT NULL,
-        horario TEXT,
-        local_evento TEXT NOT NULL,
-        descricao TEXT,
-        criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-      );
-    `);
-    console.log("📅 Tabela dma.agenda_eventos verificada/criada.");
-  } catch (err) {
-    console.error("❌ Erro ao inicializar o schema da agenda:", err.message);
-  }
-}
-
-// Rotas da Agenda Ambiental (Podem opcionalmente ser extraídas futuramente para routes/agenda.js)
-app.get("/api/agenda", async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT id, titulo, categoria, data_evento::TEXT, horario, local_evento, descricao 
-      FROM dma.agenda_eventos ORDER BY data_evento ASC, horario ASC
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: "Erro interno ao processar a listagem da agenda." });
-  }
-});
-
-app.post("/api/agenda", async (req, res) => {
-  try {
-    const { titulo, categoria, data_evento, horario, local, descricao } = req.body;
-    if (!titulo || !categoria || !data_evento || !local) {
-      return res.status(400).json({ error: "Campos obrigatórios em falta." });
+    try {
+        await pool.query("SELECT NOW()");
+        res.json({ 
+            status: "ok", 
+            database: "online", 
+            time: new Date().toLocaleString("pt-BR") 
+        });
+    } catch (error) {
+        console.error("❌ Healthcheck Falhou:", error.message);
+        res.status(500).json({ status: "error", database: "offline" });
     }
-    const result = await pool.query(`
-      INSERT INTO dma.agenda_eventos (titulo, categoria, data_evento, horario, local_evento, descricao)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, titulo, categoria, data_evento::TEXT, horario, local_evento, descricao
-    `, [titulo, categoria, data_evento, horario, local, descricao || '']);
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: "Erro interno ao salvar o evento." });
-  }
 });
 
-app.put("/api/agenda/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { titulo, categoria, data_evento, horario, local, descricao } = req.body;
-    const result = await pool.query(`
-      UPDATE dma.agenda_eventos SET titulo = $1, categoria = $2, data_evento = $3, horario = $4, local_evento = $5, descricao = $6
-      WHERE id = $7 RETURNING id, titulo, categoria, data_evento::TEXT, horario, local_evento, descricao
-    `, [titulo, categoria, data_evento, horario, local, descricao || '', id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Evento não encontrado." });
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: "Erro interno ao atualizar o evento." });
-  }
-});
+// Fallback para caminhos inexistentes
+app.use((_req, res) => res.status(404).json({ error: "Rota não encontrada na API." }));
 
-app.delete("/api/agenda/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(`DELETE FROM dma.agenda_eventos WHERE id = $1 RETURNING id`, [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Evento não encontrado." });
-    res.json({ success: true, message: "Evento removido com sucesso." });
-  } catch (err) {
-    res.status(500).json({ error: "Erro interno ao remover o evento." });
-  }
-});
-
-// Fallback de Rotas Não Encontradas (404) e Error Handlers
-app.use((_req, res) => res.status(404).json({ error: "Rota não encontrada." }));
-app.use((err, _req, res, _next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Erro interno no servidor." });
-});
-
-// Inicialização do Servidor Http
+/* ==========================================================================
+   5. INICIALIZAÇÃO ASSÍNCRONA E SEGURA DO SERVIDOR
+   ========================================================================== */
 app.listen(PORT, async () => {
-  console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
-  // Roda de forma limpa e assíncrona os instaladores de tabelas
-  await initAedesSchema();
-  await initSchemaAgenda();
+    console.log(`🚀 Servidor rodando com sucesso em: http://localhost:${PORT}`);
+    console.log("🔒 Origens monitoradas pelo CORS:", allowedOrigins);
+
+    // Inicialização assíncrona dos esquemas de tabelas
+    try {
+        await initAedesSchema();
+        console.log("🔋 Estrutura de tabelas e Views do Módulo Aedes sincronizadas.");
+    } catch (err) {
+        console.error("⚠️ Falha ao inicializar o schema do Aedes:", err.message);
+    }
+
+    try {
+        await initReciclaSchema();
+        console.log("🔋 Estrutura do Módulo Recicla sincronizada.");
+    } catch (err) {
+        console.error("⚠️ Falha ao inicializar o schema do Recicla:", err.message);
+    }
 });

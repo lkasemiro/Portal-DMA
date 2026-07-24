@@ -1,111 +1,64 @@
-/**
- * ============================================================
- * Portal Ambiental
- * Middleware de Autenticação
- * Validação de JWT emitido pelo Neon Auth (Versão ES Modules)
- * ============================================================
- */
-
-import { createRemoteJWKSet, jwtVerify } from "jose";
-import * as perfilService from "../services/perfil.service.js";
-import * as authService from "../services/auth.service.js"; // Modificado: importação limpa via ESM
-
-// Garante que a URL do JWKS do Neon está configurada no .env
-if (!process.env.NEON_JWKS_URL) {
-    throw new Error("A variável NEON_JWKS_URL não está definida no ambiente.");
-}
-
-// JWKS do Neon
-const JWKS = createRemoteJWKSet(
-    new URL(process.env.NEON_JWKS_URL)
-);
+/*auth.middleware.js*/
+import { fromNodeHeaders } from "better-auth/node";
+import { auth } from "./auth.config.js";
 
 /**
- * Middleware responsável por autenticar
- * usuários através do JWT emitido pelo Neon Auth.
+ * Middleware para verificar se o usuário está autenticado no sistema.
+ * Injeta 'req.user' e 'req.session' para uso nos controladores subsequentes.
  */
 export async function verificarAutenticacao(req, res, next) {
     try {
-        const authHeader = req.headers.authorization;
+        // Converte os cabeçalhos do Node/Express para o formato que o Better Auth entende
+        const session = await auth.api.getSession({
+            headers: fromNodeHeaders(req.headers)
+        });
 
-        if (!authHeader) {
-            return res.status(401).json({
-                success: false,
-                message: "Token não informado."
+        // Se não houver sessão ativa ou válida, barra a entrada na hora
+        if (!session) {
+            return res.status(401).json({ 
+                success: false, 
+                message: "Sessão inválida ou expirada. Faça login novamente." 
             });
         }
 
-        if (!authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({
-                success: false,
-                message: "Formato de autenticação inválido."
-            });
-        }
-
-        const token = authHeader.replace("Bearer ", "");
-
-        // Validação do JWT
-        const { payload } = await jwtVerify(
-            token,
-            JWKS
-        );
-
-        // user_id do Neon
-        const userId = payload.sub;
-
-        // Modificado: Removido o require interno e utilizada a referência do import do topo
-        const perfil = await authService.obterUsuario(userId);
-        
-        if (!perfil) {
-            return res.status(403).json({
-                success: false,
-                message: "Usuário não possui perfil cadastrado."
-            });
-        }
-
-        if (!perfil.ativo) {
-            return res.status(403).json({
-                success: false,
-                message: "Usuário desativado."
-            });
-        }
-
-        // Atualiza último login
-        await perfilService.atualizarUltimoLogin(userId);
-
-        // Disponibiliza para toda a aplicação
-        req.user = perfil;
+        // Disponibiliza o usuário (com role e unidadeId) e a sessão para toda a rota
+        req.user = session.user;
+        req.session = session.session;
 
         next();
     } catch (error) {
-        console.error("❌ Erro na verificação do token:", error.message);
-        return res.status(401).json({
-            success: false,
-            message: "Token inválido."
+        console.error("❌ Erro de Autenticação no Middleware:", error.message);
+        return res.status(401).json({ 
+            success: false, 
+            message: "Não autorizado." 
         });
     }
 }
 
 /**
- * Middleware para verificar papéis (RBAC).
- *
+ * Middleware para controle de acesso baseado em papéis (RBAC).
+ * 
  * Exemplo de uso nas rotas:
- * authorize("Administrador")
- * authorize("Administrador", "Editor")
+ * authorize("Desenvolvedor") -> Apenas devs entram
+ * authorize("Desenvolvedor", "Administrador") -> Devs e Admins entram
  */
 export function authorize(...papeisPermitidos) {
     return (req, res, next) => {
+        // Garante que o usuário passou primeiro pelo middleware de autenticação
         if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "Usuário não autenticado."
+            return res.status(401).json({ 
+                success: false, 
+                message: "Usuário não identificado ou não autenticado." 
             });
         }
 
-        if (!papeisPermitidos.includes(req.user.papel)) {
-            return res.status(403).json({
-                success: false,
-                message: "Você não possui permissão para esta operação."
+        // O Better Auth injeta o campo 'role' diretamente no objeto user
+        const possuiPermissao = papeisPermitidos.includes(req.user.role);
+
+        if (!possuiPermissao) {
+            return res.status(403).json({ 
+                success: false, 
+                message: "Acesso negado. Seu perfil não tem permissão para esta operação." 
             });
         }
 

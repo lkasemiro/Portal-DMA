@@ -13,15 +13,21 @@ export const AedesAPI = {
     // ==================================================
     async getUnidades() {
         try {
-            const response = await fetch(`${API_BASE}/api/unidades`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            // CORRIGIDO: Adicionado o prefixo "/aedes" para alinhar com o roteador do Express
+            const response = await fetch(`${API_BASE}/api/aedes/unidades`);
+            
+            // Em vez de lançar erro direto e quebrar o fluxo do dashboard, 
+            // logamos o erro e retornamos um fallback seguro (array vazio)
+            if (!response.ok) {
+                console.warn(`⚠️ getUnidades falhou com status ${response.status}. Usando fallback vazio.`);
+                return []; 
+            }
             return await response.json();
         } catch (error) {
             console.error("❌ getUnidades:", error);
-            return [];
+            return []; // Fallback seguro
         }
     },
-
     // ==================================================
     // NOVAS VIEWS - Estatísticas Agregadas por Unidade
     // ==================================================

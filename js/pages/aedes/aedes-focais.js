@@ -140,7 +140,7 @@ const AedesFocaisApp = (() => {
       localStorage.setItem(FOCAL_SESSION_KEY, JSON.stringify(sessionData));
       localStorage.removeItem("dma_aedes_grid_state_v1"); 
       
-      window.location.href = "./aedes-vistoria-focal.html";
+      window.location.href = "../dengue/aedes-vistoria-focal.html";
     });
   }
 

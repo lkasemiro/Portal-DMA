@@ -36,8 +36,9 @@ const app = express();
 
 // Configuração dinâmica de origens permitidas baseada no array do env.js
 const allowedOrigins = [
-    ...CORS_ALLOWED_ORIGINS,
-    "http://localhost:3001"
+    ...(CORS_ALLOWED_ORIGINS || []),
+    "http://localhost:3001",
+    "https://lkasemiro.github.io" // ➔ GARANTE O GITHUB PAGES AQUI DIRETAMENTE
 ];
 
 app.use(cors({
@@ -45,17 +46,28 @@ app.use(cors({
         // Permite requisições sem origem (como aplicativos mobile ou ferramentas de teste como Postman)
         if (!origin) return callback(null, true);
         
-        if (allowedOrigins.includes(origin)) {
+        // Remove barras no final da string para evitar falhas de correspondência estrita
+        const sanitizedOrigin = origin.replace(/\/$/, "");
+        
+        const isAllowed = allowedOrigins.some(allowed => allowed.replace(/\/$/, "") === sanitizedOrigin);
+
+        if (isAllowed) {
             callback(null, true);
         } else {
             console.warn(`🚨 Bloqueado pelo CORS. Origem rejeitada: ${origin}`);
-            callback(new Error('Bloqueado pelo CORS: Origem não permitida pelas configurações do ambiente.'));
+            // Correção crucial: Não passamos um 'new Error' no primeiro parâmetro para evitar Erro 500 no Node.
+            // Passamos 'null' no erro e 'false' para o Express lidar apenas com o bloqueio HTTP limpo.
+            callback(null, false);
         }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
 }));
+
+// 🔥 ADICIONE ESTE MIDDLEWARE PARA REQUISIÇÕES DE PRÉ-VERIFICAÇÃO (Preflight)
+// Isso responde instantaneamente requisições OPTIONS sem deixar bater nas rotas internas
+app.options('*', cors());
 
 // 🔥 REGRA CRÍTICA DO BETTER AUTH: Deve interceptar a requisição ANTES dos parsers express.json()
 app.use("/api/auth", (req, res) => {

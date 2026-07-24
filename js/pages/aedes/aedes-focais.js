@@ -36,7 +36,7 @@ const AedesFocaisApp = (() => {
   async function loadFocaisFromApi() {
     try {
       // 3. Rota dinâmica unificada no seu novo back-end
-      const response = await fetch(`${API_BASE}/api/posts/focais`); 
+      const response = await fetch(`${API_BASE}/api/aedes/focais/lista`);
       const data = await response.json();
       
       // Ajusta o desempacotamento considerando a nova estrutura do back-end { sucesso: true, dados: [...] }

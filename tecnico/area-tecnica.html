@@ -241,22 +241,22 @@
   
     <nav class="sidebar__nav">
       <a href="./area-tecnica.html" class="nav-item active"><i class="fas fa-server"></i> <span>ÁREA TÉCNICA</span></a>
-      <a href="./aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> <span>AEDES - DADOS</span></a>
-      <a href="./dashboard_aedes.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - DASHBOARD</span></a>
-      <a href="./painel_bi.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - PAINEL BI</span></a>
+      <a href="../dengue/aedes-tecnico.html" class="nav-item"><i class="fas fa-bug"></i> <span>AEDES - DADOS</span></a>
+      <a href="../dengue/dashboard_aedes.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - DASHBOARD</span></a>
+      <a href="../dengue/painel_bi.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - PAINEL BI</span></a>
       <a href="./agenda-tecnica.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - AGENDA TÉCNICA</span></a>
-      <a href="./aedes-base-tecnica.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - BASE TÉCNICA</span></a>
-      <a href="./aedes-base-tecnica.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - AGENDA TÉCNICA</span></a>
+      <a href="../dengue/aedes-base-tecnica.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - BASE TÉCNICA</span></a>
+      <a href="./agenda-tecnica.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - AGENDA TÉCNICA</span></a>
       <a href="./agenda.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - AGENDA PUBLICA</span></a>
-      <a href="./pgrs-elaborados.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - PGRS ELABORADOS</span></a>
-      <a href="./placas-sinalizacoes.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - PLACAS E SINALIZAÇÕES</span></a>
-      <a href="./quantitativo-residuos.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>Quantitativo de Resíduos</span></a>
+      <a href="../novos/pgrs-elaborados.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - PGRS ELABORADOS</span></a>
+      <a href="../novos/placas-sinalizacoes.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - PLACAS E SINALIZAÇÕES</span></a>
+      <a href="../novos/quantitativo-residuos.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>Quantitativo de Resíduos</span></a>
       <a href="./gerenciador-portal.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>AEDES - GERENCIADOR DE PORTAL</span></a>
 
       <!-- RECICLA CONGELADO -->
       <!--<a href="./recicla-fase1.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 1</span></a>
       <a href="./recicla-fase2.html" class="nav-item"><i class="fas fa-recycle"></i> <span>RECICLA fase 2</span></a> -->
-      <a href="./index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
+      <a href="../autenticacao/index.html" class="nav-item" style="margin-top: auto; color: #ff4d4d;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
     </nav>
   </aside>
 
@@ -320,7 +320,7 @@
     // Se o core de autenticação falhar ou não carregar, evitamos o travamento do loading
     try {
       if (typeof requireAuth === "function") {
-        requireAuth("./login.html");
+        requireAuth("../autenticacao/login.html");
       }
     } catch (e) {
       console.warn("Mecanismo de autenticação indisponível temporariamente:", e);

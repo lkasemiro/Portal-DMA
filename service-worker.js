@@ -3,6 +3,8 @@ const CACHE_NAME = "portal-dma-v26";
 const APP_ASSETS = [
   "./",
   "../autenticacao/index.html",
+  "../autenticacao/login.html",
+  "../tecnico/area-tecnica.html",
   "../dengue/aedes.html",
   "../dengue/aedes-tecnico.html",
   "../dengue/aedes-focais.html",
